@@ -272,6 +272,7 @@ export const Ra = {
   },
   get productionPerMemoryChunk() {
     let res = Effects.product(Ra.unlocks.continuousTTBoost.effects.memories, Achievement(168));
+    res = res.times(player.celestialMultiplier);
     for (const pet of Ra.pets.all) {
       if (pet.isUnlocked) res = res.mul(pet.memoryProductionMultiplier);
     }
@@ -284,6 +285,7 @@ export const Ra = {
     }
     if (Achievement(168).isUnlocked) boostList.push("Achievement 168");
     if (Ra.unlocks.continuousTTBoost.canBeApplied) boostList.push("current TT");
+    if (player.celestialMultiplier.gt(1)) boostList.push('the celestial multiplier')
 
     if (boostList.length === 1) return `${boostList[0]}`;
     if (boostList.length === 2) return `${boostList[0]} and ${boostList[1]}`;
@@ -395,7 +397,7 @@ export const Ra = {
   },
   get momentumValue() {
     const hoursFromUnlock = TimeSpan.fromMilliseconds(player.celestials.ra.momentumTime).totalHours;
-    return Decimal.min(hoursFromUnlock.times(0.005).add(1), AlchemyResource.momentum.effectValue);
+    return Decimal.min(hoursFromUnlock.times(0.005).times(player.celestialMultiplier).add(1), AlchemyResource.momentum.effectValue);
   },
   quotes: Quotes.ra,
   symbol: "<i class='fas fa-sun'></i>"

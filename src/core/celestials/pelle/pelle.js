@@ -296,7 +296,7 @@ export const Pelle = {
   },
 
   realityShardGain(remnants) {
-    return Decimal.pow(10, Decimal.pow(remnants, (1 / 7.5)).times(4)).minus(1).div(1e3);
+    return Decimal.pow(10, Decimal.pow(remnants, (1 / 7.5)).times(4)).minus(1).div(1e3).times(player.celestialMultiplier);
   },
 
   get realityShardGainPerSecond() {

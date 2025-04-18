@@ -813,6 +813,7 @@ window.player = {
   rewinds: DC.D0,
   celestialRemains: DC.D0,
   stardust: DC.D0,
+  celestialMultiplier: 1,
   startWithRewindModal: false,
   isGameEnd: false,
   tabNotifications: new Set(),

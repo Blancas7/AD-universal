@@ -305,7 +305,7 @@ function updateRealityRecords(realityProps) {
 
 function giveRealityRewards(realityProps) {
   const multiplier = realityProps.simulatedRealities.add(1);
-  const realityAndPPMultiplier = multiplier.add(binomialDistribution(multiplier, Achievement(154).effectOrDefault(0)));
+  const realityAndPPMultiplier = multiplier.add(binomialDistribution(multiplier, Achievement(154).effectOrDefault(0))).times(player.celestialMultiplier);
   const gainedRM = Currency.realityMachines.gte(MachineHandler.hardcapRM) ? DC.D0 : realityProps.gainedRM;
   Currency.realityMachines.add(gainedRM.times(multiplier));
   updateRealityRecords(realityProps);

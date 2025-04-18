@@ -65,7 +65,7 @@ export const Effarig = {
   get shardsGained() {
     if (!TeresaUnlocks.effarig.canBeApplied) return DC.D0;
     return Decimal.floor(Decimal.pow(Currency.eternityPoints.value.add(1).log10().div(7500),
-      getActiveGlyphEffects().length)).times(AlchemyResource.effarig.effectValue);
+      getActiveGlyphEffects().length)).times(AlchemyResource.effarig.effectValue).times(player.celestialMultiplier);
   },
   get maxRarityBoost() {
     return Decimal.log10(Decimal.log10(Currency.relicShards.value.add(10))).times(5);

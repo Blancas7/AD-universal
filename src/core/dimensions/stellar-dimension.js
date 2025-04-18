@@ -74,25 +74,8 @@ export function maxAllStellarDimensions() {
 
 export function stellarDimensionCommonMultiplier() {
   let mult = new Decimal(1);
-  // let mult = new Decimal(1)
-    // .timesEffectsOf(
-    //   Achievement(105),
-    //   Achievement(128),
-    //   TimeStudy(93),
-    //   TimeStudy(103),
-    //   TimeStudy(151),
-    //   TimeStudy(221),
-    //   TimeStudy(301),
-    //   EternityChallenge(1).reward,
-    //   EternityChallenge(10).reward,
-    //   EternityUpgrade.tdMultAchs,
-    //   EternityUpgrade.tdMultTheorems,
-    //   EternityUpgrade.tdMultRealTime,
-    //   Replicanti.areUnlocked && Replicanti.amount.gt(1) ? DilationUpgrade.tdMultReplicanti : null,
-    //   Pelle.isDoomed ? null : RealityUpgrade(22),
-    //   AlchemyResource.dimensionality,
-    //   PelleRifts.chaos
-    // );
+
+  mult = mult.times(player.celestialMultiplier);
 
   return mult;
 }

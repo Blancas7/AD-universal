@@ -158,6 +158,8 @@ export function timeDimensionCommonMultiplier() {
       PelleRifts.chaos
     );
 
+  mult = mult.times(player.celestialMultiplier);
+
   if (EternityChallenge(9).isRunning) {
     mult = mult.times(
       Decimal.pow(

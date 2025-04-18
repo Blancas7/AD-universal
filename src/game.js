@@ -585,7 +585,7 @@ export function gameLoop(passedDiff, options = {}) {
   updateImaginaryMachines(realDiff);
 
   const uncountabilityGain = new Decimal(AlchemyResource.uncountability.effectValue)
-    .times(Time.realDeltaTime.totalSeconds);
+    .times(Time.realDeltaTime.totalSeconds).times(player.celestialMultiplier);
   Currency.realities.add(uncountabilityGain);
   Currency.perkPoints.add(uncountabilityGain);
 
@@ -885,6 +885,7 @@ export function getTTPerSecond() {
     Achievement(137),
     Achievement(156),
   );
+  ttMult = ttMult.times(player.celestialMultiplier);
   if (GlyphAlteration.isAdded("dilation")) ttMult = ttMult.mul(getSecondaryGlyphEffect("dilationTTgen"));
 
   // Glyph TT generation

@@ -116,6 +116,8 @@ export function getReplicantiInterval(overCapOverride, intervalIn) {
 
   interval = interval.divide(totalReplicantiSpeedMult(overCap));
 
+  interval = interval.divide(player.celestialMultiplier);
+
   if (V.isRunning) {
     // This is a boost if interval < 1, but that only happens in EC12
     // and handling it would make the replicanti code a lot more complicated.

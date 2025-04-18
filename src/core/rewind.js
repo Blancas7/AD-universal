@@ -97,6 +97,9 @@ function giveRewindRewards(rewindProps) {
     DC.D1);
   Currency.rewinds.add(1);
   Currency.celestialRemains.add(1);
+  if (player.celestialMultiplier < 35) {
+    player.celestialMultiplier += 1;
+  }
 }
 
 export function beginProcessRewind(rewindProps) {
