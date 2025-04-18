@@ -896,6 +896,7 @@ window.player = {
       dilation: true,
       tachyonParticles: true,
       reality: true,
+      rewind: true,
       background: true,
       blobSnowflakes: 16,
       blobHole: false

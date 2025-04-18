@@ -24,6 +24,7 @@ export default {
       dilation: false,
       tachyonParticles: false,
       reality: false,
+      rewind: false,
       background: false,
       blobSnowflakes: 16,
       isS11Active: false,
@@ -62,6 +63,9 @@ export default {
     reality(newValue) {
       player.options.animations.reality = newValue;
     },
+    rewind(newValue) {
+      player.options.animations.rewind = newValue;
+    },
     background(newValue) {
       player.options.animations.background = newValue;
     },
@@ -93,6 +97,7 @@ export default {
       this.dilation = options.dilation;
       this.tachyonParticles = options.tachyonParticles;
       this.reality = options.reality;
+      this.rewind = options.rewind;
       this.background = options.background;
       this.blobSnowflakes = options.blobSnowflakes;
       this.blobHole = options.blobHole;
