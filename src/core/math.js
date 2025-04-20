@@ -529,7 +529,7 @@ window.ExponentialCostScaling = class ExponentialCostScaling {
   }
 
 
-  calculateCost(currentPurchases) {
+  calculateCost(currentPurchases, source="test") {
     // Define these here just cause theyre easier to type
     const base = this.log._baseCost;
     const inc = this.log._baseIncrease;
@@ -538,11 +538,11 @@ window.ExponentialCostScaling = class ExponentialCostScaling {
 
     // If it never becomes exponential cost, just return linear and stop
     if (currentPurchases.lte(purchases)) {
-      return Decimal.pow10(base.add(inc.times(currentPurchases)));
+      return Decimal.pow10(base.add(inc.times(currentPurchases.sub(1))));
     }
 
     // Calculate linear cost
-    const costBeforeExpo = base.add(inc.times(currentPurchases));
+    const costBeforeExpo = base.add(inc.times(currentPurchases.sub(1)));
     // How many exponential purchases?
     const expoPurchases = currentPurchases.sub(purchases);
     // eslint-disable-next-line max-len
@@ -569,7 +569,7 @@ window.ExponentialCostScaling = class ExponentialCostScaling {
       if (roundDown) purchaseAmount = purchaseAmount.floor();
       // Return null if its less than the purchases we already have
       if (purchaseAmount.lte(currentPurchases)) return null;
-      const cost = this.calculateCost(purchaseAmount).log10().add(ppIlog);
+      const cost = this.calculateCost(purchaseAmount, "getMaxBought").log10().add(ppIlog);
       purchaseAmount = purchaseAmount.sub(currentPurchases);
       purchaseAmount = purchaseAmount.times(purchasesPerIncrease);
       return { quantity: purchaseAmount,
