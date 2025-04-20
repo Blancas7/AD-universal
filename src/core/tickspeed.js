@@ -57,13 +57,13 @@ export function getTickSpeedMultiplier() {
   if (NormalChallenge(5).isRunning) baseMultiplier = 0.83;
   galaxies = galaxies.sub(2);
   galaxies = galaxies.times(effects);
-  galaxies = galaxies.times(Currency.stardust.value.max(1).log10().max(1).log10().div(10).add(1));
   galaxies = galaxies.times(getAdjustedGlyphEffect("cursedgalaxies"));
   galaxies = galaxies.times(getAdjustedGlyphEffect("realitygalaxies"));
   galaxies = galaxies.times(ImaginaryUpgrade(9).effectOrDefault(DC.D0).add(1));
   if (Pelle.isDoomed) galaxies = galaxies.div(2);
 
   galaxies = galaxies.times(Pelle.specialGlyphEffect.power);
+  galaxies = galaxies.times(Currency.stardust.value.max(1).log10().max(1).log10().div(10).add(1));
   const perGalaxy = DC.D0_965;
   return perGalaxy.pow(galaxies.sub(2)).times(baseMultiplier);
 }
@@ -103,7 +103,7 @@ export function buyMaxTickSpeed() {
     const purchases = Tickspeed.costScale.getMaxBought(player.totalTickBought, Currency.antimatter.value, DC.D1, true);
     if (purchases !== null) {
       if (purchases.logPrice.eq(player.antimatter.max(1).log10()) && player.dimensions.antimatter[0].amount.eq(0)) {
-        purchases.logPrice = Tickspeed.costScale.calculateCost(purchases.quantity.sub(1));
+        purchases.logPrice = Tickspeed.costScale.calculateCost(purchases.quantity.sub(1), 'buy');
         purchases.quantity = purchases.quantity.sub(1);
       }
       Currency.antimatter.subtract(Decimal.pow10(purchases.logPrice));
