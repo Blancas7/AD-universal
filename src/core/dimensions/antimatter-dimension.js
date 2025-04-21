@@ -639,7 +639,8 @@ export const AntimatterDimensions = {
 
     let mult = DC.D2.plusEffectsOf(
       Achievement(141).effects.buyTenMult,
-      EternityChallenge(3).reward
+      EternityChallenge(3).reward,
+      Achievement(191).effects.buyTenMult,
     );
 
     mult = mult.timesEffectsOf(
