@@ -1388,11 +1388,10 @@ export const normalAchievements = [
     description: "Rewind the Universe.",
     checkRequirement: () => true,
     get reward() {
-      return `Dimension boosts are ${formatPercents(new Decimal(0.25))} stronger, and ${formatX(3)} Reality Machines gain.`;
+      return `Dimension boosts are ${formatPercents(new Decimal(0.25))} stronger`;
     },
     checkEvent: GAME_EVENT.REWIND_RESET_BEFORE,
     effects: {
-      rmGain: 3,
       dimboost: 1.25
     }
   },

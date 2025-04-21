@@ -101,6 +101,7 @@ export function totalIPMult() {
       GlyphEffect.ipMult
     );
   ipMult = ipMult.times(Replicanti.amount.powEffectOf(AlchemyResource.exponential));
+  ipMult = ipMult.times(player.celestialMultiplier);
   return ipMult;
 }
 

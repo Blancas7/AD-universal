@@ -13,7 +13,7 @@ export const MachineHandler = {
 
   get realityMachineMultiplier() {
     return Teresa.rmMultiplier.times(PerkShopUpgrade.rmMult.effectOrDefault(DC.D1))
-      .times(getAdjustedGlyphEffect("effarigrm")).times(Achievement(167).effectOrDefault(1)).times(Achievement(191).effects.rmGain);
+      .times(getAdjustedGlyphEffect("effarigrm")).times(Achievement(167).effectOrDefault(1)).times(player.celestialMultiplier);
   },
 
   get uncappedRM() {

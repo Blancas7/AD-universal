@@ -134,7 +134,7 @@ function totalEPMult() {
 export function gainedEternityPoints() {
   let ep = DC.D5.pow(player.records.thisEternity.maxIP.plus(
     gainedInfinityPoints()).max(1).log10().div(new Decimal(308).sub(PelleRifts.recursion.effectValue)).sub(0.7))
-    .times(totalEPMult());
+    .times(totalEPMult()).times(player.celestialMultiplier);
 
   if (Teresa.isRunning) {
     ep = ep.pow(0.55);
