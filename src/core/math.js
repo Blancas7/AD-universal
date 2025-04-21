@@ -547,16 +547,22 @@ window.ExponentialCostScaling = class ExponentialCostScaling {
 
     // Calculate linear cost
     var costBeforeExpo;
+    // How many exponential purchases?
+    var expoPurchases;
     if (source == 'buy') {
-      costBeforeExpo = base.add(inc.times(currentPurchases.sub(1)));
+      costBeforeExpo = base.add(inc.times(currentPurchases)).sub(1);
+      expoPurchases = currentPurchases.sub(purchases).sub(1);
     } else {
       costBeforeExpo = base.add(inc.times(currentPurchases));
+      expoPurchases = currentPurchases.sub(purchases);
     }
-    // How many exponential purchases?
-    const expoPurchases = currentPurchases.sub(purchases);
-    // eslint-disable-next-line max-len
-    // Since we times by scale X times per purchase past max, we can find the triangular number of expoPurchases and just mult that by scale
-    const scaleCostFinal = expoPurchases.pow(2).add(expoPurchases).div(2).times(scale);
+    
+    var scaleCostFinal;
+    if (expoPurchases.gt(0)) {
+      // eslint-disable-next-line max-len
+      // Since we times by scale X times per purchase past max, we can find the triangular number of expoPurchases and just mult that by scale
+      scaleCostFinal = expoPurchases.pow(2).add(expoPurchases).div(2).times(scale);
+    }
     // Add and pow10
     return Decimal.pow10(costBeforeExpo.add(scaleCostFinal));
   }
@@ -608,7 +614,14 @@ window.ExponentialCostScaling = class ExponentialCostScaling {
 
     if (purchaseAmount.lte(currentPurchases)) return null;
 
-    const purchaseCost = this.calculateCost(purchaseAmount, "buy").log10().add(ppIlog);
+    var purchaseCost = this.calculateCost(purchaseAmount, "buy").log10().add(ppIlog);4
+
+    while (purchaseCost.gte(currency.log10())) {
+      // Because of ppIlog can increase the cost above the currency, we have to lower the amoung bought by one
+      purchaseAmount = purchaseAmount.sub(1);
+      purchaseCost = this.calculateCost(purchaseAmount, "buy").log10().add(ppIlog);
+    }
+
     purchaseAmount = purchaseAmount.sub(currentPurchases);
     if (roundDown) purchaseAmount = purchaseAmount.floor();
 

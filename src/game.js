@@ -128,13 +128,13 @@ function totalEPMult() {
         TimeStudy(123),
         RealityUpgrade(12),
         GlyphEffect.epMult
-      );
+      ).times(player.celestialMultiplier);
 }
 
 export function gainedEternityPoints() {
   let ep = DC.D5.pow(player.records.thisEternity.maxIP.plus(
     gainedInfinityPoints()).max(1).log10().div(new Decimal(308).sub(PelleRifts.recursion.effectValue)).sub(0.7))
-    .times(totalEPMult()).times(player.celestialMultiplier);
+    .times(totalEPMult());
 
   if (Teresa.isRunning) {
     ep = ep.pow(0.55);
@@ -151,7 +151,7 @@ export function gainedEternityPoints() {
 }
 
 export function requiredIPForEP(epAmount) {
-  return Decimal.pow10((Decimal.log10(Decimal.divide(epAmount, totalEPMult()), 5).times(308).plus(0.7)))
+  return Decimal.pow10((Decimal.log(Decimal.divide(epAmount, totalEPMult()), 5).plus(0.7).times(308)))
     .clampMin(Number.MAX_VALUE);
 }
 
