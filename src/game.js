@@ -151,7 +151,7 @@ export function gainedEternityPoints() {
 }
 
 export function requiredIPForEP(epAmount) {
-  return Decimal.pow10((Decimal.log(Decimal.divide(epAmount, totalEPMult()), 5).plus(0.7).times(308)))
+  return Decimal.pow10(Decimal.log(Decimal.divide(epAmount, totalEPMult()), 5).plus(0.7).times(308))
     .clampMin(Number.MAX_VALUE);
 }
 
@@ -281,12 +281,13 @@ export function addRewindTime(trueTime, time, realTime, up, rewinds) {
 
 export function gainedInfinities() {
   if (EternityChallenge(4).isRunning || Pelle.isDisabled("InfinitiedMults")) return DC.D1;
-  let infGain = Decimal.max(1, Achievement(87));
+  let infGain = DC.D1;
 
   infGain = infGain.timesEffectsOf(
     TimeStudy(32),
     RealityUpgrade(5),
     RealityUpgrade(7),
+    Achievement(87),
     Achievement(131).effects.infinitiesGain,
     Achievement(164),
     Ra.unlocks.continuousTTBoost.effects.infinity
