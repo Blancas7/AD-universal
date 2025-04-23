@@ -321,27 +321,35 @@ class EPMultiplierState extends GameMechanicState {
     let bulk = DC.D1;
     let cur = Currency.eternityPoints.value.max(1);
     if (cur.gt(this.costIncreaseThresholds[3])) {
-      cur = Decimal.log(cur.div(500), 1e3);
-      return cur.add(Math.pow(1332, 1.2)).root(1.2).floor().max(1332);
+      let curTmp = Decimal.log(cur.div(500), 1e3);
+      if(curTmp.gte(1)){
+        return curTmp.add(Math.pow(1332, 1.2)).root(1.2).floor().max(1332);
+      }
       // eslint-disable-next-line no-else-return
     }
     if (cur.gt(this.costIncreaseThresholds[2])) {
       bulk = this.costIncreaseThresholds[2].div(500).log(500).floor();
       tempVal = (DC.E3).pow(bulk).times(500);
-      cur = cur.div(tempVal).max(1 / 1e3);
-      return bulk.add(cur.log(1e3).add(1)).floor();
+      let curTmp = cur.div(tempVal).max(1 / 1e3);
+      if(curTmp.gte(1)){
+        return bulk.add(curTmp.log(1e3).add(1)).min(1333).floor();
+      }
     }
     if (cur.gt(this.costIncreaseThresholds[1])) {
       bulk = this.costIncreaseThresholds[1].div(500).log(100).floor();
       tempVal = (DC.E2.times(5)).pow(bulk).times(500);
-      cur = cur.div(tempVal.max(1 / 500));
-      return bulk.add(cur.log(500).add(1)).floor();
+      let curTmp = cur.div(tempVal.max(1 / 500));
+      if(curTmp.gte(1)){
+        return bulk.add(curTmp.log(500).add(1)).min(481).floor();
+      }
     }
     if (cur.gt(this.costIncreaseThresholds[0])) {
       bulk = this.costIncreaseThresholds[0].div(500).log(50).floor();
       tempVal = DC.E2.pow(bulk).times(500);
-      cur = cur.div(tempVal.max(1 / 100));
-      return bulk.add(cur.log(100).add(1)).floor();
+      let curTmp = cur.div(tempVal.max(1 / 100));
+      if(curTmp.gte(1)){
+        return bulk.add(curTmp.log(100).add(1)).min(153).floor();
+      }
     }
     return cur.div(500).max(1 / 50).log(50).add(1).floor();
   }
