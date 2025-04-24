@@ -431,6 +431,10 @@ export const migrations = {
     83: player => {
       beMigration(player);
     },
+
+    100: player => {
+      player.startWithRewindModal = true;
+    }
   },
 
   normalizeTimespans(player) {
