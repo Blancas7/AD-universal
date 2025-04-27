@@ -748,7 +748,7 @@ export const Glyphs = {
       // AQc console.log(val);
       // eslint-disable-next-line no-negated-condition
       return !(val.effects instanceof Array) ? val.effects
-        : val.effects.toSorted((c, d) => getIntIDFromEffect(c) - getIntIDFromEffect(d))[0];
+        : val.effects.toSorted((c, d) => getIntIDFromEffect(c.id || c) - getIntIDFromEffect(d.id || d))[0];
     }
     const getIntIDFromEffect = value => GlyphEffects.all.filter(e => e.id === value)[0].intID;
     const newList = glyphList.map(g => ({
