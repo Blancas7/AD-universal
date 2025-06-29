@@ -35,7 +35,7 @@ export default {
       return this.effects.length && !this.effects.every(e => e.value.capped === false);
     },
     uniqueGlyphText() {
-      if (!this.hasEffarig && !this.hasReality) return "";
+      if (!this.hasEffarig && !this.hasReality && !this.hasRewind) return "";
       const uniqueGlyphs = [];
       if (this.hasEffarig) uniqueGlyphs.push(
         `<span style="color: ${GlyphAppearanceHandler.getBorderColor("effarig")};">Effarig</span>`);

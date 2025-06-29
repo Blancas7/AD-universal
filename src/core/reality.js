@@ -169,9 +169,13 @@ export function processManualReality(sacrifice, glyphID) {
   // Prevent issues with decimal realities by checking whether realities are < 1
   if (player.realities.lt(1)) {
     // If this is our first Reality, lock in the initial seed and then give the companion and starting glyphs
-    player.reality.seed = player.reality.initialSeed;
-    Glyphs.addToInventory(GlyphGenerator.startingGlyph(gainedGlyphLevel()));
-    Glyphs.addToInventory(GlyphGenerator.companionGlyph(Currency.eternityPoints.value));
+    if (player.rewinds.lt(1)) {
+      player.reality.seed = player.reality.initialSeed;
+      Glyphs.addToInventory(GlyphGenerator.startingGlyph(gainedGlyphLevel()));
+      Glyphs.addToInventory(GlyphGenerator.companionGlyph(Currency.eternityPoints.value));
+    } else {
+      Glyphs.addToInventory(GlyphGenerator.startingGlyph(gainedGlyphLevel()));
+    }
   } else if (Perk.firstPerk.isEffectActive) {
     // If we have firstPerk, we pick from 4+ glyphs, and glyph generation functions as normal.
     GlyphSelection.generate(GlyphSelection.choiceCount);

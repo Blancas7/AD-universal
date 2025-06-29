@@ -330,7 +330,7 @@ class EPMultiplierState extends GameMechanicState {
     if (cur.gt(this.costIncreaseThresholds[2])) {
       bulk = this.costIncreaseThresholds[2].div(500).log(500).floor();
       tempVal = (DC.E3).pow(bulk).times(500);
-      let curTmp = cur.div(tempVal).max(1 / 1e3);
+      let curTmp = cur.div(tempVal);
       if(curTmp.gte(1)){
         return bulk.add(curTmp.log(1e3).add(1)).min(1333).floor();
       }
@@ -338,7 +338,7 @@ class EPMultiplierState extends GameMechanicState {
     if (cur.gt(this.costIncreaseThresholds[1])) {
       bulk = this.costIncreaseThresholds[1].div(500).log(100).floor();
       tempVal = (DC.E2.times(5)).pow(bulk).times(500);
-      let curTmp = cur.div(tempVal.max(1 / 500));
+      let curTmp = cur.div(tempVal);
       if(curTmp.gte(1)){
         return bulk.add(curTmp.log(500).add(1)).min(481).floor();
       }
@@ -346,12 +346,12 @@ class EPMultiplierState extends GameMechanicState {
     if (cur.gt(this.costIncreaseThresholds[0])) {
       bulk = this.costIncreaseThresholds[0].div(500).log(50).floor();
       tempVal = DC.E2.pow(bulk).times(500);
-      let curTmp = cur.div(tempVal.max(1 / 100));
+      let curTmp = cur.div(tempVal);
       if(curTmp.gte(1)){
         return bulk.add(curTmp.log(100).add(1)).min(153).floor();
       }
     }
-    return cur.div(500).max(1 / 50).log(50).add(1).floor();
+    return cur.div(500).max(1 / 50).log(50).add(1).min(58).floor();
   }
 
   buyMax(auto) {
@@ -361,10 +361,6 @@ class EPMultiplierState extends GameMechanicState {
       return false;
     }
 
-
-    // Technically inaccurate, but it works fine (is it inaccurate tho???)
-    // Should probably use hardcoded values but im lazy so no
-
     let bulk = Decimal.floor(this.costInv());
     if (bulk.lt(1)) return false;
     const price = this.costAfterCount(bulk.sub(1));
@@ -373,13 +369,6 @@ class EPMultiplierState extends GameMechanicState {
     if (bulk.eq(0)) return false;
     Currency.eternityPoints.subtract(price);
     this.boughtAmount = this.boughtAmount.add(bulk);
-    let i = 0;
-    while (Currency.eternityPoints.gt(this.costAfterCount(this.boughtAmount)) &&
-    i < 50 && this.boughtAmount.layer < 1) {
-      this.boughtAmount = this.boughtAmount.add(1);
-      Currency.eternityPoints.subtract(this.costAfterCount(this.boughtAmount.sub(1)));
-      i += 1;
-    }
     return true;
   }
 
@@ -398,8 +387,8 @@ class EPMultiplierState extends GameMechanicState {
       const cost = Decimal.pow(multPerUpgrade[i], count).times(500);
       if (cost.lt(costThresholds[i])) return cost;
     }
-    // This formula is slightly weaker than base AD but who gives a fuck
-    return DC.E3.pow(count.pow(1.2).sub(Math.pow(1332, 1.2))).times(500);
+    
+    return DC.E3.pow(count.add(Math.pow(Math.max(count.sub(1334), 0), 1.2))).times(500);
   }
 }
 
