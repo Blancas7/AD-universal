@@ -116,8 +116,6 @@ export function getReplicantiInterval(overCapOverride, intervalIn) {
 
   interval = interval.divide(totalReplicantiSpeedMult(overCap));
 
-  interval = interval.divide(player.celestialMultiplier);
-
   if (V.isRunning) {
     // This is a boost if interval < 1, but that only happens in EC12
     // and handling it would make the replicanti code a lot more complicated.
@@ -159,6 +157,8 @@ export function totalReplicantiSpeedMult(overCap) {
       .times(Replicanti.amount.max(1).log10().mul(getSecondaryGlyphEffect("replicationdtgain")).clampMin(1));
   }
   totalMult = totalMult.timesEffectsOf(AlchemyResource.replication, Ra.unlocks.continuousTTBoost.effects.replicanti);
+
+  totalMult = totalMult.times(player.celestialMultiplier);
 
   return totalMult.clampMin(1);
 }

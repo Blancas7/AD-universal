@@ -213,7 +213,6 @@ export function finishProcessRewind(rewindProps) {
 
   player.records.thisRewind.time = DC.D0;
   player.records.thisRewind.realTime = DC.D0;
-  player.records.thisRewind.trueTime = 0;
   player.records.thisRewind.maxAM = DC.D0;
   player.records.thisRewind.maxIP = DC.D0;
   player.records.thisRewind.maxEP = DC.D0;
@@ -227,7 +226,6 @@ export function finishProcessRewind(rewindProps) {
 
   player.records.bestReality.time = DC.BEMAX;
   player.records.bestReality.realTime = DC.BEMAX;
-  player.records.bestReality.trueTime = 0;
   player.records.bestReality.glyphStrength = DC.D0;
   player.records.bestReality.RM = DC.D0;
   player.records.bestReality.RMSet = [];

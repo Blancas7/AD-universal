@@ -117,7 +117,7 @@ export function gainedInfinityPoints() {
 }
 
 function totalEPMult() {
-  return Pelle.isDisabled("EPMults")
+  let epMult = Pelle.isDisabled("EPMults")
     ? Pelle.specialGlyphEffect.time.timesEffectOf(PelleRifts.vacuum.milestones[2])
     : getAdjustedGlyphEffect("cursedEP")
       .timesEffectsOf(
@@ -128,7 +128,11 @@ function totalEPMult() {
         TimeStudy(123),
         RealityUpgrade(12),
         GlyphEffect.epMult
-      ).times(player.celestialMultiplier);
+      );
+
+  epMult = epMult.times(player.celestialMultiplier);
+
+  return epMult;
 }
 
 export function gainedEternityPoints() {
@@ -595,7 +599,7 @@ export function gameLoop(passedDiff, options = {}) {
   EternityChallenge(12).tryFail();
   Achievements._power.invalidate();
 
-  StellarDimensions.tick(diff);
+  StellarDimensions.tick(realDiff);
   TimeDimensions.tick(diff);
   InfinityDimensions.tick(diff);
   AntimatterDimensions.tick(diff);
@@ -886,7 +890,6 @@ export function getTTPerSecond() {
     Achievement(137),
     Achievement(156),
   );
-  ttMult = ttMult.times(player.celestialMultiplier);
   if (GlyphAlteration.isAdded("dilation")) ttMult = ttMult.mul(getSecondaryGlyphEffect("dilationTTgen"));
 
   // Glyph TT generation
@@ -900,7 +903,7 @@ export function getTTPerSecond() {
     : DC.D0;
 
   // Lai'tela TT power
-  let finalTT = dilationTT.add(glyphTT);
+  let finalTT = dilationTT.add(glyphTT).times(player.celestialMultiplier);
   if (finalTT.gt(1)) {
     finalTT = finalTT.pow(SingularityMilestone.theoremPowerFromSingularities.effectOrDefault(1));
   }
