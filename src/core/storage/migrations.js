@@ -433,7 +433,7 @@ export const migrations = {
     },
 
     100: player => {
-      player.startWithRewindModal = true;
+      player.startWithRewindModal = false;
     }
   },
 
