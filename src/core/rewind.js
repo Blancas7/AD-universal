@@ -79,7 +79,7 @@ function updateRewindRecords(rewindProps) {
     player.records.bestRewind.UPmin = thisRunUPmin;
   }
   player.records.bestRewind.time = Math.min(player.records.thisRewind.time, player.records.bestRewind.time);
-  if (player.records.thisRewind.realTime.lt(player.records.bestRewind.realTime)) {
+  if (player.records.thisRewind.realTime < player.records.bestRewind.realTime) {
     player.records.bestRewind.realTime = player.records.thisRewind.realTime;
   }
 }
@@ -143,28 +143,28 @@ export function finishProcessRewind(rewindProps) {
   Currency.realityMachines.reset();
   player.reality.maxRM = DC.D0;
   player.reality.rebuyables = {
-    1: new Decimal(),
-    2: new Decimal(),
-    3: new Decimal(),
-    4: new Decimal(),
-    5: new Decimal(),
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
   };
   player.reality.upgradeBits = 0;
   player.reality.upgReqs = 0;
 
   Currency.imaginaryMachines.reset();
-  player.reality.iMCap = DC.D0;
+  player.reality.iMCap = 0;
   player.reality.imaginaryRebuyables = {
-    1: new Decimal(),
-    2: new Decimal(),
-    3: new Decimal(),
-    4: new Decimal(),
-    5: new Decimal(),
-    6: new Decimal(),
-    7: new Decimal(),
-    8: new Decimal(),
-    9: new Decimal(),
-    10: new Decimal(),
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    7: 0,
+    8: 0,
+    9: 0,
+    10: 0,
   };
   player.reality.imaginaryUpgradeBits = 0;
   player.reality.imaginaryUpgReqs = 0;
@@ -275,7 +275,7 @@ export function finishProcessRewind(rewindProps) {
   player.eternityChalls = {};
   player.reality.unlockedEC = 0;
   player.reality.lastAutoEC = 0;
-  player.reality.partEternitied = 0;
+  player.reality.partEternitied = DC.D0;
   player.challenge.eternity.current = 0;
   player.challenge.eternity.unlocked = 0;
   player.challenge.eternity.requirementBits = 0;

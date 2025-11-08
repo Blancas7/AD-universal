@@ -229,7 +229,7 @@ export const StellarDimensions = {
 
   tick(diff) {
     for (let tier = 8; tier > 1; tier--) {
-      StellarDimension(tier).produceDimensions(StellarDimension(tier - 1), diff.div(10));
+      StellarDimension(tier).produceDimensions(StellarDimension(tier - 1), diff / 10);
     }
 
     StellarDimension(1).produceCurrency(Currency.stardust, diff);

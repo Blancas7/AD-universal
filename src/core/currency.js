@@ -487,7 +487,7 @@ Currency.galaxyGeneratorGalaxies = new class extends NumberCurrency {
   }
 }();
 
-Currency.rewinds = new class extends DecimalCurrency {
+Currency.rewinds = new class extends NumberCurrency {
   get value() { return player.rewinds; }
   set value(value) { player.rewinds = value; }
 }();
@@ -499,7 +499,7 @@ Currency.unityPoints = new class extends DecimalCurrency {
 }();
 
 
-Currency.celestialRemains = new class extends DecimalCurrency {
+Currency.celestialRemains = new class extends NumberCurrency {
   get value() { return player.celestialRemains; }
   set value(value) { player.celestialRemains = value; }
 }();

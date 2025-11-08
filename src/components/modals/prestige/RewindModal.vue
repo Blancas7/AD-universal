@@ -8,8 +8,8 @@ export default {
   },
   data() {
     return {
-      gainedRewinds: new Decimal(),
-      gainedCelestialRemains: new Decimal(),
+      gainedRewinds: 1,
+      gainedCelestialRemains: 1,
       gainedUnityPoints: new Decimal(),
       startingAM: new Decimal(10),
     };
@@ -37,8 +37,8 @@ export default {
   },
   methods: {
     update() {
-      this.gainedCelestialRemains = DC.D1;
-      this.gainedUnityPoints = DC.D1;
+      this.gainedCelestialRemains = 1;
+      this.gainedUnityPoints = new Decimal(1);
     },
     handleYesClick() {
       startManualRewind(true);

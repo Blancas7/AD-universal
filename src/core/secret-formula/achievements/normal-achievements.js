@@ -1379,7 +1379,7 @@ export const normalAchievements = [
   {
     id: 188,
     name: "The End",
-    get description() { return `Reach ${formatInt(DC.E9E15)} Antimatter.`; },
+    get description() { return `Reach ${formatPostBreak(DC.E9E15)} Antimatter.`; },
     checkRequirement: () => GameEnd.endState > END_STATE_MARKERS.GAME_END && !GameEnd.removeAdditionalEnd,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER
   },
@@ -1390,7 +1390,7 @@ export const normalAchievements = [
     description: "Rewind the Universe.",
     checkRequirement: () => true,
     get reward() {
-      return `Dimension boosts are ${formatPercents(new Decimal(0.25))} stronger, and increase the multiplier for buying ${formatInt(10)}
+      return `Dimension boosts are ${formatPercents(0.25)} stronger, and increase the multiplier for buying ${formatInt(10)}
       Antimatter Dimensions by +${format(0.1, 0, 1)}.`;
     },
     checkEvent: GAME_EVENT.REWIND_RESET_BEFORE,

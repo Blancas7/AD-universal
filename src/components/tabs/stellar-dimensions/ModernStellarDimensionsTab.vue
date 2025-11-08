@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       stardust: new Decimal(0),
-      galaxyMultiplier: new Decimal(0),
+      galaxyMultiplier: 0,
       stardustPerSecond: new Decimal(0),
       incomeType: "",
       areAutobuyersUnlocked: false,
@@ -20,7 +20,7 @@ export default {
   methods: {
     update() {
       this.stardust.copyFrom(Currency.stardust);
-      this.galaxyMultiplier.copyFrom(this.stardust.max(1).log10().max(1).log10().div(10));
+      this.galaxyMultiplier = Math.log10(Math.max(this.stardust.max(1).log10(), 1)) / 10;
       this.incomeType = "Stardust";
       this.areAutobuyersUnlocked = Autobuyer.stellarDimension(1).isUnlocked;
     },
@@ -55,7 +55,7 @@ export default {
       <p>
         You have gained
         <span class="c-stellar-dim-description__accent">{{ format(stardust, 2, 1) }}</span> Stardust, translated to a
-        <span class="c-stellar-dim-description__accent">{{ format(galaxyMultiplier.mul(100), 2, 1) }}</span> % boost to all galaxies.
+        <span class="c-stellar-dim-description__accent">{{ format(galaxyMultiplier * 100, 2, 1) }}</span> % boost to all galaxies.
       </p>
     </div>
     <div>You are getting {{ format(stardustPerSecond, 2, 0) }} {{ incomeType }} per second.</div>

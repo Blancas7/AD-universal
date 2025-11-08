@@ -50,7 +50,7 @@ export function getTickSpeedMultiplier() {
     if (Pelle.isDoomed) galaxies *= 0.5;
 
     galaxies *= Pelle.specialGlyphEffect.power;
-    galaxies *= Currency.stardust.value.max(1).log10().max(1).log10().div(10).add(1);
+    galaxies *= (Math.log10(Math.max(Currency.stardust.value.max(1).log10(), 1)) / 10) + 1;
     return DC.D0_01.clampMin(baseMultiplier - (galaxies * perGalaxy));
   }
   let baseMultiplier = 0.8;
@@ -63,7 +63,7 @@ export function getTickSpeedMultiplier() {
   if (Pelle.isDoomed) galaxies *= 0.5;
 
   galaxies *= Pelle.specialGlyphEffect.power;
-  galaxies *= Currency.stardust.value.max(1).log10().max(1).log10().div(10).add(1);
+  galaxies *= (Math.log10(Math.max(Currency.stardust.value.max(1).log10(), 1)) / 10) + 1;
   const perGalaxy = DC.D0_965;
   return perGalaxy.pow(galaxies - 2).times(baseMultiplier);
 }

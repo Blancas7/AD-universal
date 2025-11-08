@@ -58,7 +58,7 @@ export default {
       return this.buttonContents.length > 20;
     },
     showCostTitle() {
-      return this.cost.max(1).log10().lte(1e6);
+      return this.cost.max(1).log10() <= 1e6;
     },
     timeEstimate() {
       return "";
@@ -78,7 +78,7 @@ export default {
       this.isUnlocked = true;
       this.multiplier.copyFrom(dimension.multiplier);
       this.amount.copyFrom(dimension.amount);
-      this.bought.copyFrom(dimension.bought);
+      this.bought = dimension.bought;
       if (tier < 8) {
         this.rateOfChange.copyFrom(dimension.rateOfChange);
       }

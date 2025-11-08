@@ -64,10 +64,10 @@ export const Teresa = {
     player.celestials.teresa.pouredAmount = 0;
     player.celestials.teresa.unlockBits = 0;
     player.celestials.teresa.run = false;
-    player.celestials.teresa.bestRunAM = DC.D1;
+    player.celestials.teresa.bestRunAM = new Decimal(1);
     player.celestials.teresa.bestAMSet = [];
     player.celestials.teresa.perkShop = Array.repeat(0, 5),
-    player.celestials.teresa.lastRepeatedMachines = DC.D0;
+    player.celestials.teresa.lastRepeatedMachines = new Decimal(0);
   },
 };
 
