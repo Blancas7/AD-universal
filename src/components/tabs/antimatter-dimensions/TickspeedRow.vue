@@ -3,15 +3,15 @@ export default {
   name: "TickspeedRow",
   data() {
     return {
-      purchasedTickspeed: new Decimal(0),
-      freeTickspeed: new Decimal(0),
+      purchasedTickspeed: 0,
+      freeTickspeed: 0,
       isVisible: false,
       mult: new Decimal(0),
       cost: new Decimal(0),
       isAffordable: false,
       tickspeed: new Decimal(0),
       gameSpeedMult: 1,
-      galaxyCount: new Decimal(),
+      galaxyCount: 0,
       isContinuumActive: false,
       continuumValue: 0,
       hasTutorial: false,
@@ -28,7 +28,7 @@ export default {
     },
     multiplierDisplay() {
       if (InfinityChallenge(3).isRunning) return `Multiply all Antimatter Dimensions by
-        ${formatX(this.galaxyCount.times(0.005).add(1.05))}`;
+        ${formatX(1.05 + this.galaxyCount * 0.005, 3, 3)}`;
       const tickmult = this.mult;
       return `${formatX(tickmult.reciprocal(), 2, 3)} faster / upgrade.`;
     },
@@ -41,15 +41,15 @@ export default {
     upgradeCount() {
       const purchased = this.purchasedTickspeed;
       if (!this.freeTickspeed) return quantifyInt("Purchased Upgrade", purchased);
-      if (purchased.eq(0) || this.isContinuumActive) return `${formatInt(this.freeTickspeed, 3)} Free Upgrades`;
-      return `${formatInt(purchased, 3)} Purchased + ${formatInt(this.freeTickspeed, 3)} Free`;
+      if (purchased === 0 || this.isContinuumActive) return `${formatInt(this.freeTickspeed)} Free Upgrades`;
+      return `${formatInt(purchased)} Purchased + ${formatInt(this.freeTickspeed)} Free`;
     }
   },
   methods: {
     update() {
       this.hasRealityButton = PlayerProgress.realityUnlocked() || TimeStudy.reality.isBought;
-      this.purchasedTickspeed.copyFrom(player.totalTickBought);
-      this.freeTickspeed.copyFrom(FreeTickspeed.amount);
+      this.purchasedTickspeed = player.totalTickBought;
+      this.freeTickspeed = FreeTickspeed.amount;
       this.isEC9 = EternityChallenge(9).isRunning;
       this.isVisible = Tickspeed.isUnlocked || this.isEC9;
       if (!this.isVisible) return;
@@ -58,7 +58,7 @@ export default {
       this.isAffordable = Tickspeed.isAvailableForPurchase && Tickspeed.isAffordable;
       this.tickspeed.copyFrom(Tickspeed.perSecond);
       this.gameSpeedMult = getGameSpeedupForDisplay();
-      this.galaxyCount.copyFrom(player.galaxies);
+      this.galaxyCount = player.galaxies;
       this.isContinuumActive = Laitela.continuumActive;
       if (this.isContinuumActive) this.continuumValue = Tickspeed.continuumValue;
       this.hasTutorial = Tutorial.isActive(TUTORIAL_STATE.TICKSPEED);

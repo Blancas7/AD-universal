@@ -13,18 +13,16 @@ export class DimensionState {
   get displayName() { return this._displayName; }
   get shortDisplayName() { return this._shortDisplayName; }
 
-  get data() {
-    return this._getData()[this.tier - 1];
-  }
+  get data() { return this._getData()[this.tier - 1]; }
 
   /** @returns {Decimal} */
   get amount() { return this.data.amount; }
   /** @param {Decimal} value */
   set amount(value) { this.data.amount = value; }
 
-  /** @returns {Decimal} */
+  /** @returns {number} */
   get bought() { return this.data.bought; }
-  /** @param {Decimal} value */
+  /** @param {number} value */
   set bought(value) { this.data.bought = value; }
 
   /** @abstract */
@@ -35,7 +33,7 @@ export class DimensionState {
   }
 
   productionForDiff(diff) {
-    return this.productionPerSecond.times(diff.div(1000));
+    return this.productionPerSecond.times(diff / 1000);
   }
 
   produceCurrency(currency, diff) {

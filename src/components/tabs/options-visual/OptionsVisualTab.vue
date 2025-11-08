@@ -3,10 +3,9 @@ import ExpandingControlBox from "@/components/ExpandingControlBox";
 import OpenModalHotkeysButton from "@/components/OpenModalHotkeysButton";
 import OptionsButton from "@/components/OptionsButton";
 import PrimaryToggleButton from "@/components/PrimaryToggleButton";
-import SelectLargeNotationDropdown from "./SelectLargeNotationDropdown";
 import SelectNotationDropdown from "@/components/tabs/options-visual/SelectNotationDropdown";
-import SelectSidebarDropdown from "@/components/tabs/options-visual/SelectSidebarDropdown";
 import SelectThemeDropdown from "@/components/tabs/options-visual/SelectThemeDropdown";
+import SelectSidebarDropdown from "@/components/tabs/options-visual/SelectSidebarDropdown";
 import UpdateRateSlider from "./UpdateRateSlider";
 
 export default {
@@ -19,14 +18,12 @@ export default {
     OpenModalHotkeysButton,
     SelectThemeDropdown,
     SelectNotationDropdown,
-    SelectSidebarDropdown,
-    SelectLargeNotationDropdown,
+    SelectSidebarDropdown
   },
   data() {
     return {
       theme: "",
       notation: "",
-      lnotation: "",
       sidebarResource: "",
       headerTextColored: true,
     };
@@ -38,9 +35,6 @@ export default {
     },
     notationLabel() {
       return `Notation: ${this.notation}`;
-    },
-    postNotationLabel() {
-      return `Large Notation: ${this.lnotation}`;
     },
     sidebarLabel() {
       return `Sidebar (Modern UI): ${this.sidebarResource}`;
@@ -59,7 +53,6 @@ export default {
       const options = player.options;
       this.theme = Theme.currentName();
       this.notation = options.notation;
-      this.lnotation = options.lnotation;
       this.sidebarResource = player.options.sidebarResourceID === 0
         ? "Latest Resource"
         : this.sidebarDB.find(e => e.id === player.options.sidebarResourceID).optionName;
@@ -153,17 +146,6 @@ export default {
         >
           <template #dropdown>
             <SelectSidebarDropdown />
-          </template>
-        </ExpandingControlBox>
-      </div>
-      <div class="l-options-grid__row">
-        <ExpandingControlBox
-          class="l-options-grid__button c-options-grid__notations"
-          button-class="o-primary-btn o-primary-btn--option l-options-grid__notations-header"
-          :label="postNotationLabel"
-        >
-          <template #dropdown>
-            <SelectLargeNotationDropdown />
           </template>
         </ExpandingControlBox>
       </div>

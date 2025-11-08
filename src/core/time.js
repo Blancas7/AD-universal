@@ -1,10 +1,8 @@
 export const DeltaTimeState = {
-  deltaTime: new TimeSpan(new Decimal(0)),
-  realDeltaTime: new TimeSpan(new Decimal(0)),
-  trueDeltaTime: new TimeSpan(new Decimal(0)),
-  update(trueDeltaTime, deltaTime, gameDeltaTime) {
-    this.trueDeltaTime = TimeSpan.fromMilliseconds(new Decimal(trueDeltaTime));
-    this.realDeltaTime = TimeSpan.fromMilliseconds(deltaTime);
+  deltaTime: new TimeSpan(0),
+  unscaledDeltaTime: new TimeSpan(0),
+  update(deltaTime, gameDeltaTime) {
+    this.unscaledDeltaTime = TimeSpan.fromMilliseconds(deltaTime);
     this.deltaTime = TimeSpan.fromMilliseconds(gameDeltaTime);
   }
 };
@@ -57,19 +55,11 @@ export const Time = {
     return this.deltaTimeFull.totalMilliseconds;
   },
   /**
-   * Frame delta time, but without any game speed effects
+   * Frame delta time, but without EC12 or black hole effects
    * @returns {TimeSpan}
    */
-  get realDeltaTime() {
-    return DeltaTimeState.realDeltaTime;
-  },
-
-  /**
-   * Frame delta time, but without any effects
-   * @returns {TimeSpan}
-   */
-  get trueDeltaTime() {
-    return DeltaTimeState.trueDeltaTime;
+  get unscaledDeltaTime() {
+    return DeltaTimeState.unscaledDeltaTime;
   },
 
   /**
@@ -90,8 +80,8 @@ export const Time = {
    */
   get timeSinceBlackHole() {
     return this.fromMilliseconds(() => {
-      const diff = player.records.totalTimePlayed.sub(player.records.timePlayedAtBHUnlock);
-      return Decimal.max(0, diff);
+      const diff = player.records.totalTimePlayed - player.records.timePlayedAtBHUnlock;
+      return Math.max(0, diff);
     });
   },
 
@@ -150,20 +140,6 @@ export const Time = {
   /**
    * @returns {TimeSpan}
    */
-  get thisInfinityTrueTime() {
-    return this.fromMilliseconds(() => new Decimal(player.records.thisInfinity.trueTime));
-  },
-  /**
-     * @param {TimeSpan} timespan
-     */
-  set thisInfinityTrueTime(timespan) {
-    this.toMilliseconds(timespan, value => player.records.thisInfinity.trueTime = value.toNumber());
-  },
-
-
-  /**
-   * @returns {TimeSpan}
-   */
   get bestInfinity() {
     return this.fromMilliseconds(() => player.records.bestInfinity.time);
   },
@@ -212,20 +188,6 @@ export const Time = {
   set thisEternityRealTime(timespan) {
     this.toMilliseconds(timespan, value => player.records.thisEternity.realTime = value);
   },
-
-  /**
-   * @returns {TimeSpan}
-   */
-  get thisEternityTrueTime() {
-    return this.fromMilliseconds(() => new Decimal(player.records.thisEternity.trueTime));
-  },
-  /**
-   * @param {TimeSpan} timespan
-   */
-  set thisEternityTrueTime(timespan) {
-    this.toMilliseconds(timespan, value => player.records.thisEternity.trueTime = value.toNumber());
-  },
-
 
   /**
    * @returns {TimeSpan}

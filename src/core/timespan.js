@@ -1,46 +1,46 @@
 window.TimeSpan = class TimeSpan {
   /**
-   * @param {Decimal} value
+   * @param {Number} value
    * @returns {TimeSpan}
    */
   static fromYears(value) {
-    return new TimeSpan(new Decimal(value).times(31536e6));
+    return new TimeSpan(value * 31536e6);
   }
 
   /**
-   * @param {Decimal} value
+   * @param {Number} value
    * @returns {TimeSpan}
    */
   static fromDays(value) {
-    return new TimeSpan(new Decimal(value).times(864e5));
+    return new TimeSpan(value * 864e5);
   }
 
   /**
-   * @param {Decimal} value
+   * @param {Number} value
    * @returns {TimeSpan}
    */
   static fromHours(value) {
-    return new TimeSpan(new Decimal(value).times(36e5));
+    return new TimeSpan(value * 36e5);
   }
 
   /**
-   * @param {Decimal} value
+   * @param {Number} value
    * @returns {TimeSpan}
    */
   static fromMinutes(value) {
-    return new TimeSpan(new Decimal(value).times(6e4));
+    return new TimeSpan(value * 6e4);
   }
 
   /**
-   * @param {Decimal} value
+   * @param {Number} value
    * @returns {TimeSpan}
    */
   static fromSeconds(value) {
-    return new TimeSpan(new Decimal(value).times(1e3));
+    return new TimeSpan(value * 1e3);
   }
 
   /**
-   * @param {Decimal} value
+   * @param {Number} value
    * @returns {TimeSpan}
    */
   static fromMilliseconds(value) {
@@ -48,10 +48,10 @@ window.TimeSpan = class TimeSpan {
   }
 
   /**
-   * @param {Decimal} ms
+   * @param {Number} ms
    */
   constructor(ms) {
-    Guard.isDecimal(ms, "Value 'ms' must be a decimal");
+    Guard.isNumber(ms, "Value 'ms' must be a number");
     this._ms = ms;
   }
 
@@ -64,92 +64,92 @@ window.TimeSpan = class TimeSpan {
   }
 
   /**
-   * @param {Decimal} ms
+   * @param {Number} ms
    */
   setFrom(ms) {
-    Guard.isDecimal(ms);
-    this._ms = Decimal.fromDecimal(ms);
+    Guard.isNumber(ms);
+    this._ms = ms;
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get years() {
-    return Decimal.floor(this.totalYears);
+    return Math.floor(this.totalYears);
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get days() {
-    return Decimal.floor(this.totalDays.sub(this.totalDays.div(365).floor().times(365)));
+    return Math.floor(this.totalDays % 365);
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get hours() {
-    return Decimal.floor(this.totalHours.sub(this.totalHours.div(24).floor().times(24)));
+    return Math.floor(this.totalHours % 24);
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get minutes() {
-    return Decimal.floor(this.totalMinutes.sub(this.totalMinutes.div(60).floor().times(60)));
+    return Math.floor(this.totalMinutes % 60);
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get seconds() {
-    return Decimal.floor(this.totalSeconds.sub(this.totalSeconds.div(60).floor().times(60)));
+    return Math.floor(this.totalSeconds % 60);
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get milliseconds() {
-    return Decimal.floor(this.totalMilliseconds.sub(this.totalMilliseconds.div(1e3).floor().times(1e3)));
+    return Math.floor(this.totalMilliseconds % 1e3);
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get totalYears() {
-    return this._ms.div(31536e6);
+    return this._ms / 31536e6;
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get totalDays() {
-    return this._ms.div(864e5);
+    return this._ms / 864e5;
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get totalHours() {
-    return this._ms.div(36e5);
+    return this._ms / 36e5;
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get totalMinutes() {
-    return this._ms.div(6e4);
+    return this._ms / 6e4;
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get totalSeconds() {
-    return this._ms.div(1e3);
+    return this._ms / 1e3;
   }
 
   /**
-   * @returns {Decimal}
+   * @returns {Number}
    */
   get totalMilliseconds() {
     return this._ms;
@@ -161,7 +161,7 @@ window.TimeSpan = class TimeSpan {
    */
   plus(other) {
     Guard.isTimeSpan(other);
-    return new TimeSpan(this._ms.add(other._ms));
+    return new TimeSpan(this._ms + other._ms);
   }
 
   /**
@@ -170,35 +170,35 @@ window.TimeSpan = class TimeSpan {
    */
   minus(other) {
     Guard.isTimeSpan(other);
-    return new TimeSpan(this._ms.sub(other._ms));
+    return new TimeSpan(this._ms - other._ms);
   }
 
   /**
-   * @param {Decimal} other
+   * @param {Number} other
    * @returns {TimeSpan}
    */
   times(other) {
-    Guard.isDecimal(other);
-    return new TimeSpan(this._ms.times(other));
+    Guard.isNumber(other);
+    return new TimeSpan(this._ms * other);
   }
 
   /**
-   * @param {Decimal} other
+   * @param {Number} other
    * @returns {TimeSpan}
    */
   dividedBy(other) {
-    Guard.isDecimal(other);
-    return new TimeSpan(this._ms.div(other));
+    Guard.isNumber(other);
+    return new TimeSpan(this._ms / other);
   }
 
   /**
    * @returns {String}
    */
   toString() {
-    if (this.years.gt(1e6)) {
+    if (this.years > 1e6) {
       return `${format(this.totalYears, 3, 0)} years`;
     }
-    if (this.totalSeconds.gte(10)) {
+    if (this.totalSeconds >= 10) {
       return this.toStringNoDecimals();
     }
     return this.toStringShort();
@@ -210,13 +210,13 @@ window.TimeSpan = class TimeSpan {
   toStringNoDecimals() {
     const parts = [];
     function addCheckedComponent(value, name) {
-      if (value.eq(0)) {
+      if (value === 0) {
         return;
       }
       addComponent(value, name);
     }
     function addComponent(value, name) {
-      parts.push(value.eq(1) ? `${formatInt(value)} ${name}` : `${formatInt(value)} ${name}s`);
+      parts.push(value === 1 ? `${formatInt(value)} ${name}` : `${formatInt(value)} ${name}s`);
     }
     addCheckedComponent(this.years, "year");
     addCheckedComponent(this.days, "day");
@@ -240,41 +240,41 @@ window.TimeSpan = class TimeSpan {
     if (format(0) === "END" && !isSpeedrun) return "END";
 
     const totalSeconds = this.totalSeconds;
-    if (totalSeconds.gt(5e-7) && totalSeconds.lt(1e-3)) {
+    if (totalSeconds > 5e-7 && totalSeconds < 1e-3) {
       // This conditional happens when when the time is less than 1 millisecond
       // but big enough not to round to 0 with 3 decimal places (so showing decimal places
       // won't just show 0 and waste space).
-      return `${format(totalSeconds.times(1000), 0, 3)} ms`;
+      return `${format(1000 * totalSeconds, 0, 3)} ms`;
     }
-    if (totalSeconds.lt(1)) {
+    if (totalSeconds < 1) {
       // This catches all the cases when totalSeconds is less than 1 but not
       // between 5e-7 and 1e-3. This includes two types of cases:
       // (1) those less than or equal to 5e-7, which most notations will format as 0
       // (the most notable case of this kind is 0 itself).
       // (2) those greater than or equal to 1e-3, which will be formatted with default settings
       // (for most notations, rounding to the nearest integer number of milliseconds)
-      return `${format(totalSeconds.times(1000))} ms`;
+      return `${format(1000 * totalSeconds)} ms`;
     }
-    if (totalSeconds.lt(10)) {
+    if (totalSeconds < 10) {
       return `${format(totalSeconds, 0, 3)} seconds`;
     }
-    if (totalSeconds.lt(60)) {
+    if (totalSeconds < 60) {
       return `${format(totalSeconds, 0, 2)} seconds`;
     }
-    if (this.totalHours.lt(100) || (isSpeedrun && this.totalHours.lt(1000))) {
+    if (this.totalHours < 100 || (isSpeedrun && this.totalHours < 1000)) {
       if (useHMS && !Notations.current.isPainful) {
         const sec = seconds(this.seconds, this.milliseconds);
-        if (Decimal.floor(this.totalHours).eq(0)) return `${formatHMS(this.minutes)}:${sec}`;
-        return `${formatHMS(Decimal.floor(this.totalHours))}:${formatHMS(this.minutes)}:${sec}`;
+        if (Math.floor(this.totalHours) === 0) return `${formatHMS(this.minutes)}:${sec}`;
+        return `${formatHMS(Math.floor(this.totalHours))}:${formatHMS(this.minutes)}:${sec}`;
       }
-      if (this.totalMinutes.lt(60)) {
+      if (this.totalMinutes < 60) {
         return `${format(this.totalMinutes, 0, 2)} minutes`;
       }
-      if (this.totalHours.lt(24)) {
+      if (this.totalHours < 24) {
         return `${format(this.totalHours, 0, 2)} hours`;
       }
     }
-    if (this.totalDays.lt(500)) {
+    if (this.totalDays < 500) {
       return `${isSpeedrun ? this.totalDays.toFixed(2) : format(this.totalDays, 0, 2)} days`;
     }
     return `${isSpeedrun ? this.totalYears.toFixed(3) : format(this.totalYears, 3, 2)} years`;
@@ -286,27 +286,27 @@ window.TimeSpan = class TimeSpan {
 
     function seconds(s, ms) {
       const sec = formatHMS(s);
-      return isSpeedrun ? `${sec}.${Math.floor(ms.div(100))}` : sec;
+      return isSpeedrun ? `${sec}.${Math.floor(ms / 100)}` : sec;
     }
   }
 
   toTimeEstimate() {
     const seconds = this.totalSeconds;
-    if (seconds.lt(1)) return `< ${formatInt(1)} second`;
-    if (seconds.gt(86400 * 365.25)) return `> ${formatInt(1)} year`;
+    if (seconds < 1) return `< ${formatInt(1)} second`;
+    if (seconds > 86400 * 365.25) return `> ${formatInt(1)} year`;
     return this.toStringShort();
   }
 
   static get zero() {
-    return new TimeSpan(new Decimal("0"));
+    return new TimeSpan(0);
   }
 
   static get maxValue() {
-    return new TimeSpan(DC.BEMAX);
+    return new TimeSpan(Number.MAX_VALUE);
   }
 
   static get minValue() {
-    return new TimeSpan(new Decimal(1).div(DC.BEMAX));
+    return new TimeSpan(Number.MIN_VALUE);
   }
 };
 
@@ -316,10 +316,10 @@ const Guard = {
     if (message) throw message;
     throw "Value is defined";
   },
-  isDecimal(value, message) {
-    if (value instanceof Decimal) return;
+  isNumber(value, message) {
+    if (typeof value === "number") return;
     if (message) throw message;
-    throw "Value is not a decimal";
+    throw "Value is not a number";
   },
   isTimeSpan(value, message) {
     if (value instanceof TimeSpan) return;

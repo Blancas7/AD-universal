@@ -1,9 +1,13 @@
+/* eslint-disable import/extensions */
+import pako from "pako/dist/pako.esm.mjs";
+/* eslint-enable import/extensions */
 
 import {
   createUserWithEmailAndPassword,
   getAuth,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut
 } from "firebase/auth";
 import { get, getDatabase, ref, set } from "firebase/database";
@@ -12,6 +16,7 @@ import { sha512_256 } from "js-sha512";
 
 import { STEAM } from "@/env";
 
+import { decodeBase64Binary } from "./base64-binary";
 import { firebaseConfig } from "./firebase-config";
 import { ProgressChecker } from "./progress-checker";
 import { SteamRuntime } from "@/steam";
@@ -42,6 +47,21 @@ export const Cloud = {
     return this.user !== null;
   },
 
+  async login() {
+    if (!this.isAvailable) {
+      return;
+    }
+
+    try {
+      await signInWithPopup(this.auth, this.provider);
+      ShopPurchaseData.syncSTD();
+      if (player.options.hideGoogleName) GameUI.notify.success(`Successfully logged in to Google Account`);
+      else GameUI.notify.success(`Successfully logged in as ${this.user.displayName}`);
+      if (ShopPurchaseData.isIAPEnabled) Speedrun.setSTDUse(true);
+    } catch (e) {
+      GameUI.notify.error("Google Account login failed");
+    }
+  },
 
   async loginWithSteam(accountId, staticAccountId, screenName) {
     if (!this.isAvailable) {
@@ -68,6 +88,17 @@ export const Cloud = {
     }
 
     Cloud.user.displayName = screenName;
+  },
+
+  // NOTE: This function is largely untested due to not being used at any place within web reality code
+  async loadMobile() {
+    if (!this.user) return;
+    const snapshot = await get(ref(this.db, `users/${this.user.id}/player`));
+    if (snapshot.exists) {
+      const encoded = snapshot.val();
+      const uintArray = decodeBase64Binary(encoded.replace(/-/gu, "+").replace(/_/gu, "/"));
+      const save = pako.ungzip(uintArray, { to: "string" });
+    }
   },
 
   compareSaves(cloud, local, hash) {
@@ -247,6 +278,7 @@ export const Cloud = {
     }
 
     signOut(this.auth);
+    ShopPurchaseData.clearLocalSTD();
   },
 
   init() {
@@ -263,6 +295,9 @@ export const Cloud = {
             : user.displayName,
           email: user.email,
         };
+        if (!STEAM) {
+          ShopPurchaseData.syncSTD();
+        }
       } else {
         this.user = null;
       }

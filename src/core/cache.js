@@ -44,50 +44,40 @@ class Lazy {
 }
 window.Lazy = Lazy;
 
-function highestInArray(array, isNum = false) {
-  let i = 0;
-  let highestVal = isNum ? 0 : new Decimal(0);
-  while (array[i] !== undefined) {
-    highestVal = isNum ? Math.max(highestVal, array[i]) : Decimal.max(highestVal, array[i]);
-    i++;
-  }
-  return highestVal;
-}
-
 export const GameCache = {
-  worstChallengeTime: new Lazy(() => highestInArray(player.challenge.normal.bestTimes)),
+  worstChallengeTime: new Lazy(() => player.challenge.normal.bestTimes.max()),
 
   bestRunIPPM: new Lazy(() =>
     player.records.recentInfinities
-      .map(run => run[3].div(run[1].div(60000)))
+      .map(run => ratePerMinute(run[2], run[0]))
       .reduce(Decimal.maxReducer)
   ),
 
   averageRealTimePerEternity: new Lazy(() => player.records.recentEternities
-    .map(run => run[2])
-    .reduce(Decimal.sumReducer).div(1000 * player.records.recentEternities.length)),
+    .map(run => run[1])
+    .reduce(Number.sumReducer) / (1000 * player.records.recentEternities.length)),
 
-  tickSpeedMultDecrease: new Lazy(() => new Decimal(10).sub(Effects.sum(
+  tickSpeedMultDecrease: new Lazy(() => 10 - Effects.sum(
     BreakInfinityUpgrade.tickspeedCostMult,
     EternityChallenge(11).reward
-  ))),
+  )),
 
-  dimensionMultDecrease: new Lazy(() => new Decimal(10).sub(Effects.sum(
+  dimensionMultDecrease: new Lazy(() => 10 - Effects.sum(
     BreakInfinityUpgrade.dimCostMult,
     EternityChallenge(6).reward
-  ))),
+  )),
 
   timeStudies: new Lazy(() => NormalTimeStudyState.studies
     .map(s => player.timestudy.studies.includes(s.id))),
 
   currentStudyTree: new Lazy(() => new TimeStudyTree(TimeStudyTree.currentStudies)),
 
-  achievementPeriod: new Lazy(() => TimeSpan.fromMinutes(new Decimal(30).sub(Effects.sum(
+  achievementPeriod: new Lazy(() => TimeSpan.fromMinutes(30 - Effects.sum(
     Perk.achievementGroup1,
     Perk.achievementGroup2,
     Perk.achievementGroup3,
     Perk.achievementGroup4
-  ))).totalMilliseconds),
+  )).totalMilliseconds),
 
   buyablePerks: new Lazy(() => Perks.all.filter(p => p.canBeBought)),
 
@@ -96,7 +86,7 @@ export const GameCache = {
   cheapestAntimatterAutobuyer: new Lazy(() => Autobuyer.antimatterDimension.zeroIndexed.concat(Autobuyer.tickspeed)
     .filter(ab => !(ab.isBought || ab.isUnlocked))
     .map(ab => ab.antimatterCost.toNumber())
-    .nMin()
+    .min()
   ),
 
   // The effect is defined in antimatter_dimensions.js because that's where the non-cached
@@ -123,9 +113,9 @@ export const GameCache = {
 
   totalIPMult: new Lazy(() => totalIPMult()),
 
-  challengeTimeSum: new Lazy(() => player.challenge.normal.bestTimes.reduce(Decimal.sumReducer)),
+  challengeTimeSum: new Lazy(() => player.challenge.normal.bestTimes.sum()),
 
-  infinityChallengeTimeSum: new Lazy(() => player.challenge.infinity.bestTimes.reduce(Decimal.sumReducer)),
+  infinityChallengeTimeSum: new Lazy(() => player.challenge.infinity.bestTimes.sum()),
 };
 
 EventHub.logic.on(GAME_EVENT.GLYPHS_CHANGED, () => {

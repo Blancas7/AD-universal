@@ -13,7 +13,7 @@ export const eternityChallenges = [
     reward: {
       description: "Time Dimension multiplier based on time spent this Eternity",
       effect: completions =>
-        Decimal.pow(Decimal.max(player.records.thisEternity.time.div(10), 0.9), 0.3 + (completions * 0.05)),
+        Decimal.pow(Math.max(player.records.thisEternity.time / 10, 0.9), 0.3 + (completions * 0.05)),
       formatEffect: value => formatX(value, 2, 1)
     },
     // These will get notation-formatted and scrambled between for the final goal
@@ -91,7 +91,7 @@ export const eternityChallenges = [
       description: "Further reduce Antimatter Dimension cost multiplier growth",
       effect: completions => completions * 0.2,
       formatEffect: value => {
-        const total = Player.dimensionMultDecrease.add(Effects.sum(EternityChallenge(6).reward)).round().sub(value);
+        const total = Math.round(Player.dimensionMultDecrease + Effects.sum(EternityChallenge(6).reward)) - value;
         return `-${format(value, 2, 1)} (${formatX(total, 2, 1)} total)`;
       }
     },
@@ -122,8 +122,8 @@ export const eternityChallenges = [
     reward: {
       description: "Infinity Power strengthens Replicanti Galaxies",
       effect: completions => {
-        const infinityPower = Currency.infinityPower.value.add(1).max(1).log10().add(1).log10();
-        return Decimal.pow(infinityPower, 0.03 * completions).sub(1).max(0);
+        const infinityPower = Math.log10(Currency.infinityPower.value.pLog10() + 1);
+        return Math.max(0, Math.pow(infinityPower, 0.03 * completions) - 1);
       },
       formatEffect: value => formatPercents(value, 2)
     }
@@ -181,7 +181,7 @@ export const eternityChallenges = [
       description: "Further reduce Tickspeed cost multiplier growth",
       effect: completions => completions * 0.07,
       formatEffect: value => {
-        const total = Player.tickSpeedMultDecrease.add(Effects.sum(EternityChallenge(11).reward)).round().sub(value);
+        const total = Math.round(Player.tickSpeedMultDecrease + Effects.sum(EternityChallenge(11).reward)) - value;
         return `-${format(value, 2, 2)} (${formatX(total, 2, 2)} total)`;
       }
     }
@@ -197,7 +197,7 @@ export const eternityChallenges = [
     pelleGoal: DC.E208000,
     goalIncrease: DC.E12000,
     restriction: completions => Math.max(10 - 2 * completions, 1) / 10,
-    checkRestriction: restriction => Time.thisEternity.totalSeconds.lt(restriction),
+    checkRestriction: restriction => Time.thisEternity.totalSeconds < restriction,
     formatRestriction: restriction => `in ${quantify("in-game second", restriction, 0, 1)} or less.`,
     failedRestriction: "(Too slow for more)",
     reward: {

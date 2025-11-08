@@ -12,22 +12,22 @@ export default {
   },
   data() {
     return {
-      theoremAmount: new Decimal(),
-      theoremGeneration: new Decimal(),
-      totalTimeTheorems: new Decimal(),
+      theoremAmount: new Decimal(0),
+      theoremGeneration: new Decimal(0),
+      totalTimeTheorems: new Decimal(0),
       shopMinimized: false,
       minimizeAvailable: false,
       hasTTAutobuyer: false,
       isAutobuyerOn: false,
       budget: {
-        am: new Decimal(),
-        ip: new Decimal(),
-        ep: new Decimal()
+        am: new Decimal(0),
+        ip: new Decimal(0),
+        ep: new Decimal(0)
       },
       costs: {
-        am: new Decimal(),
-        ip: new Decimal(),
-        ep: new Decimal()
+        am: new Decimal(0),
+        ip: new Decimal(0),
+        ep: new Decimal(0)
       },
       showST: false,
       STamount: 0,
@@ -45,7 +45,7 @@ export default {
         return format;
       }
       if (!(Teresa.isRunning || Enslaved.isRunning) &&
-        getAdjustedGlyphEffect("dilationTTgen").gt(0) && !DilationUpgrade.ttGenerator.isBought) {
+        getAdjustedGlyphEffect("dilationTTgen") > 0 && !DilationUpgrade.ttGenerator.isBought) {
         return formatFloat;
       }
       return formatInt;
@@ -53,7 +53,7 @@ export default {
     TTgenRateText() {
       if (this.theoremGeneration.lt(1 / 3600)) {
         return `one TT every ${TimeSpan.fromSeconds(
-          this.theoremGeneration.reciprocal()).toStringShort(false)}`;
+          this.theoremGeneration.reciprocal().toNumber()).toStringShort(false)}`;
       }
       if (this.theoremGeneration.lt(0.1)) {
         return `${format(this.theoremGeneration.times(3600), 2, 2)} TT/hour`;

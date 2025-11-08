@@ -19,21 +19,21 @@ export default {
       isEC9Running: false,
       isEnslavedRunning: false,
       isAnyAutobuyerUnlocked: false,
-      conversionRate: new Decimal(0),
-      nextDimCapIncrease: new Decimal(0),
+      conversionRate: 0,
+      nextDimCapIncrease: 0,
       tesseractCost: new Decimal(0),
-      totalDimCap: new Decimal(0),
+      totalDimCap: 0,
       canBuyTesseract: false,
       enslavedCompleted: false,
-      boughtTesseracts: new Decimal(0),
-      extraTesseracts: new Decimal(0),
+      boughtTesseracts: 0,
+      extraTesseracts: 0,
       creditsClosed: false,
       showLockedDimCostNote: true,
     };
   },
   computed: {
     tesseractCountString() {
-      const extra = this.extraTesseracts.gt(0) ? ` + ${format(this.extraTesseracts, 2, 2)}` : "";
+      const extra = this.extraTesseracts > 0 ? ` + ${format(this.extraTesseracts, 2, 2)}` : "";
       return `${formatInt(this.boughtTesseracts)}${extra}`;
     },
   },
@@ -42,9 +42,9 @@ export default {
       this.showLockedDimCostNote = !InfinityDimension(8).isUnlocked;
       this.isEC9Running = EternityChallenge(9).isRunning;
       this.infinityPower.copyFrom(Currency.infinityPower);
-      this.conversionRate.copyFrom(InfinityDimensions.powerConversionRate);
+      this.conversionRate = InfinityDimensions.powerConversionRate;
       if (this.isEC9Running) {
-        this.dimMultiplier.copyFrom(Decimal.pow(Decimal.max(this.infinityPower.log2(), 1), 4).max(1));
+        this.dimMultiplier.copyFrom(Decimal.pow(Math.max(this.infinityPower.log2(), 1), 4).max(1));
       } else {
         this.dimMultiplier.copyFrom(this.infinityPower.pow(this.conversionRate).max(1));
       }
@@ -56,13 +56,13 @@ export default {
       }
       this.isEnslavedRunning = Enslaved.isRunning;
       this.isAnyAutobuyerUnlocked = Autobuyer.infinityDimension(1).isUnlocked;
-      this.nextDimCapIncrease.copyFrom(Tesseracts.nextTesseractIncrease);
+      this.nextDimCapIncrease = Tesseracts.nextTesseractIncrease;
       this.tesseractCost.copyFrom(Tesseracts.nextCost);
-      this.totalDimCap.copyFrom(InfinityDimensions.totalDimCap);
+      this.totalDimCap = InfinityDimensions.totalDimCap;
       this.canBuyTesseract = Tesseracts.canBuyTesseract;
       this.enslavedCompleted = Enslaved.isCompleted;
-      this.boughtTesseracts.copyFrom(Tesseracts.bought);
-      this.extraTesseracts.copyFrom(Tesseracts.extra);
+      this.boughtTesseracts = Tesseracts.bought;
+      this.extraTesseracts = Tesseracts.extra;
       this.creditsClosed = GameEnd.creditsEverClosed;
     },
     maxAll() {

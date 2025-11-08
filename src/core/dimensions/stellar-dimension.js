@@ -8,7 +8,7 @@ export function buySingleStellarDimension(tier, auto = false) {
   
   Currency.unityPoints.subtract(dim.cost);
   dim.amount = dim.amount.add(1);
-  dim.bought = dim.bought.add(1);
+  dim.bought += 1;
   dim.cost = dim.nextCost(dim.bought);
   return true;
 }
@@ -22,7 +22,7 @@ export function fullResetStellarDimensions() {
   for (const dim of StellarDimensions.all) {
     dim.cost = new Decimal(dim.baseCost);
     dim.amount = DC.D0;
-    dim.bought = DC.D0;
+    dim.bought = 0;
   }
 }
 
@@ -44,18 +44,18 @@ export function buyMaxStellarDimension(tier, portionToSpend = 1, isMaxAll = fals
     this.costMultiplier
   );
 
-  if (costScaling.purchases.lte(0)) return false;
+  if (costScaling.purchases <= 0) return false;
 
   Currency.unityPoints.subtract(costScaling.totalCost);
   dim.amount = dim.amount.plus(costScaling.purchases);
-  dim.bought = dim.bought.add(costScaling.purchases);
+  dim.bought += costScaling.purchases;
   dim.cost = dim.nextCost(dim.bought);
   return true;
 }
 
 export function maxAllStellarDimensions() {
   // Try to buy single from the highest affordable new dimensions
-  for (let i = 8; i > 0 && StellarDimension(i).bought.eq(0); i--) {
+  for (let i = 8; i > 0 && StellarDimension(i).bought === 0; i--) {
     buySingleStellarDimension(i, true);
   }
 
@@ -92,7 +92,7 @@ class StellarDimensionState extends DimensionState {
     super(() => player.dimensions.stellar, tier);
     const BASE_COSTS = [null, DC.D1, DC.D5, DC.E2, DC.E3, DC.E5, DC.E8, DC.E11, DC.E15];
     this._baseCost = BASE_COSTS[tier];
-    const COST_MULTS = [null, 3, 9, 27, 81, 243, 729, 2187, 6561].map(e => (e ? new Decimal(e) : null));
+    const COST_MULTS = [null, 3, 9, 27, 81, 243, 729, 2187, 6561];
     this._costMultiplier = COST_MULTS[tier];
   }
 

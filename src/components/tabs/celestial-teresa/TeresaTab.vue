@@ -1,4 +1,6 @@
 <script>
+import { DC } from "@/core/constants";
+
 import CelestialQuoteHistory from "@/components/CelestialQuoteHistory";
 import CustomizeableTooltip from "@/components/CustomizeableTooltip";
 import GlyphSetPreview from "@/components/GlyphSetPreview";
@@ -25,9 +27,8 @@ export default {
       bestAM: new Decimal(0),
       bestAMSet: [],
       lastMachines: new Decimal(0),
-      lastiM: new Decimal(),
-      runReward: new Decimal(),
-      perkPoints: new Decimal(),
+      runReward: 0,
+      perkPoints: 0,
       hasReality: false,
       hasEPGen: false,
       hasPerkShop: false,
@@ -78,9 +79,9 @@ export default {
       return GameDatabase.celestials.descriptions[0].effects();
     },
     lastMachinesString() {
-      return this.lastiM.eq(0)
+      return this.lastMachines.lt(DC.E10000)
         ? `${quantify("Reality Machine", this.lastMachines, 2)}`
-        : `${quantify("Imaginary Machine", this.lastiM, 2)}`;
+        : `${quantify("Imaginary Machine", this.lastMachines.dividedBy(DC.E10000), 2)}`;
     },
     unlockInfoTooltipArrowStyle() {
       return {
@@ -109,11 +110,10 @@ export default {
       this.hasPerkShop = TeresaUnlocks.shop.isUnlocked;
       this.raisedPerkShop = Ra.unlocks.perkShopIncrease.canBeApplied;
       this.bestAM.copyFrom(player.celestials.teresa.bestRunAM);
-      this.bestAMSet = cloneDeep(Glyphs.copyForRecords(player.celestials.teresa.bestAMSet));
+      this.bestAMSet = Glyphs.copyForRecords(player.celestials.teresa.bestAMSet);
       this.lastMachines.copyFrom(player.celestials.teresa.lastRepeatedMachines);
-      this.lastiM.copyFrom(player.celestials.teresa.lastRepeatediM);
-      this.runReward.copyFrom(Teresa.runRewardMultiplier);
-      this.perkPoints.copyFrom(Currency.perkPoints.value);
+      this.runReward = Teresa.runRewardMultiplier;
+      this.perkPoints = Currency.perkPoints.value;
       this.rm.copyFrom(Currency.realityMachines);
       this.isRunning = Teresa.isRunning;
       this.canUnlockNextPour = TeresaUnlocks.all

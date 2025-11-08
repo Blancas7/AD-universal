@@ -1,10 +1,9 @@
-// eslint-disable-next-line multiline-comment-style
-/* import { DC } from "../../constants";
+import { DC } from "../../constants";
 import { DimensionState } from "../../dimensions/dimension";
 
 /**
  * Constants for easily adjusting values
- * /
+ */
 
 const INTERVAL_COST_MULT = 5;
 const POWER_DM_COST_MULT = 10;
@@ -81,6 +80,7 @@ export class DarkMatterDimensionState extends DimensionState {
       .times(Laitela.darkMatterMult)
       .times(this.commonDarkMult)
       .times(Math.pow(this.powerDMPerAscension, this.ascensions))
+      .times(player.celestialMultiplier)
       .timesEffectsOf(SingularityMilestone.darkMatterMult, SingularityMilestone.multFromInfinitied)
       .dividedBy(Math.pow(1e4, Math.pow(this.tier - 1, 0.5)));
   }
@@ -93,6 +93,7 @@ export class DarkMatterDimensionState extends DimensionState {
       Math.pow(1.005, this.data.powerDEUpgrades)) * tierFactor / 1000)
       .times(this.commonDarkMult)
       .times(Math.pow(POWER_DE_PER_ASCENSION, this.ascensions))
+      .times(player.celestialMultiplier)
       .timesEffectsOf(
         SingularityMilestone.darkEnergyMult,
         SingularityMilestone.realityDEMultiplier,
@@ -237,13 +238,13 @@ export class DarkMatterDimensionState extends DimensionState {
  * @function
  * @param {number} tier
  * @return {DarkMatterDimensionState}
- * /
+ */
 export const DarkMatterDimension = DarkMatterDimensionState.createAccessor();
 
 export const DarkMatterDimensions = {
   /**
    * @type {DarkMatterDimension[]}
-   * /
+   */
   all: DarkMatterDimension.index.compact(),
 
   tick(realDiff) {
@@ -277,4 +278,3 @@ export const DarkMatterDimensions = {
     Currency.darkMatter.reset();
   },
 };
-*/

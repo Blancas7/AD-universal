@@ -1,14 +1,12 @@
-import { GlyphInfo } from "../secret-formula/reality/core-glyph-info";
-
 class CosmeticGlyphType {
   constructor(setup, isCosmetic) {
     this.id = setup.id;
-    this._defaultSymbol = setup.regularGlyphSymbol ?? setup.symbol;
+    this._defaultSymbol = setup.symbol;
     this._defaultColor = setup.color;
     this.preventBlur = setup.preventBlur ?? false;
-    this.isUnlocked = setup.isUnlocked ?? false;
-    this._canCustomize = setup.canCustomize ?? true;
-    this.fixedSymbolColor = setup.fixedSymbolColor ?? setup.setColor ?? false;
+    this.isUnlocked = setup.isUnlocked;
+    this._canCustomize = setup.canCustomize;
+    this.fixedSymbolColor = setup.fixedSymbolColor ?? false;
     this.isCosmetic = isCosmetic;
   }
 
@@ -59,16 +57,8 @@ class CosmeticGlyphType {
   }
 }
 
-function getGlyphTypes() {
-  const v = { ...GlyphInfo };
-  for (const item in GlyphInfo) {
-    if (!GlyphInfo.glyphTypes.includes(item)) delete v[item];
-  }
-  return v;
-}
-
 const functionalGlyphs = mapGameDataToObject(
-  getGlyphTypes(),
+  GameDatabase.reality.glyphTypes,
   config => new CosmeticGlyphType(config, false)
 );
 
@@ -160,7 +150,7 @@ export const GlyphAppearanceHandler = {
   },
   // Note: This can *technically* be inconsistent with the actual number of sets, but only y a cheated save.
   get expectedSetCount() {
-    return player.records.fullGameCompletions;
+    return ShopPurchaseData.singleCosmeticSet + player.records.fullGameCompletions;
   },
 
   // Returns true for "light" BG glyphs and false for "dark" BG glyphs
@@ -228,13 +218,14 @@ export const GlyphAppearanceHandler = {
   },
 
   get unlockedSets() {
-    return [...new Set(player.reality.glyphs.cosmetics.unlockedFromNG)];
+    if (ShopPurchase.allCosmeticSets > 0) return Object.keys(GameDatabase.reality.glyphCosmeticSets);
+    return [...new Set(player.reality.glyphs.cosmetics.unlockedFromNG.concat(ShopPurchaseData.unlockedCosmetics))];
   },
   get lockedSets() {
     return Object.keys(GameDatabase.reality.glyphCosmeticSets).filter(set => !this.unlockedSets.includes(set));
   },
   // Unlocks the set chosen in the modal, choosing a random available one as a fallback. This is only called for
-  // sets unlocked through game completions
+  // sets unlocked through game completions; STD purchases are handled with ShopPurchaseData
   unlockSet() {
     const lockedSets = this.lockedSets;
     const toUnlock = GlyphAppearanceHandler.chosenFromModal?.id;

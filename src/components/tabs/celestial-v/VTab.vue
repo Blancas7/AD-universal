@@ -4,7 +4,6 @@ import GlyphSetPreview from "@/components/GlyphSetPreview";
 import PrimaryButton from "@/components/PrimaryButton";
 import { V_REDUCTION_MODE } from "@/core/secret-formula";
 import VUnlockRequirement from "./VUnlockRequirement";
-import { Glyphs } from "../../../core/globals";
 
 export default {
   name: "VTab",
@@ -19,7 +18,7 @@ export default {
       mainUnlock: false,
       canUnlockCelestial: false,
       totalUnlocks: 0,
-      pp: new Decimal(),
+      pp: 0,
       showReduction: false,
       runRecords: [],
       runGlyphs: [],
@@ -27,7 +26,6 @@ export default {
       wantsFlipped: true,
       isRunning: false,
       hasAlchemy: false,
-      tempVal: undefined,
     };
   },
   computed: {
@@ -99,10 +97,10 @@ export default {
       this.mainUnlock = VUnlocks.vAchievementUnlock.isUnlocked;
       this.canUnlockCelestial = V.canUnlockCelestial;
       this.totalUnlocks = V.spaceTheorems;
-      this.pp.copyFrom(Currency.perkPoints.value);
+      this.pp = Currency.perkPoints.value;
       this.showReduction = VUnlocks.shardReduction.isUnlocked;
-      this.runRecords = cloneDeep(player.celestials.v.runRecords);
-      this.runGlyphs = cloneDeep(player.celestials.v.runGlyphs.map(gList => Glyphs.copyForRecords(gList)));
+      this.runRecords = Array.from(player.celestials.v.runRecords);
+      this.runGlyphs = player.celestials.v.runGlyphs.map(gList => Glyphs.copyForRecords(gList));
       this.isFlipped = V.isFlipped;
       this.wantsFlipped = player.celestials.v.wantsFlipped;
       this.isRunning = V.isRunning;
@@ -127,7 +125,7 @@ export default {
         : format(Decimal.pow10(hex.reduction));
     },
     showRecord(hex) {
-      return new Decimal(this.runRecords[hex.id]).gt(0) || hex.completions > 0;
+      return this.runRecords[hex.id] > 0 || hex.completions > 0;
     },
     reduceGoals(hex) {
       if (!Currency.perkPoints.purchase(hex.reductionCost)) return;
@@ -137,9 +135,6 @@ export default {
         unlock.tryComplete();
       }
       V.checkForUnlocks();
-    },
-    glyphRecord(hex) {
-      return [...hex.runGlyphs];
     },
     reductionTooltip(hex) {
       return `Spend ${quantify("Perk Point", hex.reductionCost, 2, 0)}
@@ -265,7 +260,7 @@ export default {
                 <div class="l-v-goal-reduction-spacer" />
                 <button
                   class="o-primary-btn l-v-reduction"
-                  :class="{ 'o-primary-btn--disabled': !hex.canBeReduced || pp.lt(hex.reductionCost) }"
+                  :class="{ 'o-primary-btn--disabled': !hex.canBeReduced || pp < hex.reductionCost }"
                   :ach-tooltip="reductionTooltip(hex)"
                   @click="reduceGoals(hex)"
                 >

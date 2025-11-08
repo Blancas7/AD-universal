@@ -1,8 +1,5 @@
 <script>
-import { DC } from "../../../core/constants";
-
 import { MatterScale } from "./matter-scale";
-
 import PrimaryButton from "@/components/PrimaryButton";
 
 export default {
@@ -14,7 +11,7 @@ export default {
     return {
       isDoomed: false,
       realTimeDoomed: TimeSpan.zero,
-      totalAntimatter: new Decimal(),
+      totalAntimatter: new Decimal(0),
       realTimePlayed: TimeSpan.zero,
       timeSinceCreation: 0,
       uniqueNews: 0,
@@ -22,45 +19,45 @@ export default {
       secretAchievementCount: 0,
       infinity: {
         isUnlocked: false,
-        count: new Decimal(),
-        banked: new Decimal(),
-        projectedBanked: new Decimal(),
-        bankRate: new Decimal(),
+        count: new Decimal(0),
+        banked: new Decimal(0),
+        projectedBanked: new Decimal(0),
+        bankRate: new Decimal(0),
         hasBest: false,
         best: TimeSpan.zero,
         this: TimeSpan.zero,
         thisReal: TimeSpan.zero,
-        bestRate: new Decimal(),
+        bestRate: new Decimal(0),
       },
       eternity: {
         isUnlocked: false,
-        count: new Decimal(),
+        count: new Decimal(0),
         hasBest: false,
         best: TimeSpan.zero,
         this: TimeSpan.zero,
         thisReal: TimeSpan.zero,
-        bestRate: new Decimal(),
+        bestRate: new Decimal(0),
       },
       reality: {
         isUnlocked: false,
-        count: new Decimal(),
+        count: 0,
         best: TimeSpan.zero,
         bestReal: TimeSpan.zero,
         this: TimeSpan.zero,
         thisReal: TimeSpan.zero,
         totalTimePlayed: TimeSpan.zero,
-        bestRate: new Decimal(),
+        bestRate: new Decimal(0),
         bestRarity: 0,
       },
       rewind: {
         isUnlocked: false,
-        count: new Decimal(),
+        count: 0,
         best: TimeSpan.zero,
         bestReal: TimeSpan.zero,
         this: TimeSpan.zero,
         thisReal: TimeSpan.zero,
         totalTimePlayed: TimeSpan.zero,
-        bestRate: new Decimal(),
+        bestRate: new Decimal(0),
       },
       matterScale: [],
       lastMatterTime: 0,
@@ -90,7 +87,7 @@ export default {
       return Time.toDateTimeString(player.records.gameCreatedTime);
     },
     saveAge() {
-      return TimeSpan.fromMilliseconds(new Decimal(this.timeSinceCreation));
+      return TimeSpan.fromMilliseconds(this.timeSinceCreation);
     },
   },
   methods: {
@@ -98,8 +95,7 @@ export default {
       const records = player.records;
       this.totalAntimatter.copyFrom(records.totalAntimatter);
       this.realTimePlayed.setFrom(records.realTimePlayed);
-      this.fullTimePlayed = TimeSpan.fromMilliseconds(
-        new Decimal(records.previousRunRealTime.add(records.realTimePlayed)));
+      this.fullTimePlayed = TimeSpan.fromMilliseconds(records.previousRunRealTime + records.realTimePlayed);
       this.uniqueNews = NewsHandler.uniqueTickersSeen;
       this.totalNews = player.news.totalSeen;
       this.secretAchievementCount = SecretAchievements.all.filter(a => a.isUnlocked).length;
@@ -117,8 +113,8 @@ export default {
           Achievement(131).effects.bankedInfinitiesGain,
           TimeStudy(191)
         );
-        infinity.bankRate = infinity.projectedBanked.div(Decimal.clampMin(33, records.thisEternity.time)).times(60000);
-        infinity.hasBest = !bestInfinity.time.eq(DC.BEMAX);
+        infinity.bankRate = infinity.projectedBanked.div(Math.clampMin(33, records.thisEternity.time)).times(60000);
+        infinity.hasBest = bestInfinity.time < 999999999999;
         infinity.best.setFrom(bestInfinity.time);
         infinity.this.setFrom(records.thisInfinity.time);
         infinity.bestRate.copyFrom(bestInfinity.bestIPminEternity);
@@ -130,7 +126,7 @@ export default {
       eternity.isUnlocked = isEternityUnlocked;
       if (isEternityUnlocked) {
         eternity.count.copyFrom(Currency.eternities);
-        eternity.hasBest = !bestEternity.time.eq(DC.BEMAX);
+        eternity.hasBest = bestEternity.time < 999999999999;
         eternity.best.setFrom(bestEternity.time);
         eternity.this.setFrom(records.thisEternity.time);
         eternity.bestRate.copyFrom(bestEternity.bestEPminReality);
@@ -142,19 +138,18 @@ export default {
       reality.isUnlocked = isRealityUnlocked;
 
       if (isRealityUnlocked) {
-        reality.count.copyFrom(Currency.realities);
+        reality.count = Math.floor(Currency.realities.value);
         reality.best.setFrom(bestReality.time);
         reality.bestReal.setFrom(bestReality.realTime);
         reality.this.setFrom(records.thisReality.time);
         reality.totalTimePlayed.setFrom(records.totalTimePlayed);
         // Real time tracking is only a thing once reality is unlocked:
         infinity.thisReal.setFrom(records.thisInfinity.realTime);
-        infinity.bankRate = infinity.projectedBanked.div(Decimal.clampMin(33, records.thisEternity.realTime))
-          .times(60000);
+        infinity.bankRate = infinity.projectedBanked.div(Math.clampMin(33, records.thisEternity.realTime)).times(60000);
         eternity.thisReal.setFrom(records.thisEternity.realTime);
         reality.thisReal.setFrom(records.thisReality.realTime);
         reality.bestRate.copyFrom(bestReality.RMmin);
-        reality.bestRarity = strengthToRarity(bestReality.glyphStrength).clampMin(0);
+        reality.bestRarity = Math.max(strengthToRarity(bestReality.glyphStrength), 0);
       }
 
       const isRewindUnlocked = progress.isRewindUnlocked;
@@ -163,15 +158,14 @@ export default {
       rewind.isUnlocked = isRewindUnlocked;
 
       if (isRewindUnlocked) {
-        rewind.count.copyFrom(Currency.rewinds);
+        rewind.count = Math.floor(Currency.rewinds.value);
         rewind.best.setFrom(bestRewind.time);
         rewind.bestReal.setFrom(bestRewind.realTime);
         rewind.this.setFrom(records.thisRewind.time);
         rewind.totalTimePlayed.setFrom(records.totalTimePlayed);
         // Real time tracking is only a thing once rewind is unlocked:
         infinity.thisReal.setFrom(records.thisInfinity.realTime);
-        infinity.bankRate = infinity.projectedBanked.div(Decimal.clampMin(33, records.thisEternity.realTime))
-          .times(60000);
+        infinity.bankRate = infinity.projectedBanked.div(Decimal.clampMin(33, records.thisEternity.realTime)).times(60000);
         eternity.thisReal.setFrom(records.thisEternity.realTime);
         rewind.thisReal.setFrom(records.thisRewind.realTime);
         rewind.bestRate.copyFrom(bestRewind.UPmin);

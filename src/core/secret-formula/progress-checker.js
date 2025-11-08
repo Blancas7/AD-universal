@@ -79,7 +79,7 @@ export const progressStages = [
     id: PROGRESS_STAGE.LATE_ETERNITY,
     name: "Late Eternity",
     hasReached: save => new Decimal(save.dilation.dilatedTime).gt(1e15),
-    suggestedResource: () => (new Decimal(player.eternityPoints).log10().gt(4000)
+    suggestedResource: () => (new Decimal(player.eternityPoints).log10() > 4000
       ? "Eternity Points and/or Dilated Time. Alternatively, you can unlock and perform your first Reality"
       : "Eternity Points and/or Dilated Time"
     ),
@@ -90,11 +90,11 @@ export const progressStages = [
   {
     id: PROGRESS_STAGE.EARLY_REALITY,
     name: "Reality",
-    hasReached: save => save.realities.gt(0),
+    hasReached: save => save.realities > 0,
     // For the first few realities, we give a bit of extra suggestion just in case the player ended up taking a break
     // and returned in the middle of a reality while they're still relatively slow
     suggestedResource: () => {
-      if (player.realities.gt(5)) return "Reality Machines";
+      if (player.realities > 5) return "Reality Machines";
       const suffix = "in your current Reality, and your Reality Machines in the long term";
       if (player.eternities.eq(0)) return `Infinity Points ${suffix}`;
       if (player.dilation.dilatedTime.eq(0)) return `Eternity Points ${suffix}`;
@@ -141,7 +141,7 @@ export const progressStages = [
   {
     id: PROGRESS_STAGE.IMAGINARY_MACHINES,
     name: "Imaginary Machines",
-    hasReached: save => save.reality?.iMCap.gt(0),
+    hasReached: save => save.reality?.iMCap > 0,
     suggestedResource: "Imaginary Machines",
     subProgressValue: save => Math.log10(1 + save.reality.iMCap) / 9,
   },

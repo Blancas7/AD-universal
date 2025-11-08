@@ -1,5 +1,5 @@
 function rebuyableCost(initialCost, increment, id) {
-  return Decimal.mul(initialCost, Decimal.pow(increment, player.celestials.teresa.perkShop[id]));
+  return initialCost * Math.pow(increment, player.celestials.teresa.perkShop[id]);
 }
 function rebuyable(config) {
   const { id, otherReq, cap, costCap, description, formatEffect, formatCost } = config;
@@ -23,18 +23,18 @@ export const perkShop = {
     initialCost: 1,
     increment: 2,
     description: () => `Increase pre-instability Glyph levels by ${formatPercents(0.05)}`,
-    effect: bought => Decimal.pow(1.05, bought),
+    effect: bought => Math.pow(1.05, bought),
     formatEffect: value => formatX(value, 2, 2),
     formatCost: value => format(value, 2),
     costCap: () => (Ra.unlocks.perkShopIncrease.canBeApplied ? 1048576 : 2048),
-    cap: () => (Ra.unlocks.perkShopIncrease.canBeApplied ? Decimal.pow(1.05, 20) : Decimal.pow(1.05, 11))
+    cap: () => (Ra.unlocks.perkShopIncrease.canBeApplied ? Math.pow(1.05, 20) : Math.pow(1.05, 11))
   }),
   rmMult: rebuyable({
     id: 1,
     initialCost: 1,
     increment: 2,
     description: "Double Reality Machine gain",
-    effect: bought => Decimal.pow(2, bought),
+    effect: bought => Math.pow(2, bought),
     formatEffect: value => formatX(value, 2),
     formatCost: value => format(value, 2),
     costCap: () => (Ra.unlocks.perkShopIncrease.canBeApplied ? 1048576 : 2048),
@@ -45,7 +45,7 @@ export const perkShop = {
     initialCost: 100,
     increment: 2,
     description: "Dilation autobuyers buy twice as many Dilation Upgrades at once.",
-    effect: bought => Decimal.pow(2, bought),
+    effect: bought => Math.pow(2, bought),
     formatEffect: value => formatX(value, 2),
     formatCost: value => format(value, 2),
     costCap: () => (Ra.unlocks.perkShopIncrease.canBeApplied ? 1638400 : 1600),
@@ -57,7 +57,7 @@ export const perkShop = {
     increment: 2,
     description: () => `Infinity Dimension, Time Dimension, Dilation,
       and Replicanti autobuyers are ${formatX(2)} faster.`,
-    effect: bought => Decimal.pow(2, bought).toNumber(),
+    effect: bought => Math.pow(2, bought),
     formatEffect: value => formatX(value, 2),
     formatCost: value => format(value, 2),
     costCap: () => (Ra.unlocks.perkShopIncrease.canBeApplied ? 64000 : 4000),

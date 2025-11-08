@@ -94,13 +94,13 @@ export const shortcuts = [
       replicantiGalaxyRequest();
       setHoldingR(true);
     },
-    visible: () => Replicanti.areUnlocked || PlayerProgress.eternityUnlocked()
+    visible: () => PlayerProgress.rewindUnlocked() || Replicanti.areUnlocked || PlayerProgress.eternityUnlocked()
   }, {
     name: "Eternity",
     keys: ["e"],
     type: "bindRepeatableHotkey",
     function: () => eternityResetRequest(),
-    visible: () => PlayerProgress.eternityUnlocked() || Player.canEternity
+    visible: () => PlayerProgress.rewindUnlocked() || PlayerProgress.eternityUnlocked() || Player.canEternity
   }, {
     name: "Toggle Time Study respec",
     keys: ["shift", "e"],
@@ -109,7 +109,7 @@ export const shortcuts = [
       player.respec = !player.respec;
       GameUI.notify.info(`Time Study respec is now ${player.respec ? "active" : "inactive"}`);
     },
-    visible: () => PlayerProgress.eternityUnlocked()
+    visible: () => PlayerProgress.rewindUnlocked() || PlayerProgress.eternityUnlocked()
   }, {
     name: "Enter/Exit Dilation",
     keys: ["l"],
@@ -136,25 +136,25 @@ export const shortcuts = [
     keys: ["u"],
     type: "bindHotkey",
     function: () => keyboardAutomatorToggle(),
-    visible: () => PlayerProgress.rewindUnlocked() || Player.automatorUnlocked
+    visible: () => Player.automatorUnlocked
   }, {
     name: "Restart Automator",
     keys: ["shift", "u"],
     type: "bindHotkey",
     function: () => keyboardAutomatorRestart(),
-    visible: () => PlayerProgress.rewindUnlocked() || Player.automatorUnlocked
+    visible: () => Player.automatorUnlocked
   }, {
     name: "Undo Edit (Automator)",
     keys: ["mod", "z"],
     type: "bind",
     function: () => AutomatorData.undoScriptEdit(),
-    visible: () => PlayerProgress.rewindUnlocked() || Player.automatorUnlocked
+    visible: () => Player.automatorUnlocked
   }, {
     name: "Redo Edit (Automator)",
     keys: ["mod", "y"],
     type: "bind",
     function: () => AutomatorData.redoScriptEdit(),
-    visible: () => PlayerProgress.rewindUnlocked() || Player.automatorUnlocked
+    visible: () => Player.automatorUnlocked
   }, {
     name: "Toggle Black Hole",
     keys: ["b"],
@@ -166,13 +166,13 @@ export const shortcuts = [
     keys: ["alt", "a"],
     type: "bindHotkey",
     function: () => keyboardToggleContinuum(),
-    visible: () => PlayerProgress.rewindUnlocked() || Laitela.continuumUnlocked
+    visible: () => Laitela.continuumUnlocked
   }, {
     name: "Armageddon",
     keys: ["z"],
     type: "bindRepeatableHotkey",
     function: () => armageddonRequest(),
-    visible: () => PlayerProgress.rewindUnlocked() || Pelle.isDoomed
+    visible: () => Pelle.isDoomed
   }, {
     name: "Toggle Glyph unequip (Pelle)",
     keys: ["shift", "z"],
@@ -182,7 +182,7 @@ export const shortcuts = [
       player.reality.respec = !player.reality.respec;
       GameUI.notify.info(`Glyph respec is now ${player.reality.respec ? "active" : "inactive"}`);
     },
-    visible: () => PlayerProgress.rewindUnlocked() || Pelle.isDoomed
+    visible: () => Pelle.isDoomed
   }, {
     name: "Save game",
     keys: ["mod", "s"],
@@ -309,7 +309,6 @@ export const shortcuts = [
     name: "Fullscreen",
     keys: ["F10"],
     type: "bind",
-    // eslint-disable-next-line no-empty-function
     function: () => {},
     visible: () => false
   },

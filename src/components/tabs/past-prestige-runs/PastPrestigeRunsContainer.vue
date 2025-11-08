@@ -2,12 +2,12 @@
 function averageRun(allRuns) {
   // Filter out all runs which have the default infinite value for time, but if we're left with no valid runs then we
   // take just one entry so that the averages also have the same value and we don't get division by zero.
-  let runs = allRuns.filter(run => run[0] < 1e290);
+  let runs = allRuns.filter(run => run[0] !== Number.MAX_VALUE);
   if (runs.length === 0) runs = [allRuns[0]];
 
   const longestRow = allRuns.map(r => r.length).max();
   const avgAttr = [];
-  for (let index = 0; longestRow.gt(index); index++) {
+  for (let index = 0; index < longestRow; index++) {
     if (typeof runs[0][index] === "string") {
       avgAttr.push("");
       continue;
@@ -77,7 +77,7 @@ export default {
       this.resourceType = player.options.statTabResources;
       this.showRate = this.resourceType === RECENT_PRESTIGE_RESOURCE.RATE;
       this.hasChallenges = this.runs.map(r => this.challengeText(r)).some(t => t);
-      this.hasIM = MachineHandler.currentIMCap.gt(0);
+      this.hasIM = MachineHandler.currentIMCap > 0;
 
       // We have 4 different "useful" stat pairings we could display, but this ends up being pretty boilerplatey
       const names = [this.points, `${this.points} Rate`, this.plural, `${this.singular} Rate`];
@@ -110,7 +110,7 @@ export default {
         }
         return 0;
       };
-      this.longestRow = this.runs.map(r => lastIndex(r)).nMax();
+      this.longestRow = this.runs.map(r => lastIndex(r)).max();
     },
     clone(runs) {
       return runs.map(run =>
@@ -127,7 +127,6 @@ export default {
 
       const cells = [name, this.gameTime(run)];
       if (this.hasRealTime) cells.push(this.realTime(run));
-      if (this.hasRealTime) cells.push(this.trueTime(run));
 
       const resources = [this.prestigeCurrencyGain(run), this.prestigeCurrencyRate(run),
         this.prestigeCountGain(run), this.prestigeCountRate(run)];
@@ -148,7 +147,6 @@ export default {
     infoCol() {
       const cells = ["Run", this.hasRealTime ? "Game Time" : "Time in Run"];
       if (this.hasRealTime) cells.push("Real Time");
-      if (this.hasRealTime) cells.push("True Time");
       cells.push(...this.resourceTitles);
       if (this.hasChallenges) cells.push("Challenge");
 
@@ -161,30 +159,27 @@ export default {
       return cells;
     },
     gameTime(run) {
-      return timeDisplayShort(run[1]);
+      return timeDisplayShort(run[0]);
     },
     realTime(run) {
-      return timeDisplayShort(run[2]);
-    },
-    trueTime(run) {
-      return timeDisplayShort(new Decimal(run[0]));
+      return timeDisplayShort(run[1]);
     },
     prestigeCurrencyGain(run) {
-      if (this.hasIM && this.layer.name === "Reality") return `${format(run[8], 2)} iM`;
-      return `${format(run[3], 2)} ${this.points}`;
+      if (this.hasIM && this.layer.name === "Reality") return `${format(run[7], 2)} iM`;
+      return `${format(run[2], 2)} ${this.points}`;
     },
     prestigeCountGain(run) {
-      return quantify(this.singular, run[4]);
+      return quantify(this.singular, run[3]);
     },
     prestigeCurrencyRate(run) {
       if (this.hasIM && this.layer.name === "Reality") return "N/A";
-      return this.rateText(run, run[3]);
+      return this.rateText(run, run[2]);
     },
     prestigeCountRate(run) {
-      return this.rateText(run, run[4]);
+      return this.rateText(run, run[3]);
     },
     rateText(run, amount) {
-      const time = run[2];
+      const time = run[1];
       const rpm = ratePerMinute(amount, time);
       return Decimal.lt(rpm, 1)
         ? `${format(Decimal.mul(rpm, 60), 2, 2)} per hour`
@@ -192,7 +187,7 @@ export default {
     },
     challengeText(run) {
       // Special-case Nameless reality in order to keep this column small and not force a linebreak
-      const rawText = run[5];
+      const rawText = run[4];
       return rawText === "The Nameless Ones" ? "Nameless" : rawText;
     },
     toggleShown() {
@@ -205,12 +200,12 @@ export default {
           // "X ago" is really short
           width = "7rem";
           break;
+        case 3:
         case 4:
-        case 5:
           // Prestige currency is long, but the reality table can be shorter due to smaller numbers
           width = this.layer.name === "Reality" ? "15rem" : "20rem";
           break;
-        case 6:
+        case 5:
           // Challenges can potentially be very long, but this is glyph level in the reality table
           width = this.layer.name === "Reality" ? "10rem" : "20rem";
           break;

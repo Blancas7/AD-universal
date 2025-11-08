@@ -103,8 +103,8 @@ export const IP = {
   },
   iap: {
     name: "Shop Tab Purchases",
-    multValue: () => 1,
-    isActive: () => false,
+    multValue: () => ShopPurchase.IPPurchases.currentMult,
+    isActive: () => ShopPurchaseData.totalSTD > 0,
     icon: MultiplierTabIcons.IAP,
   },
 

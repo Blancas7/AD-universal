@@ -1,5 +1,3 @@
-import { DC } from "../../constants";
-
 export const secretAchievements = [
   {
     id: 11,
@@ -58,7 +56,7 @@ export const secretAchievements = [
     id: 22,
     name: "Deep fried",
     get description() { return `Buy ${formatInt(1e5)} Antimatter Galaxies in total while using emoji notation.`; },
-    checkRequirement: () => player.requirementChecks.permanent.emojiGalaxies.gte(1e5),
+    checkRequirement: () => player.requirementChecks.permanent.emojiGalaxies >= 1e5,
     checkEvent: GAME_EVENT.GALAXY_RESET_AFTER
   },
   {
@@ -93,7 +91,7 @@ export const secretAchievements = [
     id: 27,
     name: "It's not called matter dimensions is it?",
     description: "Get Infinite matter.",
-    checkRequirement: () => Currency.matter.gte(DC.NUMMAX),
+    checkRequirement: () => Currency.matter.gte(Decimal.NUMBER_MAX_VALUE),
     checkEvent: GAME_EVENT.GAME_TICK_AFTER
   },
   {
@@ -113,14 +111,14 @@ export const secretAchievements = [
       return `Get a fastest infinity or eternity time of less than or equal to ${format(0.001, 3, 3)} seconds.`;
     },
     checkRequirement: () =>
-      Time.bestInfinity.totalMilliseconds.lte(1) ||
-      Time.bestEternity.totalMilliseconds.lte(1),
+      Time.bestInfinity.totalMilliseconds <= 1 ||
+      Time.bestEternity.totalMilliseconds <= 1,
     checkEvent: [GAME_EVENT.BIG_CRUNCH_AFTER, GAME_EVENT.ETERNITY_RESET_AFTER]
   },
   {
     id: 33,
     name: "A sound financial decision",
-    description: "Import \"Shop\" (temporary req)"
+    description: "Click on the button to purchase STD coins."
   },
   {
     id: 34,

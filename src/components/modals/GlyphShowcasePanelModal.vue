@@ -35,16 +35,16 @@ export default {
   data() {
     return {
       glyphs: [],
-      gainedLevel: new Decimal(),
+      gainedLevel: 0,
       canSacrifice: false,
-      realityGlyphBoost: new Decimal(),
+      realityGlyphBoost: 0,
     };
   },
   computed: {
     maxGlyphEffects() {
       let maxEffects = 1;
       for (const glyph of this.glyphs) {
-        maxEffects = Math.max(getGlyphEffectsFromArray(glyph.effects).length, maxEffects);
+        maxEffects = Math.max(getGlyphEffectsFromBitmask(glyph.effects).filter(e => e.isGenerated).length, maxEffects);
       }
       return maxEffects;
     },
@@ -66,7 +66,7 @@ export default {
       const realityGlyph = this.glyphs.filter(g => g.type === "reality")[0];
       this.realityGlyphBoost = realityGlyph
         ? GlyphEffects.realityglyphlevel.effect(realityGlyph.level)
-        : new Decimal();
+        : 0;
     },
     sortGlyphs() {
       const standardOrder = ["reality", "effarig", "power", "infinity", "replication", "time", "dilation",

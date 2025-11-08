@@ -15,13 +15,13 @@ export default {
   },
   computed: {
     typeConfig() {
-      return GlyphInfo[this.glyphType];
+      return GlyphTypes[this.glyphType];
     },
     autoSacrificeSettings() {
       return AutoGlyphProcessor.types[this.glyphType];
     },
     effects() {
-      return this.typeConfig.effects();
+      return this.typeConfig.effects;
     },
     descStyle() {
       return {
@@ -43,19 +43,19 @@ export default {
     weightInputLimit() {
       return 999;
     },
-    superWeightInputLimit() {
-      return 1e100;
+    indexOffset() {
+      return AutoGlyphProcessor.bitmaskIndexOffset(this.glyphType);
     }
   },
   created() {
-    this.effectScores = { ...AutoGlyphProcessor.types[this.glyphType].effectScores };
-    console.log(AutoGlyphProcessor.types[this.glyphType])
+    this.effectScores = [...AutoGlyphProcessor.types[this.glyphType].effectScores];
   },
   methods: {
     update() {
       this.scoreThreshold = this.autoSacrificeSettings.score;
-      for (const e of this.typeConfig.effects()) {
-        this.effectScores[e.id] = this.autoSacrificeSettings.effectScores[e.id];
+      for (const e of this.effects) {
+        const shiftedIndex = e.bitmaskIndex - this.indexOffset;
+        this.effectScores[shiftedIndex] = this.autoSacrificeSettings.effectScores[shiftedIndex];
       }
     },
     limitedInput(input) {
@@ -69,9 +69,8 @@ export default {
     },
     setEffectScore(index, event) {
       const inputValue = event.target.value;
-      // eslint-disable-next-line no-constant-condition
-      if (true || !isNaN(inputValue)) {
-        this.autoSacrificeSettings.effectScores[index] = new Decimal(this.limitedInput(inputValue)).toNumber();
+      if (!isNaN(inputValue)) {
+        this.autoSacrificeSettings.effectScores[index] = this.limitedInput(inputValue);
       }
     },
   }
@@ -93,8 +92,8 @@ export default {
       <input
         ref="scoreThreshold"
         type="number"
-        :min="-superWeightInputLimit"
-        :max="superWeightInputLimit"
+        :min="-weightInputLimit"
+        :max="weightInputLimit"
         class="c-auto-sac-type-tab__input"
         :value="scoreThreshold"
         :style="minScoreInputStyle"
@@ -117,8 +116,8 @@ export default {
         :min="-weightInputLimit"
         :max="weightInputLimit"
         class="c-auto-sac-type-tab__input"
-        :value="effectScores[effect.id]"
-        @blur="setEffectScore(effect.id, $event)"
+        :value="effectScores[effect.bitmaskIndex - indexOffset]"
+        @blur="setEffectScore(effect.bitmaskIndex - indexOffset, $event)"
       >
     </div>
   </div>

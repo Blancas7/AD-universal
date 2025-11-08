@@ -1,5 +1,3 @@
-import { DC } from "../../constants";
-
 import { RebuyableMechanicState } from "../../game-mechanics/rebuyable";
 
 import { PelleRifts } from "./rifts";
@@ -12,7 +10,7 @@ export const GalaxyGenerator = {
   get generationCaps() {
     return PelleRifts.all
       .map(x => ({ rift: x.config.key, cap: x.config.galaxyGeneratorThreshold }))
-      .sort((a, b) => Decimal.compare(a.cap, b.cap));
+      .sort((a, b) => a.cap - b.cap);
   },
 
   get spentGalaxies() {
@@ -24,17 +22,17 @@ export const GalaxyGenerator = {
   },
 
   get galaxies() {
-    return this.generatedGalaxies.sub(this.spentGalaxies);
+    return this.generatedGalaxies - this.spentGalaxies;
   },
 
   get gainPerSecond() {
-    if (!Pelle.hasGalaxyGenerator) return DC.D0;
+    if (!Pelle.hasGalaxyGenerator) return 0;
     return new Decimal(GalaxyGeneratorUpgrades.additive.effectValue).timesEffectsOf(
       GalaxyGeneratorUpgrades.multiplicative,
       GalaxyGeneratorUpgrades.antimatterMult,
       GalaxyGeneratorUpgrades.IPMult,
       GalaxyGeneratorUpgrades.EPMult,
-    );
+    ).toNumber();
   },
 
   get capObj() {
@@ -42,7 +40,7 @@ export const GalaxyGenerator = {
   },
 
   get generationCap() {
-    return this.capObj ? this.capObj.cap : DC.BEMAX;
+    return this.capObj ? this.capObj.cap : Infinity;
   },
 
   get capRift() {
@@ -67,7 +65,7 @@ export const GalaxyGenerator = {
       Pelle.quotes.galaxyGeneratorRifts.show();
     }
     if (this.sacrificeActive) {
-      this.capRift.reducedTo = Decimal.max(Decimal.sub(this.capRift.reducedTo, (diff.div(1e5).mul(3))), 0).toNumber();
+      this.capRift.reducedTo = Math.max(this.capRift.reducedTo - 0.03 * diff / 1000, 0);
       if (this.capRift.reducedTo === 0) {
         player.celestials.pelle.galaxyGenerator.sacrificeActive = false;
         player.celestials.pelle.galaxyGenerator.phase++;
@@ -94,15 +92,14 @@ export const GalaxyGenerator = {
       }
 
     }
-    player.celestials.pelle.galaxyGenerator.generatedGalaxies =
-      player.celestials.pelle.galaxyGenerator.generatedGalaxies.add(this.gainPerSecond.times(diff.div(1000)));
-    player.celestials.pelle.galaxyGenerator.generatedGalaxies = Decimal.min(
+    player.celestials.pelle.galaxyGenerator.generatedGalaxies += this.gainPerSecond * diff / 1000;
+    player.celestials.pelle.galaxyGenerator.generatedGalaxies = Math.min(
       player.celestials.pelle.galaxyGenerator.generatedGalaxies,
       this.generationCap
     );
 
     if (!this.capRift) {
-      PelleRifts.all.forEach(r => r.reducedTo = diff.div(1e5).mul(3).add(r.reducedTo).clampMax(2).toNumber());
+      PelleRifts.all.forEach(r => r.reducedTo = Math.min(r.reducedTo + 0.03 * diff / 1000, 2));
       if (PelleRifts.vacuum.milestones[0].canBeApplied && !this.hasReturnedGlyphSlot) {
         Glyphs.refreshActive();
         EventHub.dispatch(GAME_EVENT.GLYPHS_EQUIPPED_CHANGED);

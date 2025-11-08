@@ -69,9 +69,11 @@ import ModifySeedModal from "@/components/modals/ModifySeedModal";
 import PelleEffectsModal from "@/components/modals/PelleEffectsModal";
 import RealityGlyphCreationModal from "@/components/modals/RealityGlyphCreationModal";
 import ReplaceGlyphModal from "@/components/modals/ReplaceGlyphModal";
+import RespecIAPModal from "@/components/modals/RespecIAPModal";
 import SacrificeModal from "@/components/modals/SacrificeModal";
 import SingularityMilestonesModal from "@/components/modals/SingularityMilestonesModal";
 import SpeedrunModeModal from "@/components/modals/SpeedrunModeModal";
+import StdStoreModal from "@/components/modals/StdStoreModal";
 import StudyStringModal from "@/components/modals/StudyStringModal";
 import SwitchAutomatorEditorModal from "@/components/modals/SwitchAutomatorEditorModal";
 import UiChoiceModal from "@/components/modals/UiChoiceModal";
@@ -263,11 +265,13 @@ Modal.switchAutomatorEditorMode = new Modal(SwitchAutomatorEditorModal);
 Modal.clearAutomatorConstants = new Modal(ClearConstantsModal);
 Modal.importTSConstants = new Modal(ImportTimeStudyConstants);
 Modal.autobuyerEditModal = new Modal(AutobuyerEditModal);
+Modal.shop = new Modal(StdStoreModal);
 Modal.studyString = new Modal(StudyStringModal);
 Modal.singularityMilestones = new Modal(SingularityMilestonesModal);
 Modal.pelleEffects = new Modal(PelleEffectsModal);
 Modal.sacrifice = new Modal(SacrificeModal, 1, GAME_EVENT.DIMBOOST_AFTER);
 Modal.breakInfinity = new Modal(BreakInfinityModal, 1, GAME_EVENT.ETERNITY_RESET_AFTER);
+Modal.respecIAP = new Modal(RespecIAPModal);
 
 Modal.s12Games = new Modal(S12GamesModal);
 
@@ -281,7 +285,7 @@ function getSaveInfo(save) {
     infinityPoints: new Decimal(0),
     eternityPoints: new Decimal(0),
     realityMachines: new Decimal(0),
-    imaginaryMachines: new Decimal(0),
+    imaginaryMachines: 0,
     dilatedTime: new Decimal(0),
     bestLevel: 0,
     pelleAM: new Decimal(0),
@@ -302,7 +306,7 @@ function getSaveInfo(save) {
   resources.infinityPoints.copyFrom(new Decimal(save.infinityPoints));
   resources.eternityPoints.copyFrom(new Decimal(save.eternityPoints));
   resources.realityMachines.copyFrom(new Decimal(save.reality?.realityMachines));
-  resources.imaginaryMachines.copyFrom(new Decimal(save.reality?.imaginaryMachines));
+  resources.imaginaryMachines = save.reality?.iMCap ?? 0;
   // Use max DT instead of current DT because spending it can cause it to drop and trigger the conflict modal
   // unnecessarily. We only use current DT as a fallback (eg. loading a save from pre-reality versions)
   resources.dilatedTime.copyFrom(new Decimal(save.records?.thisReality.maxDT ?? (save.dilation?.dilatedTime ?? 0)));

@@ -5,7 +5,7 @@ import { ImaginaryUpgrade, ImaginaryUpgrades } from "./imaginary-upgrades";
 import { RealityUpgrade, RealityUpgrades } from "./reality-upgrades";
 
 export function isRewindAvailable() {
-  return player.records.thisRewind.maxAM.gte(DC.BIMAX)/* && Pelle.isDoomed*/;
+  return player.records.thisRewind.maxAM.gte(DC.E1E15)/* && Pelle.isDoomed*/;
 }
 
 /**
@@ -74,15 +74,14 @@ export function autoRewind() {
 }
 
 function updateRewindRecords(rewindProps) {
-  const thisRunUPmin = rewindProps.gainedUP.div(Time.thisRewindRealTime.totalMinutes.clampMin(0.0005));
+  const thisRunUPmin = rewindProps.gainedUP.div(Math.clampMin(0.0005, Time.thisRewindRealTime.totalMinutes));
   if (player.records.bestRewind.UPmin.lt(thisRunUPmin)) {
     player.records.bestRewind.UPmin = thisRunUPmin;
   }
-  player.records.bestRewind.time = player.records.thisRewind.time.clampMax(player.records.bestRewind.time);
+  player.records.bestRewind.time = Math.min(player.records.thisRewind.time, player.records.bestRewind.time);
   if (player.records.thisRewind.realTime.lt(player.records.bestRewind.realTime)) {
     player.records.bestRewind.realTime = player.records.thisRewind.realTime;
   }
-  player.records.bestRewind.trueTime = Math.min(player.records.bestRewind.trueTime, player.records.thisRewind.trueTime)
 }
 
 function giveRewindRewards(rewindProps) {
@@ -90,11 +89,10 @@ function giveRewindRewards(rewindProps) {
   Currency.unityPoints.add(gainedUP);
   updateRewindRecords(rewindProps);
   addRewindTime(
-    player.records.thisRewind.trueTime,
     player.records.thisRewind.time,
     player.records.thisRewind.realTime,
     gainedUP,
-    DC.D1);
+    1);
   Currency.rewinds.add(1);
   Currency.celestialRemains.add(1);
   if (player.celestialMultiplier < 35) {
@@ -132,9 +130,9 @@ export function finishProcessRewind(rewindProps) {
   Currency.stardust.reset();
   resetStellarDimensions();
 
-  player.realities = DC.D0;
-  player.reality.perkPoints = DC.D0;
-  player.partSimulatedReality = DC.D0;
+  player.realities = 0;
+  player.reality.perkPoints = 0;
+  player.partSimulatedReality = 0;
 
   // for(let idx in Perks.all) {
   //   Perks.all[idx].isBought = false;
@@ -181,24 +179,24 @@ export function finishProcessRewind(rewindProps) {
   }
   // We remove the sacrifice after getting rid of all the glyphs, just in case
   for (const typeSac in player.reality.glyphs.sac) {
-    player.reality.glyphs.sac[typeSac] = DC.D0;
+    player.reality.glyphs.sac[typeSac] = 0;
   }
 
   for (const blackHoleKey in player.blackHole) {
     player.blackHole[blackHoleKey] = {
       id: blackHoleKey,
-      intervalUpgrades: DC.D0,
-      powerUpgrades: DC.D0,
-      durationUpgrades: DC.D0,
-      phase: DC.D0,
+      intervalUpgrades: 0,
+      powerUpgrades: 0,
+      durationUpgrades: 0,
+      phase: 0,
       active: false,
       unlocked: false,
-      activations: DC.D0,
+      activations: 0,
     }
   }
 
-  player.blackHolePauseTime = DC.D0;
-  player.blackHoleNegative = DC.D1;
+  player.blackHolePauseTime = 0;
+  player.blackHoleNegative = 1;
 
   // Celestial resets
   Teresa.reset();
@@ -211,8 +209,8 @@ export function finishProcessRewind(rewindProps) {
 
   player.sacrificed = DC.D0;
 
-  player.records.thisRewind.time = DC.D0;
-  player.records.thisRewind.realTime = DC.D0;
+  player.records.thisRewind.time = 0;
+  player.records.thisRewind.realTime = 0;
   player.records.thisRewind.maxAM = DC.D0;
   player.records.thisRewind.maxIP = DC.D0;
   player.records.thisRewind.maxEP = DC.D0;
@@ -221,17 +219,17 @@ export function finishProcessRewind(rewindProps) {
   player.records.thisRewind.bestRealitiesPerMs = DC.D0;
   player.records.thisRewind.maxReplicanti = DC.D0;
   player.records.thisRewind.maxDT = DC.D0;
-  player.records.thisRewind.bestRSmin = DC.D0;
-  player.records.thisRewind.bestRSminVal = DC.D0;
+  player.records.thisRewind.bestRSmin = 0;
+  player.records.thisRewind.bestRSminVal = 0;
 
-  player.records.bestReality.time = DC.BEMAX;
-  player.records.bestReality.realTime = DC.BEMAX;
-  player.records.bestReality.glyphStrength = DC.D0;
+  player.records.bestReality.time = 999999999999;
+  player.records.bestReality.realTime = 999999999999;
+  player.records.bestReality.glyphStrength = 0;
   player.records.bestReality.RM = DC.D0;
   player.records.bestReality.RMSet = [];
   player.records.bestReality.RMmin = DC.D0;
   player.records.bestReality.RMminSet = [];
-  player.records.bestReality.glyphLevel = DC.D0;
+  player.records.bestReality.glyphLevel = 0;
   player.records.bestReality.glyphLevelSet = [];
   player.records.bestReality.bestEP = DC.D0;
   player.records.bestReality.bestEPSet = [];
@@ -248,17 +246,17 @@ export function finishProcessRewind(rewindProps) {
 
   Currency.infinities.reset();
   Currency.infinitiesBanked.reset();
-  player.records.bestInfinity.time = DC.BEMAX;
-  player.records.bestInfinity.realTime = DC.BEMAX;
-  player.records.thisInfinity.time = DC.D0;
-  player.records.thisInfinity.lastBuyTime = DC.D0;
-  player.records.thisInfinity.realTime = DC.D0;
-  player.dimensionBoosts = DC.D0;
-  player.galaxies = DC.D0;
+  player.records.bestInfinity.time = 999999999999;
+  player.records.bestInfinity.realTime = 999999999999;
+  player.records.thisInfinity.time = 0;
+  player.records.thisInfinity.lastBuyTime = 0;
+  player.records.thisInfinity.realTime = 0;
+  player.dimensionBoosts = 0;
+  player.galaxies = 0;
   player.partInfinityPoint = 0;
   player.partInfinitied = 0;
   player.break = false;
-  player.IPMultPurchases = DC.D0;
+  player.IPMultPurchases = 0;
   Currency.infinityPower.reset();
   Currency.timeShards.reset();
   Replicanti.reset(true);
@@ -268,16 +266,16 @@ export function finishProcessRewind(rewindProps) {
   // This has to be reset before Currency.eternities to make the bumpLimit logic work correctly
   EternityUpgrade.epMult.reset();
   Currency.eternities.reset();
-  player.records.thisEternity.time = DC.D0;
-  player.records.thisEternity.realTime = DC.D0;
-  player.records.bestEternity.time = DC.BEMAX;
-  player.records.bestEternity.realTime = DC.BEMAX;
+  player.records.thisEternity.time = 0;
+  player.records.thisEternity.realTime = 0;
+  player.records.bestEternity.time = 999999999999;
+  player.records.bestEternity.realTime = 999999999999;
   player.eternityUpgrades.clear();
-  player.totalTickGained = DC.D0;
+  player.totalTickGained = 0;
   player.eternityChalls = {};
   player.reality.unlockedEC = 0;
-  player.reality.lastAutoEC = DC.D0;
-  player.reality.partEternitied = DC.D0;
+  player.reality.lastAutoEC = 0;
+  player.reality.partEternitied = 0;
   player.challenge.eternity.current = 0;
   player.challenge.eternity.unlocked = 0;
   player.challenge.eternity.requirementBits = 0;
@@ -285,8 +283,8 @@ export function finishProcessRewind(rewindProps) {
   player.eterc8ids = 50;
   player.eterc8repl = 40;
   Player.resetRequirements("rewind");
-  player.records.thisReality.time = DC.D0;
-  player.records.thisReality.realTime = DC.D0;
+  player.records.thisReality.time = 0;
+  player.records.thisReality.realTime = 0;
   player.records.thisReality.maxReplicanti = DC.D0;
   Currency.timeTheorems.reset();
   player.celestials.v.STSpent = 0;
@@ -295,17 +293,17 @@ export function finishProcessRewind(rewindProps) {
 
   player.dilation.upgrades.clear();
   player.dilation.rebuyables = {
-    1: DC.D0,
-    2: DC.D0,
-    3: DC.D0,
-    11: DC.D0,
-    12: DC.D0,
-    13: DC.D0
+    1: 0,
+    2: 0,
+    3: 0,
+    11: 0,
+    12: 0,
+    13: 0
   };
   Currency.tachyonParticles.reset();
   player.dilation.nextThreshold = DC.E3;
-  player.dilation.baseTachyonGalaxies = DC.D0;
-  player.dilation.totalTachyonGalaxies = DC.D0;
+  player.dilation.baseTachyonGalaxies = 0;
+  player.dilation.totalTachyonGalaxies = 0;
   Currency.dilatedTime.reset();
   player.records.thisInfinity.maxAM = DC.D0;
   player.records.thisEternity.maxAM = DC.D0;
@@ -314,7 +312,7 @@ export function finishProcessRewind(rewindProps) {
   Currency.antimatter.reset();
   Enslaved.autoReleaseTick = 0;
   player.celestials.enslaved.hasSecretStudy = false;
-  player.celestials.laitela.entropy = DC.D0;
+  player.celestials.laitela.entropy = 0;
 
   playerInfinityUpgradesOnReset();
   resetInfinityRuns();
@@ -324,7 +322,7 @@ export function finishProcessRewind(rewindProps) {
   resetChallengeStuff();
   AntimatterDimensions.reset();
   secondSoftReset(false);
-  player.celestials.ra.peakGamespeed = DC.D1;
+  player.celestials.ra.peakGamespeed = 1;
 
   InfinityDimensions.resetAmount();
   player.records.thisInfinity.bestIPmin = DC.D0;
@@ -334,8 +332,8 @@ export function finishProcessRewind(rewindProps) {
   player.records.thisEternity.bestIPMsWithoutMaxAll = DC.D0;
   player.records.bestEternity.bestEPminReality = DC.D0;
   player.records.thisReality.bestEternitiesPerMs = DC.D0;
-  player.records.thisReality.bestRSmin = DC.D0;
-  player.records.thisReality.bestRSminVal = DC.D0;
+  player.records.thisReality.bestRSmin = 0;
+  player.records.thisReality.bestRSminVal = 0;
   resetTimeDimensions();
   resetTickspeed();
   AchievementTimers.marathon2.reset();
@@ -352,5 +350,5 @@ function lockAchievementsOnRewind() {
   for (const achievement of Achievements.preRewind) {
     achievement.lock();
   }
-  player.reality.achTimer = DC.D0;
+  player.reality.achTimer = 0;
 }

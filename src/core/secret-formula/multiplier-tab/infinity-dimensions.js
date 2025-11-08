@@ -262,6 +262,13 @@ export const ID = {
     isActive: () => Pelle.isDoomed,
     icon: MultiplierTabIcons.PELLE,
   },
+  iap: {
+    name: "Shop Tab Purchases",
+    multValue: dim => Decimal.pow(ShopPurchase.allDimPurchases.currentMult,
+      dim ? 1 : MultiplierTabHelper.activeDimCount("ID")),
+    isActive: () => ShopPurchaseData.totalSTD > 0,
+    icon: MultiplierTabIcons.IAP,
+  },
 
   powerConversion: {
     name: "Infinity Power Conversion",

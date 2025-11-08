@@ -9,6 +9,36 @@ export const changelog = [
    * }
    */
   {
+    date: [2024, 8, 12],
+    name: "Hi Ra",
+    info: `
+<b>Added things:</b><br>
+<ul>
+<li>Added a Spent TT as an Automator currency</li>
+<li>Added a cel 5 symbol to the celestial Glyph cosmetic set</li>
+</ul>
+<br>
+<b>Minor UI Changes:</b><br>
+<ul>
+<li>Improved wording of BI upgrades</li>
+<li>Added rounded corners to some buttons</li>
+<li>Added an always use \uE010hole animation option</li>
+<li>Adjusted a cel 3 symbol size in the Glyph cosmetic</li>
+<li>ID and TD purchase buttons are now less often to shrink</li>
+<li>IC rewards are now always visible even if it was not completed yet</li>
+<li>Disabled Sacrifice button if you unlocked Achievement 118 and Sacrifice Autobuyer is enabled</li>
+</ul>
+<br>
+<b>Bugfixes:</b><br>
+<ul>
+<li>Fixed a BH pulse does not apply during offline progess</li>
+<li>Fixed a BH inversion is active while it is being disabled</li>
+<li>Fixed a BH inversion slider is visible while it is being disabled</li>
+</ul>
+<br>
+`
+  },
+  {
     date: [2024, 5, 2],
     name: "Celebrate Android Reality Update",
     info: `
@@ -41,7 +71,7 @@ some changes mainly based on the player comments and feedback from the Android v
 <li>Added a functionality to change the visible resource on Modern UI</li>
 <li>Added a new modal for adjusting exponent notation formatting more flexibly</li>
 <li>Automator now ignores blackhole command while it is being disabled</li>
-<li>Changed requirement of EM1000 to 5 seconds or less</li>
+<li>EM1000 requirement is now Eternity in 5 seconds or less</li>
 <li>Study tree will now automatically respec when exiting an EC</li>
 <li>Disabled a rebuyable TP upgrade in cel7, because it caused confusion to many players</li>
 <li>Rebalanced 3rd milestone of 5th bar due to the above upgrade deletion</li>

@@ -26,7 +26,7 @@ export default {
       isCapped: false,
       multiplier: new Decimal(0),
       amount: new Decimal(0),
-      bought: new Decimal(0),
+      bought: 0,
       rateOfChange: new Decimal(0),
       cost: new Decimal(0),
       isAvailableForPurchase: false,
@@ -58,7 +58,7 @@ export default {
       return this.buttonContents.length > 20;
     },
     showCostTitle() {
-      return his.cost.max(1).log10().lte(1e6);
+      return this.cost.max(1).log10().lte(1e6);
     },
     timeEstimate() {
       return "";

@@ -4,6 +4,7 @@ import { RichPresenceInfo } from "@/core/discord-parser";
 import {
   hasPendingPurchaseConfirmations,
   loginPlayFabWithSteam,
+  purchaseIAP,
   purchaseShopItem,
   validatePurchases
 } from "./steam-purchases";
@@ -75,6 +76,14 @@ export const SteamRuntime = {
     }
 
     Greenworks.activateAchievement(name);
+  },
+
+  async purchaseIAP(std) {
+    if (!this.isActive) {
+      return;
+    }
+
+    await purchaseIAP(std);
   },
 
   validatePurchases() {

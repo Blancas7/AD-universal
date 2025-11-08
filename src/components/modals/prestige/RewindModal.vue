@@ -37,8 +37,8 @@ export default {
   },
   methods: {
     update() {
-      this.gainedCelestialRemains = format(1);
-      this.gainedUnityPoints = format(1);
+      this.gainedCelestialRemains = DC.D1;
+      this.gainedUnityPoints = DC.D1;
     },
     handleYesClick() {
       startManualRewind(true);

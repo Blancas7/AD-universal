@@ -62,7 +62,7 @@ export default {
     </template>
     <div class="c-modal-message__text">
       <span v-if="isDoomed">
-        Dilation is permanent. You will {{ gainText }} and reset your current eternity.
+        Dilation is permanent. You will {{ gainText }} and reset your current Eternity.
       </span>
       <span v-else>
         If you exit Dilation now, you will {{ gainText }}.

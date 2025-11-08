@@ -1,5 +1,4 @@
 import { BitUpgradeState, RebuyableMechanicState } from "../game-mechanics";
-import { DC } from "../constants";
 import { GameDatabase } from "../secret-formula/game-database";
 
 import { Quotes } from "./quotes";
@@ -16,7 +15,7 @@ export const Teresa = {
   pourRM(diff) {
     if (this.pouredAmount >= Teresa.pouredAmountCap) return;
     this.timePoured += diff;
-    const rm = Currency.realityMachines.value.max(1e100);
+    const rm = Currency.realityMachines.value;
     const rmPoured = Math.min((this.pouredAmount + 1e6) * 0.01 * Math.pow(this.timePoured, 2), rm.toNumber());
     this.pouredAmount += Math.min(rmPoured, Teresa.pouredAmountCap - this.pouredAmount);
     Currency.realityMachines.subtract(rmPoured);
@@ -32,7 +31,7 @@ export const Teresa = {
     player.celestials.teresa.run = true;
   },
   rewardMultiplier(antimatter) {
-    return Decimal.max(Decimal.pow(antimatter.plus(1).log10().div(1.5e8), 12), 1);
+    return Decimal.max(Decimal.pow(antimatter.plus(1).log10() / 1.5e8, 12), 1).toNumber();
   },
   get pouredAmount() {
     return player.celestials.teresa.pouredAmount;
@@ -44,10 +43,10 @@ export const Teresa = {
     return Math.min(Math.log10(this.pouredAmount) / 24, 1);
   },
   get possibleFill() {
-    return Decimal.min(Currency.realityMachines.value.plus(this.pouredAmount).max(1).log10().div(24), 1).toNumber();
+    return Math.min(Currency.realityMachines.value.plus(this.pouredAmount).log10() / 24, 1);
   },
   get rmMultiplier() {
-    return Decimal.max(250 * Math.pow(this.pouredAmount / 1e24, 0.1), 1);
+    return Math.max(250 * Math.pow(this.pouredAmount / 1e24, 0.1), 1);
   },
   get runRewardMultiplier() {
     return this.rewardMultiplier(player.celestials.teresa.bestRunAM);
@@ -67,9 +66,8 @@ export const Teresa = {
     player.celestials.teresa.run = false;
     player.celestials.teresa.bestRunAM = DC.D1;
     player.celestials.teresa.bestAMSet = [];
-    player.celestials.teresa.perkShop = [DC.D0, DC.D0, DC.D0, DC.D0, DC.D0, DC.D0];
+    player.celestials.teresa.perkShop = Array.repeat(0, 5),
     player.celestials.teresa.lastRepeatedMachines = DC.D0;
-    player.celestials.teresa.lastRepeatediM = DC.D0;
   },
 };
 
@@ -92,12 +90,12 @@ class PerkShopUpgradeState extends RebuyableMechanicState {
   }
 
   get isCapped() {
-    return Decimal.gte(this.cost, this.costCap());
+    return this.cost === this.costCap(this.bought);
   }
 
   get isAvailableForPurchase() {
     const otherReq = this.config.otherReq ? this.config.otherReq() : true;
-    return this.currency.value.gte(this.cost) && otherReq;
+    return this.cost <= this.currency.value && otherReq;
   }
 
   onPurchased() {

@@ -8,10 +8,10 @@ export default {
   },
   data() {
     return {
-      realityTime: new Decimal(0),
+      realityTime: 0,
       maxDimTier: 0,
       isRunning: false,
-      realityReward: new Decimal(1),
+      realityReward: 1,
       singularitiesUnlocked: false,
       bestSet: [],
       tierNotCompleted: true,
@@ -20,7 +20,7 @@ export default {
   computed: {
     completionTime() {
       if (this.tierNotCompleted) return "Not completed at this tier";
-      return `Fastest Completion: ${TimeSpan.fromSeconds(new Decimal(this.realityTime)).toStringShort()}`;
+      return `Fastest Completion: ${TimeSpan.fromSeconds(this.realityTime).toStringShort()}`;
     },
     runEffects() {
       return GameDatabase.celestials.descriptions[5].effects().split("\n");
@@ -32,13 +32,13 @@ export default {
   },
   methods: {
     update() {
-      this.realityTime.copyFrom(player.celestials.laitela.fastestCompletion);
+      this.realityTime = player.celestials.laitela.fastestCompletion;
       this.maxDimTier = Laitela.maxAllowedDimension;
-      this.realityReward.copyFrom(Laitela.realityReward);
+      this.realityReward = Laitela.realityReward;
       this.isRunning = Laitela.isRunning;
       this.singularitiesUnlocked = Currency.singularities.gt(0);
-      this.bestSet = cloneDeep(Glyphs.copyForRecords(player.records.bestReality.laitelaSet));
-      this.tierNotCompleted = this.realityTime.eq(3600) || (this.realityTime.eq(300) && this.maxDimTier < 8);
+      this.bestSet = Glyphs.copyForRecords(player.records.bestReality.laitelaSet);
+      this.tierNotCompleted = this.realityTime === 3600 || (this.realityTime === 300 && this.maxDimTier < 8);
     },
     startRun() {
       if (this.isDoomed) return;
@@ -71,7 +71,7 @@ export default {
       :class="runButtonClassObject()"
       @click="startRun"
     />
-    <div v-if="realityReward.gt(1)">
+    <div v-if="realityReward > 1">
       <b>
         All Dark Matter multipliers are {{ formatX(realityReward, 2, 2) }} higher.
       </b>

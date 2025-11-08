@@ -40,10 +40,10 @@ export class AlchemyCircleLayout {
     for (const orbitNodes of this.orbits.map(o => o.nodes)) {
       nodes.push(...orbitNodes);
     }
-    const size = Decimal.max(
+    const size = Math.max(
       nodes.map(p => Math.abs(p.x)).max(),
       nodes.map(p => Math.abs(p.y)).max()
-    ).toNumber() * 2;
+    ) * 2;
     for (const node of nodes) {
       node.x = (node.x / size + 0.5) * 100;
       node.y = (node.y / size + 0.5) * 100;

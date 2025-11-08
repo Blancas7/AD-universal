@@ -180,7 +180,6 @@ export class Currency {
 /**
  * @abstract
  */
-// eslint-disable-next-line no-unused-vars
 class NumberCurrency extends Currency {
   get operations() { return MathOperations.number; }
   get startingValue() { return 0; }
@@ -191,9 +190,8 @@ class NumberCurrency extends Currency {
  */
 class DecimalCurrency extends Currency {
   get operations() { return MathOperations.decimal; }
-  get sign() { return this.value.sign; }
-  get mag() { return this.value.mag; }
-  get layer() { return this.value.layer; }
+  get mantissa() { return this.value.mantissa; }
+  get exponent() { return this.value.exponent; }
   get startingValue() { return DC.D0; }
 }
 window.DecimalCurrency = DecimalCurrency;
@@ -237,21 +235,21 @@ Currency.antimatter = new class extends DecimalCurrency {
   get startingValue() {
     if (Pelle.isDisabled()) return new Decimal(100);
     return Effects.max(
-      DC.E1,
+      10,
       Perk.startAM,
       Achievement(21),
       Achievement(37),
       Achievement(54),
       Achievement(55),
       Achievement(78)
-    );
+    ).toDecimal();
   }
 }();
 
 Currency.matter = new class extends DecimalCurrency {
   get value() { return player.matter; }
   set value(value) {
-    player.matter = Decimal.min(value, DC.BEMAX);
+    player.matter = Decimal.min(value, Decimal.MAX_VALUE);
   }
 }();
 
@@ -285,13 +283,13 @@ Currency.infinityPoints = new class extends DecimalCurrency {
   }
 
   get startingValue() {
-    if (Pelle.isDisabled()) return new Decimal();
+    if (Pelle.isDisabled()) return new Decimal(0);
     return Effects.max(
-      new Decimal(),
+      0,
       Perk.startIP1,
       Perk.startIP2,
       Achievement(104)
-    );
+    ).toDecimal();
   }
 
   reset() {
@@ -314,7 +312,7 @@ Currency.eternities = new class extends DecimalCurrency {
     return Effects.max(
       0,
       RealityUpgrade(10)
-    );
+    ).toDecimal();
   }
 }();
 
@@ -343,7 +341,7 @@ Currency.eternityPoints = new class extends DecimalCurrency {
       Perk.startEP1,
       Perk.startEP2,
       Perk.startEP3
-    );
+    ).toDecimal();
   }
 
   reset() {
@@ -395,7 +393,7 @@ Currency.dilatedTime = new class extends DecimalCurrency {
   }
 }();
 
-Currency.realities = new class extends DecimalCurrency {
+Currency.realities = new class extends NumberCurrency {
   get value() { return player.realities; }
   set value(value) { player.realities = value; }
 }();
@@ -416,20 +414,20 @@ Currency.realityMachines = new class extends DecimalCurrency {
   }
 }();
 
-Currency.perkPoints = new class extends DecimalCurrency {
+Currency.perkPoints = new class extends NumberCurrency {
   get value() { return player.reality.perkPoints; }
   set value(value) { player.reality.perkPoints = value; }
 }();
 
-Currency.relicShards = new class extends DecimalCurrency {
+Currency.relicShards = new class extends NumberCurrency {
   get value() { return player.celestials.effarig.relicShards; }
   set value(value) { player.celestials.effarig.relicShards = value; }
 }();
 
-Currency.imaginaryMachines = new class extends DecimalCurrency {
+Currency.imaginaryMachines = new class extends NumberCurrency {
   get value() { return player.reality.imaginaryMachines; }
   set value(value) {
-    player.reality.imaginaryMachines = Decimal.clampMax(value, MachineHandler.currentIMCap);
+    player.reality.imaginaryMachines = Math.clampMax(value, MachineHandler.currentIMCap);
 
     player.records.thisRewind.maxIM = player.records.thisRewind.maxIM.max(Decimal.clampMax(value, MachineHandler.currentIMCap));
   }
@@ -447,7 +445,7 @@ Currency.darkMatter = new class extends DecimalCurrency {
   set max(value) { player.celestials.laitela.maxDarkMatter = value; }
 }();
 
-Currency.darkEnergy = new class extends DecimalCurrency {
+Currency.darkEnergy = new class extends NumberCurrency {
   get value() { return player.celestials.laitela.darkEnergy; }
   set value(value) { player.celestials.laitela.darkEnergy = value; }
 
@@ -458,12 +456,12 @@ Currency.darkEnergy = new class extends DecimalCurrency {
   }
 }();
 
-Currency.singularities = new class extends DecimalCurrency {
+Currency.singularities = new class extends NumberCurrency {
   get value() { return player.celestials.laitela.singularities; }
   set value(value) { player.celestials.laitela.singularities = value; }
 }();
 
-Currency.remnants = new class extends DecimalCurrency {
+Currency.remnants = new class extends NumberCurrency {
   get value() { return player.celestials.pelle.remnants; }
   set value(value) { player.celestials.pelle.remnants = value; }
 }();
@@ -478,15 +476,14 @@ Currency.replicanti = new class extends DecimalCurrency {
   set value(value) { player.replicanti.amount = value; }
 }();
 
-Currency.galaxyGeneratorGalaxies = new class extends DecimalCurrency {
+Currency.galaxyGeneratorGalaxies = new class extends NumberCurrency {
   get value() {
-    return player.galaxies.add(GalaxyGenerator.galaxies);
+    return player.galaxies + GalaxyGenerator.galaxies;
   }
 
   set value(value) {
-    const spent = player.galaxies.add(GalaxyGenerator.galaxies).sub(value);
-    player.celestials.pelle.galaxyGenerator.spentGalaxies =
-      player.celestials.pelle.galaxyGenerator.spentGalaxies.add(spent);
+    const spent = player.galaxies + GalaxyGenerator.galaxies - value;
+    player.celestials.pelle.galaxyGenerator.spentGalaxies += spent;
   }
 }();
 
@@ -512,4 +509,3 @@ Currency.stardust = new class extends DecimalCurrency {
   get value() { return player.stardust; }
   set value(value) { player.stardust = value; }
 }();
-

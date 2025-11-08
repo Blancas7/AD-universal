@@ -85,7 +85,7 @@ export default {
       </label>
       <AutobuyerInput
         :autobuyer="autobuyer"
-        type="decimal"
+        type="int"
         property="maxGalaxies"
       />
     </template>

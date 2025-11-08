@@ -36,7 +36,7 @@ export default {
           total Time Theorems`;
       }
       if (this.id === 6) {
-        const achRows = (player.rewinds.gt(0) || Perk.firstPerk.isBought) ? "" : ` and ${formatInt(13)} rows of Achievements`;
+        const achRows = (player.rewinds > 0 || Perk.firstPerk.isBought) ? "" : ` and ${formatInt(13)} rows of Achievements`;
         return `Requirement: ${format("1e4000")} Eternity Points${achRows}`;
       }
       return "";
@@ -44,7 +44,7 @@ export default {
     theoremTimeEstimate() {
       if (this.study.isBought || !this.study.cost || this.ttGen.eq(0)) return null;
       const time = Decimal.sub(this.study.cost, this.currTT).dividedBy(this.ttGen);
-      return time.gt(0) ? `Enough TT in ${TimeSpan.fromSeconds(time).toStringShort()}` : null;
+      return time.gt(0) ? `Enough TT in ${TimeSpan.fromSeconds(time.toNumber()).toStringShort()}` : null;
     }
   },
   methods: {

@@ -159,6 +159,10 @@ createInCategory(AutomatorCurrency, "TotalTT", /total[ \t]+tt/i, {
   $autocomplete: "total TT",
   $getter: () => player.timestudy.theorem.plus(TimeTheorems.calculateTimeStudiesCost()),
 });
+createInCategory(AutomatorCurrency, "SpentTT", /spent[ \t]+tt/i, {
+  $autocomplete: "spent TT",
+  $getter: () => new Decimal(GameCache.currentStudyTree.value.spentTheorems[0]),
+});
 
 createInCategory(AutomatorCurrency, "TotalCompletions", /total[ \t]+completions/i, {
   $autocomplete: "total completions",
@@ -170,7 +174,7 @@ createInCategory(AutomatorCurrency, "PendingCompletions", /pending[ \t]+completi
   $getter: () => {
     // If we are not in an EC, pretend like we have a ton of completions so any check for sufficient
     // completions returns true
-    if (!EternityChallenge.isRunning) return DC.NUMMAX;
+    if (!EternityChallenge.isRunning) return Decimal.NUMBER_MAX_VALUE;
     return EternityChallenge.current.gainedCompletionStatus.totalCompletions;
   }
 });

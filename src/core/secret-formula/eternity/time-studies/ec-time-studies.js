@@ -3,7 +3,7 @@ import { DC } from "../../../constants";
 export const ecTimeStudies = [
   {
     id: 1,
-    cost: new Decimal(30),
+    cost: 30,
     requirement: [171],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {
@@ -15,19 +15,19 @@ export const ecTimeStudies = [
   },
   {
     id: 2,
-    cost: new Decimal(35),
+    cost: 35,
     requirement: [171],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {
       resource: "Tickspeed upgrades from Time Dimensions",
       current: () => player.totalTickGained,
-      required: completions => new Decimal(1300 + Math.min(completions, 4) * 150),
+      required: completions => 1300 + Math.min(completions, 4) * 150,
       formatValue: formatInt
     }
   },
   {
     id: 3,
-    cost: new Decimal(40),
+    cost: 40,
     requirement: [171],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {
@@ -39,7 +39,7 @@ export const ecTimeStudies = [
   },
   {
     id: 4,
-    cost: new Decimal(70),
+    cost: 70,
     requirement: [143],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {
@@ -51,31 +51,31 @@ export const ecTimeStudies = [
   },
   {
     id: 5,
-    cost: new Decimal(130),
+    cost: 130,
     requirement: [42],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {
       resource: "Antimatter Galaxies",
       current: () => player.galaxies,
-      required: completions => Decimal.min(completions, 4).times(14).add(160),
+      required: completions => 160 + Math.min(completions, 4) * 14,
       formatValue: formatInt
     }
   },
   {
     id: 6,
-    cost: new Decimal(85),
+    cost: 85,
     requirement: [121],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {
       resource: "Replicanti Galaxies",
       current: () => player.replicanti.galaxies,
-      required: completions => Decimal.min(completions, 4).times(5).add(40),
+      required: completions => 40 + Math.min(completions, 4) * 5,
       formatValue: formatInt
     }
   },
   {
     id: 7,
-    cost: new Decimal(115),
+    cost: 115,
     requirement: [111],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {
@@ -87,7 +87,7 @@ export const ecTimeStudies = [
   },
   {
     id: 8,
-    cost: new Decimal(115),
+    cost: 115,
     requirement: [123],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {
@@ -99,7 +99,7 @@ export const ecTimeStudies = [
   },
   {
     id: 9,
-    cost: new Decimal(415),
+    cost: 415,
     requirement: [151],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {
@@ -111,7 +111,7 @@ export const ecTimeStudies = [
   },
   {
     id: 10,
-    cost: new Decimal(550),
+    cost: 550,
     requirement: [181],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {
@@ -123,7 +123,7 @@ export const ecTimeStudies = [
   },
   {
     id: 11,
-    cost: DC.D1,
+    cost: 1,
     requirement: [231, 232],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {
@@ -133,7 +133,7 @@ export const ecTimeStudies = [
   },
   {
     id: 12,
-    cost: DC.D1,
+    cost: 1,
     requirement: [233, 234],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     secondary: {

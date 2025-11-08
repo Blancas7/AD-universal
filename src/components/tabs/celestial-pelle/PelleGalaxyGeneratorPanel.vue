@@ -11,8 +11,8 @@ export default {
   data() {
     return {
       isUnlocked: false,
-      galaxies: new Decimal(),
-      generatedGalaxies: new Decimal(),
+      galaxies: 0,
+      generatedGalaxies: 0,
       galaxiesPerSecond: 0,
       cap: 0,
       isCapped: false,
@@ -33,15 +33,15 @@ export default {
       return GalaxyGeneratorUpgrades.all;
     },
     galaxyText() {
-      let text = format(Decimal.max(this.galaxies, 0), 2);
-      if (this.galaxies.lt(0)) text += ` [${format(this.galaxies, 2)}]`;
+      let text = format(Math.max(this.galaxies, 0), 2);
+      if (this.galaxies < 0) text += ` [${format(this.galaxies, 2)}]`;
       return text;
     },
     sacrificeText() {
       return this.capRift.galaxyGeneratorText.replace("$value", this.capRiftName);
     },
     emphasisedStart() {
-      return Decimal.pow(this.generatedGalaxies.div(this.cap), 0.45).toNumber();
+      return Math.pow(this.generatedGalaxies / this.cap, 0.45);
     }
   },
   methods: {
@@ -50,8 +50,8 @@ export default {
       this.isCapped = GalaxyGenerator.isCapped;
       this.isCollapsed = player.celestials.pelle.collapsed.galaxies && !this.isCapped;
       if (this.isCollapsed || !this.isUnlocked) return;
-      this.galaxies.copyFrom(player.galaxies.add(GalaxyGenerator.galaxies));
-      this.generatedGalaxies.copyFrom(GalaxyGenerator.generatedGalaxies);
+      this.galaxies = player.galaxies + GalaxyGenerator.galaxies;
+      this.generatedGalaxies = GalaxyGenerator.generatedGalaxies;
       this.galaxiesPerSecond = GalaxyGenerator.gainPerSecond;
       this.cap = GalaxyGenerator.generationCap;
       this.capRift = GalaxyGenerator.capRift;

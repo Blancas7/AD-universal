@@ -1,5 +1,3 @@
-import { isDecimal } from "../../../utility/type-check";
-
 export const END_STATE_MARKERS = {
   // Tab zalgoification starts as soon as endState > 0
   GAME_END: 1,
@@ -18,9 +16,9 @@ export const END_STATE_MARKERS = {
 
 export const GameEnd = {
   get endState() {
-    if (this.removeAdditionalEnd || player.bypassEnd) return this.additionalEnd;
-    return Math.max(player.celestials.pelle.records.totalAntimatter.add(1).log10().add(1).log10().sub(8.7)
-      .div(Math.log10(9e15) - 8.7).min(1).toNumber() + this.additionalEnd, 0);
+    if (this.removeAdditionalEnd) return this.additionalEnd;
+    return Math.max((Math.log10(player.celestials.pelle.records.totalAntimatter.plus(1).log10() + 1) - 8.7) /
+      (Math.log10(9e15) - 8.7) + this.additionalEnd, 0);
   },
 
   _additionalEnd: 0,
@@ -36,8 +34,7 @@ export const GameEnd = {
   creditsClosed: false,
   creditsEverClosed: false,
 
-  gameLoop(diffr) {
-    const diff = isDecimal(diffr) ? diffr.toNumber() : diffr;
+  gameLoop(diff) {
     if (this.removeAdditionalEnd) {
       this.additionalEnd -= Math.min(diff / 200, 0.5);
       if (this.additionalEnd < 4) {

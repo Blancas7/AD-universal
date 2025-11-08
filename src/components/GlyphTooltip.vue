@@ -1,6 +1,4 @@
 <script>
-import { GlyphInfo } from "../core/secret-formula/reality/core-glyph-info";
-
 import GlyphTooltipEffect from "@/components/GlyphTooltipEffect";
 
 export default {
@@ -14,15 +12,15 @@ export default {
       required: true
     },
     strength: {
-      type: Decimal,
+      type: Number,
       required: true
     },
     level: {
-      type: Decimal,
+      type: Number,
       required: true
     },
     effects: {
-      type: Array,
+      type: Number,
       required: true
     },
     id: {
@@ -31,19 +29,19 @@ export default {
       default: 0,
     },
     sacrificeReward: {
-      type: Decimal,
+      type: Number,
       required: false,
-      default: new Decimal(),
+      default: 0,
     },
     refineReward: {
-      type: Decimal,
+      type: Number,
       required: false,
-      default: new Decimal(),
+      default: 0,
     },
     uncappedRefineReward: {
-      type: Decimal,
+      type: Number,
       required: false,
-      default: new Decimal(),
+      default: 0,
     },
     currentAction: {
       type: String,
@@ -59,9 +57,9 @@ export default {
       default: true,
     },
     displayLevel: {
-      type: Decimal,
+      type: Number,
       required: false,
-      default: new Decimal(),
+      default: 0,
     },
     changeWatcher: {
       type: Number,
@@ -79,10 +77,12 @@ export default {
       return GameUI.touchDevice;
     },
     effectiveLevel() {
-      return this.displayLevel.neq(0) ? this.displayLevel : this.level;
+      return this.displayLevel ? this.displayLevel : this.level;
     },
     sortedEffects() {
-      return getGlyphEffectValuesFromArray(this.effects, this.effectiveLevel, this.strength, this.type);
+      return getGlyphEffectValuesFromBitmask(this.effects, this.effectiveLevel, this.strength, this.type)
+        .filter(effect =>
+          GlyphEffects[effect.id].isGenerated === generatedTypes.includes(this.type));
     },
     rarityInfo() {
       return getRarity(this.strength);
@@ -119,13 +119,13 @@ export default {
       }
     },
     isLevelCapped() {
-      return this.displayLevel.neq(0) && this.displayLevel.lt(this.level);
+      return this.displayLevel && this.displayLevel < this.level;
     },
     isLevelBoosted() {
-      return this.displayLevel.neq(0) && this.displayLevel.gt(this.level);
+      return this.displayLevel && this.displayLevel > this.level;
     },
     rarityText() {
-      if (!GlyphInfo[this.type].hasRarity) return "";
+      if (!GlyphTypes[this.type].hasRarity) return "";
       const strength = Pelle.isDoomed ? Pelle.glyphStrength : this.strength;
       return `| Rarity:
         <span style="color: ${this.descriptionStyle.color}">${formatRarity(strengthToRarity(strength))}</span>`;
@@ -227,7 +227,7 @@ export default {
       return Theme.current().isDark() ? "#cccccc" : "black";
     },
     sacrificeText() {
-      if (!GlyphInfo[this.type].hasSacrifice) return "";
+      if (this.type === "companion" || this.type === "cursed") return "";
       const powerText = `${format(this.sacrificeReward, 2, 2)}`;
       const isCurrentAction = this.currentAction === "sacrifice";
       return `<span style="font-weight: ${isCurrentAction ? "bold" : ""};">
@@ -235,12 +235,11 @@ export default {
               </span>`;
     },
     refineText() {
-      if (!GlyphInfo[this.type].hasAlchemyResource) return "";
+      if (this.type === "companion" || this.type === "cursed" || this.type === "reality") return "";
       if (!AlchemyResource[this.type].isUnlocked) return "";
-      let refinementText = `${format(this.uncappedRefineReward, 2, 2)} ${GlyphInfo[this.type].regularGlyphSymbol}`;
-      if (this.uncappedRefineReward.neq(this.refineReward)) {
-        // eslint-disable-next-line max-len
-        refinementText += ` (Actual value due to cap: ${format(this.refineReward, 2, 2)} ${GlyphInfo[this.type].regularGlyphSymbol})`;
+      let refinementText = `${format(this.uncappedRefineReward, 2, 2)} ${GLYPH_SYMBOLS[this.type]}`;
+      if (this.uncappedRefineReward !== this.refineReward) {
+        refinementText += ` (Actual value due to cap: ${format(this.refineReward, 2, 2)} ${GLYPH_SYMBOLS[this.type]})`;
       }
       const isCurrentAction = this.currentAction === "refine";
       return `<span style="font-weight: ${isCurrentAction ? "bold" : ""};">

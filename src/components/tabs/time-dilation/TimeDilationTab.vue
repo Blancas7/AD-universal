@@ -14,9 +14,9 @@ export default {
       dilatedTime: new Decimal(),
       dilatedTimeIncome: new Decimal(),
       galaxyThreshold: new Decimal(),
-      baseGalaxies: new Decimal(),
-      totalGalaxies: new Decimal(),
-      tachyonGalaxyGain: new Decimal(),
+      baseGalaxies: 0,
+      totalGalaxies: 0,
+      tachyonGalaxyGain: 1,
       hasPelleDilationUpgrades: false,
       galaxyTimeEstimate: "",
       maxDT: new Decimal(),
@@ -69,7 +69,7 @@ export default {
       return DilationUpgrade.ttGenerator;
     },
     baseGalaxyText() {
-      return `${format(this.baseGalaxies, 3)} Base`;
+      return `${formatInt(this.baseGalaxies)} Base`;
     },
     hasMaxText: () => PlayerProgress.rewindUnlocked() || (PlayerProgress.realityUnlocked() && !Pelle.isDoomed),
     allRebuyables() {
@@ -87,9 +87,6 @@ export default {
     },
   },
   methods: {
-    maxPurchaseDilationUpgrades() {
-      maxPurchaseDilationUpgrades();
-    },
     update() {
       this.tachyons.copyFrom(Currency.tachyonParticles);
       this.dilatedTime.copyFrom(Currency.dilatedTime);
@@ -107,15 +104,15 @@ export default {
         this.dilatedTimeIncome = rawDTGain;
       }
       this.galaxyThreshold.copyFrom(player.dilation.nextThreshold);
-      this.baseGalaxies.copyFrom(player.dilation.baseTachyonGalaxies);
-      this.totalGalaxies.copyFrom(player.dilation.totalTachyonGalaxies);
+      this.baseGalaxies = player.dilation.baseTachyonGalaxies;
+      this.totalGalaxies = player.dilation.totalTachyonGalaxies;
       this.hasPelleDilationUpgrades = PelleRifts.paradox.milestones[0].canBeApplied;
-      if (this.baseGalaxies.lt(500) && DilationUpgrade.doubleGalaxies.isBought) {
-        this.tachyonGalaxyGain = new Decimal(DilationUpgrade.doubleGalaxies.effectValue);
+      if (this.baseGalaxies < 500 && DilationUpgrade.doubleGalaxies.isBought) {
+        this.tachyonGalaxyGain = DilationUpgrade.doubleGalaxies.effectValue;
       } else {
-        this.tachyonGalaxyGain = new Decimal(1);
+        this.tachyonGalaxyGain = 1;
       }
-      this.tachyonGalaxyGain = this.tachyonGalaxyGain.times(DilationUpgrade.galaxyMultiplier.effectValue);
+      this.tachyonGalaxyGain *= DilationUpgrade.galaxyMultiplier.effectValue;
       this.maxDT.copyFrom(player.records.thisReality.maxDT);
 
       const estimateText = getDilationTimeEstimate(this.maxDT);
@@ -147,7 +144,7 @@ export default {
     </span>
     <span>
       Next
-      <span v-if="tachyonGalaxyGain.gt(1)">{{ format(tachyonGalaxyGain, 3, 0) }}</span>
+      <span v-if="tachyonGalaxyGain > 1">{{ formatInt(tachyonGalaxyGain) }}</span>
       {{ pluralize("Tachyon Galaxy", tachyonGalaxyGain) }} at
       <span
         class="c-dilation-tab__galaxy-threshold"
@@ -157,7 +154,7 @@ export default {
       <span
         class="c-dilation-tab__galaxies"
         :ach-tooltip="baseGalaxyText"
-      >{{ format(totalGalaxies, 3, 0) }}</span>
+      >{{ formatInt(totalGalaxies) }}</span>
       {{ pluralize("Tachyon Galaxy", totalGalaxies) }}
     </span>
     <span v-if="hasMaxText">
@@ -167,12 +164,6 @@ export default {
         class="max-accent"
       >{{ format(maxDT, 2, 1) }}</span>.
     </span>
-    <button
-      class="o-primary-btn l-button-container"
-      @click="maxPurchaseDilationUpgrades"
-    >
-      Max Dilation Upgrades
-    </button>
     <div class="l-dilation-upgrades-grid">
       <div
         v-for="(upgradeRow, row) in allRebuyables"

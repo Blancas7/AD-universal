@@ -1,4 +1,4 @@
-import * as ADNotations from "adnot-beport-small";
+import * as ADNotations from "@antimatter-dimensions/notations";
 
 import { DEV } from "@/env";
 import { devMigrations } from "./dev-migrations";
@@ -207,10 +207,6 @@ export const GameStorage = {
     // verification then here's where we'd do it
     if (save.money === undefined && save.antimatter === undefined) return "Save does not have antimatter property";
 
-    if (save.version === undefined || save.version < 25) {
-      return "Save is from an earlier version of AD. Import to vanilla first."
-    }
-
     // Recursively check for any NaN props and add any we find to an array
     const invalidProps = [];
     function checkNaN(obj, path) {
@@ -340,7 +336,7 @@ export const GameStorage = {
   // since these may cause the backup timer to be significantly behind
   resetBackupTimer() {
     const latestBackupTime = Object.values(this.lastBackupTimes).map(t => t && t.backupTimer).max();
-    player.backupTimer = Math.max(this.oldBackupTimer, player.backupTimer, latestBackupTime.toNumber());
+    player.backupTimer = Math.max(this.oldBackupTimer, player.backupTimer, latestBackupTime);
   },
 
   // Saves the current game state to the first reserve slot it finds
@@ -424,7 +420,6 @@ export const GameStorage = {
     Cloud.resetTempState();
   },
 
-  // eslint-disable-next-line complexity
   loadPlayerObject(playerObject) {
     this.saved = 0;
 
@@ -463,37 +458,6 @@ export const GameStorage = {
 
       // Post-reality migrations are separated from pre-reality because they need to happen after any dev migrations,
       // which themselves must happen after the deepmerge
-
-      // We do this because the codeis dumb and doesnt redecimalize if we dont for some reason
-      // Also, if we do it later i think it fucks up the code down the line somehow
-      if (player.version >= 83) {
-        const fixGlyph = glyph => {
-          glyph.level = new Decimal(glyph.level);
-          glyph.rawLevel = new Decimal(glyph.rawLevel);
-          glyph.strength = new Decimal(glyph.strength);
-          // eslint-disable-next-line consistent-return
-          return glyph;
-        };
-        player.celestials.teresa.bestAMSet = player.celestials.teresa.bestAMSet.map(n => fixGlyph(n));
-        player.celestials.v.runGlyphs = player.celestials.v.runGlyphs.map(n => n.map(g => fixGlyph(g)));
-        player.reality.glyphs.active = player.reality.glyphs.active.map(n => fixGlyph(n));
-        player.reality.glyphs.inventory = player.reality.glyphs.inventory.map(n => fixGlyph(n));
-        for (let i = 0; i < 7; i++) {
-          player.reality.glyphs.sets[i].glyphs = player.reality.glyphs.sets[i].glyphs.map(n => fixGlyph(n));
-        }
-        player.records.bestReality.RMSet = player.records.bestReality.RMSet?.map(n => fixGlyph(n));
-        player.records.bestReality.RMminSet = player.records.bestReality.RMminSet?.map(n => fixGlyph(n));
-        player.records.bestReality.glyphLevelSet = player.records.bestReality.glyphLevelSet?.map(n => fixGlyph(n));
-        player.records.bestReality.imCapSet = player.records.bestReality.imCapSet?.map(n => fixGlyph(n));
-        player.records.bestReality.laitelaSet = player.records.bestReality.laitelaSet?.map(n => fixGlyph(n));
-        player.records.bestReality.speedSet = player.records.bestReality.speedSet?.map(n => fixGlyph(n));
-      }
-      for (const item in player.reality.glyphs.filter.types) {
-        player.reality.glyphs.filter.types[item].rarity = new Decimal(player.reality.glyphs.filter.types[item].rarity);
-        // eslint-disable-next-line max-len
-        // Eplayer.reality.glyphs.filter.types[item].score = new Decimal(player.reality.glyphs.filter.types[item].score);
-      }
-
       player = migrations.patchPostReality(player);
     }
 
@@ -572,11 +536,11 @@ export const GameStorage = {
     // manually above
     GameIntervals.restart();
     GameStorage.ignoreBackupTimer = false;
-    Enslaved.nextTickDiff = new Decimal(player.options.updateRate);
+    Enslaved.nextTickDiff = player.options.updateRate;
     // The condition for this secret achievement is only checked when the player is actively storing real time, either
     // when online or simulating time. When only storing offline, the condition is never actually entered in the
     // gameLoop due to the option technically being false, so we need to check it on-load too.
-    if (player.celestials.enslaved.storedReal.gte(24 * 60 * 60 * 1000)) SecretAchievement(46).unlock();
+    if (player.celestials.enslaved.storedReal > (24 * 60 * 60 * 1000)) SecretAchievement(46).unlock();
     GameUI.update();
 
     for (const resource of AlchemyResources.all) {

@@ -6,7 +6,6 @@ export default {
     prevRunInfo: {
       type: Object,
       required: false,
-      // eslint-disable-next-line no-empty-function
       default: () => {}
     },
     index: {
@@ -70,7 +69,7 @@ export default {
       return Time.toDateTimeString(this.prevRunInfo.startDate);
     },
     finalTime() {
-      return TimeSpan.fromMilliseconds(new Decimal(this.prevRunInfo.records.max())).toStringShort(true, true);
+      return TimeSpan.fromMilliseconds(this.prevRunInfo.records.max()).toStringShort(true, true);
     },
   },
 };

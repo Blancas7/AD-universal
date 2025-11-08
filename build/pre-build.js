@@ -1,7 +1,5 @@
 const fs = require("fs");
-
 const path = require("path");
-
 const browserslist = require("browserslist-useragent-regexp");
 
 const userAgentRegExp = browserslist.getUserAgentRegExp({ allowHigherVersions: true });

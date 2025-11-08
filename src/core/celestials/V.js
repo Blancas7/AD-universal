@@ -1,4 +1,3 @@
-import { DC } from "../constants";
 import { BitUpgradeState, GameMechanicState } from "../game-mechanics";
 import { GameDatabase } from "../secret-formula/game-database";
 
@@ -34,7 +33,7 @@ class VRunUnlockState extends GameMechanicState {
 
   get isReduced() {
     if (player.celestials.v.goalReductionSteps[this.id] === 0) return false;
-    return (VUnlocks.shardReduction.canBeApplied && this.reduction.gt(0));
+    return (VUnlocks.shardReduction.canBeApplied && this.reduction > 0);
   }
 
   get reductionCost() {
@@ -53,17 +52,13 @@ class VRunUnlockState extends GameMechanicState {
 
   get reduction() {
     const value = this.conditionBaseValue;
-    return Decimal.clamp(this.config.shardReduction(this.tiersReduced), 0, this.config.maxShardReduction(value));
+    return Math.clamp(this.config.shardReduction(this.tiersReduced), 0, this.config.maxShardReduction(value));
   }
 
   get conditionValue() {
     let value = this.conditionBaseValue;
     if (!this.isReduced) return value;
-    if (value instanceof Decimal) {
-      value = value.sub(this.reduction);
-    } else {
-      value = Decimal.sub(value, this.reduction).toNumber();
-    }
+    value -= this.reduction;
     return value;
   }
 
@@ -200,13 +195,17 @@ export const V = {
     this.spaceTheorems = sum;
   },
   reset() {
-    player.celestials.v.unlockBits = 0;
-    player.celestials.v.run = false;
-    player.celestials.v.runUnlocks = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-    player.celestials.v.goalReductionSteps = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-    player.celestials.v.STSpent = 0;
-    player.celestials.v.runGlyphs = [[], [], [], [], [], [], [], [], []];
-    player.celestials.v.runRecords = [-10, DC.D0, DC.D0, DC.D0, DC.D0, DC.D0, 0, DC.D0, DC.D0];
+    player.celestials.v = {
+      unlockBits: 0,
+      run: false,
+      quoteBits: player.celestials.v.quoteBits,
+      runUnlocks: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      goalReductionSteps: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      STSpent: 0,
+      runGlyphs: [[], [], [], [], [], [], [], [], []],
+      runRecords: [-10, 0, 0, 0, 0, 0, 0, 0, 0],
+      wantsFlipped: true,
+    };
     this.spaceTheorems = 0;
   },
   get availableST() {

@@ -36,7 +36,7 @@ export default {
       isAffordable: false,
       isAutoUnlocked: false,
       isAutobuyerOn: false,
-      boughtAmount: new Decimal(),
+      boughtAmount: 0,
       currentDT: new Decimal(0),
       currentDTGain: new Decimal(0),
       timeEstimate: "",
@@ -85,7 +85,7 @@ export default {
         this.isAffordable = upgrade.isAffordable;
         this.isCapped = upgrade.isCapped;
         const autobuyer = Autobuyer.dilationUpgrade(upgrade.id);
-        this.boughtAmount.copyFrom(upgrade.boughtAmount);
+        this.boughtAmount = upgrade.boughtAmount;
         if (!autobuyer) return;
         this.isAutoUnlocked = autobuyer.isUnlocked;
         this.isAutobuyerOn = autobuyer.isActive;
@@ -126,7 +126,7 @@ export default {
           name="o-dilation-upgrade__description"
         />
         <EffectDisplay
-          :key="boughtAmount.toNumber()"
+          :key="boughtAmount"
           br
           :config="upgrade.config"
         />

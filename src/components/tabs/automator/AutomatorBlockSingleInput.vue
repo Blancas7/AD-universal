@@ -404,6 +404,6 @@ export default {
 .l-blob {
   font-size: 1.8rem;
   background: black;
-  color: #ffcc22;
+  color: #fc2;
 }
 </style>

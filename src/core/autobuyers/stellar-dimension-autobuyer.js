@@ -37,7 +37,7 @@ export class StellarDimensionAutobuyerState extends IntervaledAutobuyerState {
     const tier = this.tier;
     if (!StellarDimension(tier).isAvailableForPurchase) return;
     super.tick();
-    if (Currency.unityPoints.value.add(1).log10().gte(10)) {
+    if (Currency.unityPoints.exponent >= 10) {
       buyMaxStellarDimension(tier, 1, true);
     } else {
       buySingleStellarDimension(tier, true);

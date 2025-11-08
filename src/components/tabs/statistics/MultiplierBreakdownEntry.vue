@@ -1,4 +1,6 @@
 <script>
+import { DC } from "@/core/constants";
+
 import { BreakdownEntryInfo } from "./breakdown-entry-info";
 import { getResourceEntryInfoGroups } from "./breakdown-entry-info-group";
 import { PercentageRollingAverage } from "./percentage-rolling-average";
@@ -45,7 +47,7 @@ export default {
       // multipliers are split up; the animation which results from not doing this looks very awkward
       lastLayoutChange: Date.now(),
       now: Date.now(),
-      totalMultiplier: new Decimal(),
+      totalMultiplier: DC.D1,
       totalPositivePower: 1,
       replacePowers: player.options.multiplierTab.replacePowers,
       inNC12: false,
@@ -134,30 +136,28 @@ export default {
     },
     calculatePercents() {
       const powList = this.entries.map(e => e.data.pow);
-      const totalPosPow = powList.filter(p => p.gt(1)).reduce((x, y) => x.mul(y), new Decimal(1));
-      const totalNegPow = powList.filter(p => p.lt(1)).reduce((x, y) => x.mul(y), new Decimal(1));
-      const log10Mult = (this.resource.fakeValue ?? this.resource.mult).log10().div(totalPosPow);
-      const isEmpty = log10Mult.eq(0);
+      const totalPosPow = powList.filter(p => p > 1).reduce((x, y) => x * y, 1);
+      const totalNegPow = powList.filter(p => p < 1).reduce((x, y) => x * y, 1);
+      const log10Mult = (this.resource.fakeValue ?? this.resource.mult).log10() / totalPosPow;
+      const isEmpty = log10Mult === 0;
       if (!isEmpty) {
         this.lastNotEmptyAt = Date.now();
       }
       let percentList = [];
       for (const entry of this.entries) {
-        const multFrac = log10Mult.eq(0)
-          ? new Decimal()
-          : Decimal.log10(entry.data.mult).div(log10Mult);
-        const powFrac = totalPosPow.eq(1)
-          ? new Decimal()
-          : Decimal.log(entry.data.pow, Math.E).div(Decimal.log(totalPosPow, Math.E));
+        const multFrac = log10Mult === 0
+          ? 0
+          : Decimal.log10(entry.data.mult) / log10Mult;
+        const powFrac = totalPosPow === 1 ? 0 : Math.log(entry.data.pow) / Math.log(totalPosPow);
 
         // Handle nerf powers differently from everything else in order to render them with the correct bar percentage
-        const perc = entry.data.pow.gte(1)
-          ? multFrac.div(totalPosPow).add(powFrac.mul(new Decimal(1).sub(new Decimal(1).div(totalPosPow))))
-          : Decimal.log(entry.data.pow, Math.E).div(Decimal.log(totalNegPow)).mul(totalNegPow.sub(1));
+        const perc = entry.data.pow >= 1
+          ? multFrac / totalPosPow + powFrac * (1 - 1 / totalPosPow)
+          : Math.log(entry.data.pow) / Math.log(totalNegPow) * (totalNegPow - 1);
 
         // This is clamped to a minimum of something that's still nonzero in order to show it at <0.1% instead of 0%
         percentList.push(
-          [entry.ignoresNerfPowers, nerfBlacklist.includes(entry.key) ? Decimal.clampMin(perc, 0.0001) : perc]
+          [entry.ignoresNerfPowers, nerfBlacklist.includes(entry.key) ? Math.clampMin(perc, 0.0001) : perc]
         );
       }
 
@@ -334,7 +334,7 @@ export default {
           .filter(entry => entry.isVisible && entry.isDilated)
           .map(entry => entry.mult)
           .map(val => this.applyDilationExp(val, 1 / this.dilationExponent))
-          .reduce((x, y) => x.times(y), new Decimal(1));
+          .reduce((x, y) => x.times(y), DC.D1);
         beforeMult = dilProd.neq(1) ? dilProd : this.applyDilationExp(baseMult, 1 / this.dilationExponent);
         afterMult = resource.mult;
       } else {
@@ -470,6 +470,8 @@ export default {
   padding: 0.5rem;
   font-weight: normal;
   background-color: var(--color-base);
+
+  -webkit-tap-highlight-color: transparent;
 }
 
 .c-multiplier-entry-root-container {
@@ -500,17 +502,15 @@ export default {
 }
 
 .c-bar-highlight {
-  animation: a-glow-bar 1s infinite;
+  animation: a-glow-bar 2s infinite;
 }
 
 @keyframes a-glow-bar {
   0% { box-shadow: inset 0 0 0.3rem 0; }
-
   50% {
     box-shadow: inset 0 0 0.6rem 0;
     filter: brightness(130%);
   }
-
   100% { box-shadow: inset 0 0 0.3rem 0; }
 }
 
@@ -563,7 +563,7 @@ export default {
 .c-single-entry-highlight {
   border: 0.1rem solid;
   font-weight: bold;
-  animation: a-glow-text 1s infinite;
+  animation: a-glow-text 2s infinite;
 }
 
 @keyframes a-glow-text {

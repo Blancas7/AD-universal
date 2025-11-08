@@ -19,7 +19,7 @@ class GlyphEffectState {
 
 export const GlyphEffect = {
   dimBoostPower: new GlyphEffectState("powerdimboost", {
-    adjustApply: value => Decimal.max(1, value)
+    adjustApply: value => Math.max(1, value)
   }),
   ipMult: new GlyphEffectState("infinityIP", {
     adjustApply: value => Decimal.max(1, value)
@@ -45,8 +45,7 @@ export function getAdjustedGlyphEffectUncached(effectKey) {
  * @return {number | Decimal}
  */
 export function getAdjustedGlyphEffect(effectKey) {
-  // TODO: make it always be decimal by default
-  return new Decimal(GameCache.glyphEffects.value[effectKey]);
+  return GameCache.glyphEffects.value[effectKey];
 }
 
 /**
@@ -68,10 +67,10 @@ export function getGlyphEffectValues(effectKey) {
   if (!orderedEffectList.includes(effectKey)) {
     throw new Error(`Unknown Glyph effect requested "${effectKey}"'`);
   }
-  const r = player.reality.glyphs.active
-    .filter(glyph => glyph.effects.includes(effectKey))
+  return player.reality.glyphs.active
+    .filter(glyph => ((1 << GlyphEffects[effectKey].bitmaskIndex) & glyph.effects) !== 0)
+    .filter(glyph => generatedTypes.includes(glyph.type) === GlyphEffects[effectKey].isGenerated)
     .map(glyph => getSingleGlyphEffectFromBitmask(effectKey, glyph));
-  return r;
 }
 
 // Combines all specified glyph effects, reduces some boilerplate
@@ -85,10 +84,10 @@ function getTotalEffect(effectKey) {
 export function separateEffectKey(effectKey) {
   let type = "";
   let effect = "";
-  for (let i = 0; i < GlyphInfo.glyphTypes.length; i++) {
-    if (effectKey.substring(0, GlyphInfo.glyphTypes[i].length) === GlyphInfo.glyphTypes[i]) {
-      type = GlyphInfo.glyphTypes[i];
-      effect = effectKey.substring(GlyphInfo.glyphTypes[i].length);
+  for (let i = 0; i < GLYPH_TYPES.length; i++) {
+    if (effectKey.substring(0, GLYPH_TYPES[i].length) === GLYPH_TYPES[i]) {
+      type = GLYPH_TYPES[i];
+      effect = effectKey.substring(GLYPH_TYPES[i].length);
       break;
     }
   }
@@ -109,20 +108,12 @@ export function getGlyphEffectValuesFromBitmask(bitmask, level, baseStrength, ty
     }));
 }
 
-// eslint-disable-next-line max-params
-export function getGlyphEffectValuesFromArray(array, level, baseStrength, type) {
-  const strength = (Pelle.isDoomed && type !== "companion") ? Pelle.glyphStrength : baseStrength;
-  return getGlyphEffectsFromArray(array)
-    .map(effect => ({
-      id: effect.id,
-      value: effect.effect(level, strength)
-    }));
-}
-
 // Pulls out a single effect value from a glyph's bitmask, returning just the value (nothing for missing effects)
 export function getSingleGlyphEffectFromBitmask(effectName, glyph) {
   const glyphEffect = GlyphEffects[effectName];
-  if (!glyph.effects.includes(effectName)) return undefined;
+  if ((glyph.effects & (1 << glyphEffect.bitmaskIndex)) === 0) {
+    return undefined;
+  }
   return glyphEffect.effect(getAdjustedGlyphLevel(glyph), Pelle.isDoomed ? Pelle.glyphStrength : glyph.strength);
 }
 

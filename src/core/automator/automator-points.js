@@ -12,18 +12,18 @@ export const AutomatorPoints = {
     return this.perks
       .filter(p => p.isBought)
       .map(p => p.automatorPoints)
-      .nSum();
+      .sum();
   },
 
   get pointsFromUpgrades() {
     return this.upgrades
       .filter(p => p.isBought)
       .map(p => p.automatorPoints)
-      .nSum();
+      .sum();
   },
 
   get pointsFromOther() {
-    return GameDatabase.reality.automator.otherAutomatorPoints.map(s => s.automatorPoints()).nSum();
+    return GameDatabase.reality.automator.otherAutomatorPoints.map(s => s.automatorPoints()).sum();
   },
 
   get totalPoints() {

@@ -10,7 +10,7 @@ export function startEternityChallenge() {
   Replicanti.reset();
   resetChallengeStuff();
   AntimatterDimensions.reset();
-  player.replicanti.galaxies = DC.D0;
+  player.replicanti.galaxies = 0;
   Currency.infinityPoints.reset();
   InfinityDimensions.resetAmount();
   player.records.bestInfinity.bestIPminEternity = DC.D0;
@@ -162,8 +162,8 @@ export class EternityChallengeState extends GameMechanicState {
 
   completionsAtIP(ip) {
     if (ip.lt(this.initialGoal)) return 0;
-    const completions = (ip.dividedBy(this.initialGoal)).max(1).log10().div(this.goalIncrease.max(1).log10()).add(1);
-    return Decimal.min(Decimal.floor(completions), this.maxCompletions).toNumber();
+    const completions = 1 + (ip.dividedBy(this.initialGoal)).log10() / this.goalIncrease.log10();
+    return Math.min(Math.floor(completions), this.maxCompletions);
   }
 
   addCompletion(auto = false) {
@@ -192,7 +192,7 @@ export class EternityChallengeState extends GameMechanicState {
   start(auto) {
     if (EternityChallenge.isRunning) return false;
     if (!this.isUnlocked) return false;
-    const maxInversion = player.requirementChecks.reality.slowestBH.lte(1e-300);
+    const maxInversion = player.requirementChecks.reality.slowestBH <= 1e-300;
     if (this.id === 12 && ImaginaryUpgrade(24).isLockingMechanics && Ra.isRunning && maxInversion) {
       if (!auto) ImaginaryUpgrade(24).tryShowWarningModal("enter Eternity Challenge 12");
       return false;
@@ -209,8 +209,8 @@ export class EternityChallengeState extends GameMechanicState {
     if (Player.canEternity) eternity(false, auto, { enteringEC: true });
     player.challenge.eternity.current = this.id;
     if (this.id === 12) {
-      if (enteringGamespeed.lt(1e-3)) SecretAchievement(42).unlock();
-      player.requirementChecks.reality.slowestBH = DC.D1;
+      if (enteringGamespeed < 0.001) SecretAchievement(42).unlock();
+      player.requirementChecks.reality.slowestBH = 1;
     }
     if (Enslaved.isRunning) {
       if (this.id === 6 && this.completions === 5) EnslavedProgress.ec6.giveProgress();
@@ -310,19 +310,19 @@ export const EternityChallenges = {
   get completions() {
     return EternityChallenges.all
       .map(ec => ec.completions)
-      .nSum();
+      .sum();
   },
 
   get maxCompletions() {
     return EternityChallenges.all
       .map(ec => ec.maxCompletions)
-      .nSum();
+      .sum();
   },
 
   get remainingCompletions() {
     return EternityChallenges.all
       .map(ec => ec.remainingCompletions)
-      .nSum();
+      .sum();
   },
 
   autoComplete: {
@@ -332,7 +332,7 @@ export const EternityChallenges = {
         (ImaginaryUpgrade(15).isLockingMechanics && shouldPreventEC7 &&
           !Array.range(1, 6).some(ec => !EternityChallenge(ec).isFullyCompleted));
       if (!player.reality.autoEC || Pelle.isDisabled("autoec") || hasUpgradeLock) {
-        player.reality.lastAutoEC = Decimal.clampMax(player.reality.lastAutoEC, this.interval);
+        player.reality.lastAutoEC = Math.clampMax(player.reality.lastAutoEC, this.interval);
         return;
       }
       if (Ra.unlocks.instantECAndRealityUpgradeAutobuyers.canBeApplied) {
@@ -348,12 +348,12 @@ export const EternityChallenges = {
       }
       const interval = this.interval;
       let next = this.nextChallenge;
-      while (player.reality.lastAutoEC.sub(interval).gt(0) && next !== undefined) {
-        player.reality.lastAutoEC = player.reality.lastAutoEC.sub(interval);
+      while (player.reality.lastAutoEC - interval > 0 && next !== undefined) {
+        player.reality.lastAutoEC -= interval;
         next.addCompletion(true);
         next = this.nextChallenge;
       }
-      player.reality.lastAutoEC = player.reality.lastAutoEC.mod(interval);
+      player.reality.lastAutoEC %= interval;
     },
 
     get nextChallenge() {
@@ -361,14 +361,14 @@ export const EternityChallenges = {
     },
 
     get interval() {
-      if (!Perk.autocompleteEC1.canBeApplied) return DC.BEMAX;
+      if (!Perk.autocompleteEC1.canBeApplied) return Infinity;
       let minutes = Effects.min(
         Number.MAX_VALUE,
         Perk.autocompleteEC1,
         Perk.autocompleteEC2,
         Perk.autocompleteEC3
       );
-      minutes = minutes.div(VUnlocks.fastAutoEC.effectOrDefault(1));
+      minutes /= VUnlocks.fastAutoEC.effectOrDefault(1);
       return TimeSpan.fromMinutes(minutes).totalMilliseconds;
     }
   }

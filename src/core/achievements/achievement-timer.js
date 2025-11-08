@@ -1,20 +1,18 @@
-import { DC } from "../constants";
-
 class AchievementTimer {
   constructor(isRealTime) {
-    this.time = DC.D0;
+    this.time = 0;
     this.realTime = isRealTime;
   }
 
   reset() {
-    this.time = DC.D0;
+    this.time = 0;
   }
 
   advance() {
     const addedTime = this.realTime
-      ? Time.realDeltaTime.totalSeconds
-      : Time.trueDeltaTime.totalSeconds;
-    this.time = this.time.add(addedTime);
+      ? Time.unscaledDeltaTime.totalSeconds
+      : Time.deltaTime;
+    this.time += addedTime;
   }
 
   check(condition, duration) {
@@ -23,7 +21,7 @@ class AchievementTimer {
       return false;
     }
     this.advance();
-    return this.time.gte(duration);
+    return this.time >= duration;
   }
 }
 

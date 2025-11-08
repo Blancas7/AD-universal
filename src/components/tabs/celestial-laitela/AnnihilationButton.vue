@@ -4,13 +4,13 @@ export default {
   data() {
     return {
       darkMatter: new Decimal(0),
-      darkMatterMult: new Decimal(),
-      darkMatterMultGain: new Decimal(),
+      darkMatterMult: 0,
+      darkMatterMultGain: 0,
       autobuyerUnlocked: false,
       annihilationButtonVisible: false,
       matterRequirement: 0,
       darkMatterMultRatio: 0,
-      autoAnnihilationInput: new Decimal(),
+      autoAnnihilationInput: player.auto.annihilation.multiplier,
       isEnabled: true,
     };
   },
@@ -22,8 +22,8 @@ export default {
   methods: {
     update() {
       this.darkMatter.copyFrom(Currency.darkMatter);
-      this.darkMatterMult.copyFrom(Laitela.darkMatterMult);
-      this.darkMatterMultGain.copyFrom(Laitela.darkMatterMultGain);
+      this.darkMatterMult = Laitela.darkMatterMult;
+      this.darkMatterMultGain = Laitela.darkMatterMultGain;
       this.autobuyerUnlocked = Autobuyer.annihilation.isUnlocked;
       this.annihilationButtonVisible = Laitela.canAnnihilate || this.autobuyerUnlocked;
       this.matterRequirement = Laitela.annihilationDMRequirement;
@@ -34,9 +34,9 @@ export default {
       Laitela.annihilate();
     },
     handleAutoAnnihilationInputChange() {
-      const float = new Decimal(this.autoAnnihilationInput);
-      if (float.isNan()) {
-        this.autoAnnihilationInput.copyFrom(player.auto.annihilation.multiplier);
+      const float = parseFloat(this.autoAnnihilationInput);
+      if (isNaN(float)) {
+        this.autoAnnihilationInput = player.auto.annihilation.multiplier;
       } else {
         player.auto.annihilation.multiplier = float;
       }
@@ -62,7 +62,7 @@ export default {
     </button>
     <br>
     <br>
-    <span v-if="darkMatterMult.gt(1)">
+    <span v-if="darkMatterMult > 1">
       Current multiplier to all Dark Matter Dimensions: <b>{{ formatX(darkMatterMult, 2, 2) }}</b>
       <br>
       <br>
@@ -86,7 +86,7 @@ export default {
     </span>
     <span v-else>
       Annihilation will reset your Dark Matter and Dark Matter Dimension amounts, but will give a permanent
-      multiplier of <b>{{ formatX(darkMatterMultGain.add(1), 2, 2) }}</b> to all Dark Matter Dimensions.
+      multiplier of <b>{{ formatX(1 + darkMatterMultGain, 2, 2) }}</b> to all Dark Matter Dimensions.
     </span>
   </div>
 </template>

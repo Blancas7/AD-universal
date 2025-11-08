@@ -12,8 +12,7 @@ export default {
       cost: 0,
       isMaxed: false,
       isUpgradeable: false,
-      isAffordable: false,
-      prob: new Decimal(0.4)
+      isAffordable: false
     };
   },
   computed: {
@@ -45,7 +44,7 @@ export default {
     :class="classObject"
     @click="upgradeInterval"
   >
-    {{ formatPercents(prob) }} smaller interval
+    {{ formatPercents(0.4) }} smaller interval
     <br>
     Cost: {{ format(cost, 2) }} IP
   </button>

@@ -1,7 +1,4 @@
-import * as ADLNotations from "adnot-beport-large";
-import * as ADNotations from "adnot-beport-small";
-
-import { DC } from "./constants";
+import * as ADNotations from "@antimatter-dimensions/notations";
 
 export const Notation = (function() {
   const N = ADNotations;
@@ -43,53 +40,12 @@ export const Notation = (function() {
   };
 }());
 
-export const LNotation = (function() {
-  const N = ADLNotations;
-  const notation = type => {
-    const n = new type();
-    n.setAsCurrent = () => {
-      player.options.lnotation = n.name;
-      ui.lnotationName = n.name;
-    };
-    return n;
-  };
-  return {
-    extendedScientific: notation(N.ExtendedScientificNotation),
-    stackedScientific: notation(N.StackedScientificNotation),
-    semiStackedScientific: notation(N.SemiStackedScientificNotation),
-    entendedLogarithm: notation(N.ExtendedLogarithmNotation),
-    tetrational: notation(N.TetrationalNotation),
-    trueTetrational: notation(N.TrueTetrationalNotation),
-  };
-}());
-
 Notation.emoji.setAsCurrent = (silent = false) => {
   player.options.notation = Notation.emoji.name;
   ui.notationName = Notation.emoji.name;
   if (!silent) GameUI.notify.success("😂😂😂");
 };
 
-// Post e9e15
-export const LNotations = {
-  // Defined as a list here for exact order in options tab.
-  all: [
-    LNotation.extendedScientific,
-    LNotation.stackedScientific,
-    LNotation.semiStackedScientific,
-    LNotation.entendedLogarithm,
-    LNotation.tetrational,
-    LNotation.trueTetrational
-  ],
-  find: name => {
-    const notation = LNotations.all.find(n => n.name === name);
-    return notation === undefined ? LNotation.extendedScientific : notation;
-  },
-  get current() {
-    return GameUI.initialized ? ui.lnotation : LNotation.extendedScientific;
-  }
-};
-
-// Pre e9e15
 export const Notations = {
   // Defined as a list here for exact order in options tab.
   all: [
@@ -125,7 +81,7 @@ export const Notations = {
   }
 };
 
-ADNotations.Settings.isInfinite = decimal => ui.formatPreBreak && decimal.gte(DC.NUMMAX);
+ADNotations.Settings.isInfinite = decimal => ui.formatPreBreak && decimal.gte(Decimal.NUMBER_MAX_VALUE);
 
 EventHub.logic.on(GAME_EVENT.GAME_TICK_AFTER, () => {
   ui.formatPreBreak = !PlayerProgress.hasBroken() || (NormalChallenge.isRunning && !Enslaved.isRunning);

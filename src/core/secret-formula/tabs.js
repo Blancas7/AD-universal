@@ -34,7 +34,7 @@ export const tabs = [
         hideAt: 2.6,
         symbol: "Δ",
         component: "TimeDimensionsTab",
-        condition: () =>
+        condition: () => 
           PlayerProgress.rewindUnlocked() ||
           PlayerProgress.eternityUnlocked(),
         id: 2,
@@ -118,7 +118,9 @@ export const tabs = [
         name: "Past Prestige Runs",
         symbol: "<i class='fas fa-list-ol'></i>",
         component: "PastPrestigeRunsTab",
-        condition: () => PlayerProgress.infinityUnlocked(),
+        condition: () =>
+          PlayerProgress.rewindUnlocked() ||
+          PlayerProgress.infinityUnlocked(),
         id: 2,
         hidable: true,
       },
@@ -127,8 +129,9 @@ export const tabs = [
         name: "Multiplier Breakdown",
         symbol: "<i class='fas fa-calculator'></i>",
         component: "MultiplierBreakdownTab",
-        // Enable at your own risk 0- the tab does not work and must be manually fixed by the modder.
-        condition: () => false && PlayerProgress.infinityUnlocked(),
+        condition: () =>
+          PlayerProgress.rewindUnlocked() ||
+          PlayerProgress.infinityUnlocked(),
         id: 3,
         hidable: true,
       },
@@ -137,7 +140,9 @@ export const tabs = [
         name: "Glyph Set Records",
         symbol: "<i class='fas fa-ellipsis-h'></i>",
         component: "GlyphSetRecordsTab",
-        condition: () => PlayerProgress.realityUnlocked(),
+        condition: () =>
+          PlayerProgress.rewindUnlocked() ||
+          PlayerProgress.realityUnlocked(),
         id: 4,
         hidable: true,
       },

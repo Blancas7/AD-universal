@@ -1312,7 +1312,7 @@ export const news = [
     id: "a230",
     get text() {
       return `You started playing this game nearly
-        ${TimeSpan.fromMilliseconds(new Decimal(Date.now() - player.records.gameCreatedTime)).toString()}
+        ${TimeSpan.fromMilliseconds(Date.now() - player.records.gameCreatedTime).toString()}
         ago. Thank you for playing!`;
     },
     dynamic: true
@@ -2170,14 +2170,14 @@ export const news = [
   {
     id: "a343",
     get text() {
-      const fakeProgress = Decimal.pow(player.records.realTimePlayed, 25);
+      const fakeProgress = Math.pow(player.records.realTimePlayed, 25);
       // Caps in ~68 years of real playtime then turns into "Infinite%"
       return `Global Challenge - across all AD players, accumulate ${format(Number.MAX_VALUE, 2)} contest-paperclips
         (noted by the
         square ends), to receive an event-exclusive metal bagpipe, capable of giving +2 AM/s, as well as an extra
         tickspeed while above ${format(1e200)} tickspeed upgrades! Current global progress -
         ${format(fakeProgress)}/${format(Number.MAX_VALUE, 2)}
-        (${formatPercents(Decimal.log10(fakeProgress).div(Decimal.log10(Number.MAX_VALUE)), 3)})`;
+        (${formatPercents(Math.log10(fakeProgress) / Math.log10(Number.MAX_VALUE), 3)})`;
     }
   },
   {
@@ -2596,17 +2596,17 @@ export const news = [
   {
     id: "l1",
     text: "You just made your 1,000,000,000,000,000th antimatter. This one tastes like chicken.",
-    get unlocked() { return Currency.antimatter.value.max(1).log10().eq(15); }
+    get unlocked() { return Currency.antimatter.exponent === 15; }
   },
   {
     id: "l2",
     text: "Nerf the galaxies please.",
-    get unlocked() { return player.galaxies.eq(2) || Currency.infinities.gt(0); }
+    get unlocked() { return player.galaxies === 2 || Currency.infinities.gt(0); }
   },
   {
     id: "l3",
     text: "What do you mean, more than two dimensions??? We're on a screen, clearly there are only 2 dimensions.",
-    get unlocked() { return AntimatterDimension(3).amount.gt(0) || DimBoost.totalBoosts.gt(0); }
+    get unlocked() { return AntimatterDimension(3).amount.gt(0) || DimBoost.totalBoosts > 0; }
   },
   {
     id: "l4",
@@ -2623,36 +2623,36 @@ export const news = [
     text:
       `Antimatter people seem to be even more afraid of 13 than we are. They destroyed
       entire galaxies just to remove 13 from their percents.`,
-    get unlocked() { return player.galaxies.gt(0) || Currency.infinities.gt(0); }
+    get unlocked() { return player.galaxies > 0 || Currency.infinities.gt(0); }
   },
   {
     id: "l7",
     text: "To understand dimensional sacrifice, you do actually need a PhD in theoretical physics. Sorry!",
-    get unlocked() { return player.sacrificed.max(1).log10().gt(10) || DimBoost.totalBoosts.gte(6); }
+    get unlocked() { return player.sacrificed.e >= 10 || DimBoost.totalBoosts >= 6; }
   },
   {
     id: "l8",
     text: "A new group for the standardisation of numbers have come forward with a novel new format involving emoji's.",
-    get unlocked() { return player.requirementChecks.permanent.emojiGalaxies.gt(0); }
+    get unlocked() { return player.requirementChecks.permanent.emojiGalaxies > 0; }
   },
   {
     id: "l9",
     text: "Antimatter ice cream stand has recently opened- they have octillions of flavors!",
-    get unlocked() { return player.records.totalAntimatter.max(1).log10().gt(27); }
+    get unlocked() { return player.records.totalAntimatter.e >= 27; }
   },
   {
     id: "l10",
     text:
       `The Heavenly Pelle has generated too much antimatter and needed to create another galaxy.
       This one can be seen in the southwestern sky.`,
-    get unlocked() { return player.galaxies.gt(0) || Currency.infinities.gt(0); }
+    get unlocked() { return player.galaxies > 0 || Currency.infinities.gt(0); }
   },
   {
     id: "l11",
     text: "9th Dimension is a lie.",
     get unlocked() {
-      return DimBoost.totalBoosts.gte(5) ||
-      player.galaxies.gt(0) ||
+      return DimBoost.totalBoosts >= 5 ||
+      player.galaxies > 0 ||
       PlayerProgress.infinityUnlocked();
     }
   },
@@ -2660,8 +2660,8 @@ export const news = [
     id: "l12",
     text: "The square root of 9 is 3, therefore the 9th dimension can't exist.",
     get unlocked() {
-      return DimBoost.totalBoosts.gte(5) ||
-      player.galaxies.gt(0) ||
+      return DimBoost.totalBoosts >= 5 ||
+      player.galaxies > 0 ||
       PlayerProgress.infinityUnlocked();
     }
   },
@@ -2669,8 +2669,8 @@ export const news = [
     id: "l13",
     text: "You got assimilated by the 9th dimension? Just call your doctor for mental illness!",
     get unlocked() {
-      return DimBoost.totalBoosts.gte(5) ||
-      player.galaxies.gt(0) ||
+      return DimBoost.totalBoosts >= 5 ||
+      player.galaxies > 0 ||
       PlayerProgress.infinityUnlocked();
     }
   },
@@ -2678,8 +2678,8 @@ export const news = [
     id: "l14",
     text: "Why is there no 9th dimension? Because 7 8 9.",
     get unlocked() {
-      return DimBoost.totalBoosts.gte(5) ||
-      player.galaxies.gt(0) ||
+      return DimBoost.totalBoosts >= 5 ||
+      player.galaxies > 0 ||
       PlayerProgress.infinityUnlocked();
     }
   },
@@ -2687,8 +2687,8 @@ export const news = [
     id: "l15",
     text: "The 9th dimension cannot exist because the Nein-speaking nazis died in WW2.",
     get unlocked() {
-      return DimBoost.totalBoosts.gte(5) ||
-      player.galaxies.gt(0) ||
+      return DimBoost.totalBoosts >= 5 ||
+      player.galaxies > 0 ||
       PlayerProgress.infinityUnlocked();
     }
   },
@@ -2698,8 +2698,8 @@ export const news = [
       `If you break the fourth wall... well, there's still the fifth, sixth, seventh, and eighth to get through
       before you encounter bad things, so you should be fine`,
     get unlocked() {
-      return DimBoost.totalBoosts.gte(5) ||
-      player.galaxies.gt(0) ||
+      return DimBoost.totalBoosts >= 5 ||
+      player.galaxies > 0 ||
       PlayerProgress.infinityUnlocked();
     }
   },
@@ -2711,8 +2711,8 @@ export const news = [
       no one on the Discord can be on dimension 9. Only then can he rest, for up to 6 hours, before waking up
       forcefully to avoid getting the offline achievement.`,
     get unlocked() {
-      return DimBoost.totalBoosts.gte(5) ||
-      player.galaxies.gt(0) ||
+      return DimBoost.totalBoosts >= 5 ||
+      player.galaxies > 0 ||
       PlayerProgress.infinityUnlocked();
     }
   },
@@ -2720,8 +2720,8 @@ export const news = [
     id: "l18",
     text: "If the 9th dimension is all evil, then is 3 the root of all evil?",
     get unlocked() {
-      return DimBoost.totalBoosts.gte(5) ||
-      player.galaxies.gt(0) ||
+      return DimBoost.totalBoosts >= 5 ||
+      player.galaxies > 0 ||
       PlayerProgress.infinityUnlocked();
     }
   },
@@ -2731,8 +2731,8 @@ export const news = [
       `I'll have 1e29 number 9s, a number 1e9 large, a number 6 with extra replicanti, a number 1e7, two 4e5s,
       one with matter, and a large time vortex.`,
     get unlocked() {
-      return DimBoost.totalBoosts.gte(5) ||
-      player.galaxies.gt(0) ||
+      return DimBoost.totalBoosts >= 5 ||
+      player.galaxies > 0 ||
       PlayerProgress.infinityUnlocked();
     }
   },
@@ -2749,7 +2749,7 @@ export const news = [
   {
     id: "l22",
     text: "Anti Emoji Movie a huge hit!",
-    get unlocked() { return player.requirementChecks.permanent.emojiGalaxies.gte(5); }
+    get unlocked() { return player.requirementChecks.permanent.emojiGalaxies >= 5; }
   },
   {
     id: "l23",
@@ -2777,19 +2777,19 @@ export const news = [
     id: "l27",
     text:
       "New strange material was been found. It seems to grow exponentially, but only helps with antimatter production.",
-    get unlocked() { return PlayerProgress.replicantiUnlocked() && player.replicanti.chance.eq(0.01); }
+    get unlocked() { return PlayerProgress.replicantiUnlocked() && player.replicanti.chance === 0.01; }
   },
   {
     id: "l28",
     text: "It seems this \"replicanti\" stuff won't be growing any faster now.",
-    get unlocked() { return player.replicanti.chance.eq(1) && player.replicanti.interval.eq(1); }
+    get unlocked() { return player.replicanti.chance === 1 && player.replicanti.interval === 1; }
   },
   {
     id: "l29",
     text:
       `If you wrote down 3 numbers a second, it would take you less time to write down your antimatter
       amount than it would Hevipelle to update the game.`,
-    get unlocked() { return Currency.antimatter.value.add(1).log10().gte(100000); }
+    get unlocked() { return Currency.antimatter.exponent >= 100000; }
   },
   {
     id: "l30",
@@ -2852,29 +2852,29 @@ export const news = [
   {
     id: "l41",
     text: "I thought the update was 5 hours away... -new players after more than 5 hours of gameplay",
-    get unlocked() { return Time.totalTimePlayed.totalHours.gte(5); }
+    get unlocked() { return Time.totalTimePlayed.totalHours >= 5; }
   },
   {
     id: "l42",
     text:
       `Somebody told me to wait five hours for the update yesterday but it's today
       and it still hasn't come! What do I do?`,
-    get unlocked() { return Time.totalTimePlayed.totalHours.gte(5); }
+    get unlocked() { return Time.totalTimePlayed.totalHours >= 5; }
   },
   {
     id: "l43",
     text: "You do know that you won't reach Infinity in -1 seconds, right?",
-    get unlocked() { return player.records.bestInfinity.time.eq(0.1); }
+    get unlocked() { return player.records.bestInfinity.time === 0.1; }
   },
   {
     id: "l44",
     text: "Where does Antimatter Nemo live? In a NNnNeMI-NNnNe.",
-    get unlocked() { return player.records.totalAntimatter.max(1).log10().gte(3e6); }
+    get unlocked() { return player.records.totalAntimatter.e >= 3e6; }
   },
   {
     id: "l45",
     text: "Anti Emoji Movie MMMCMXCIX is a major hit!",
-    get unlocked() { return player.requirementChecks.permanent.emojiGalaxies.gte(3999); }
+    get unlocked() { return player.requirementChecks.permanent.emojiGalaxies >= 3999; }
   },
   {
     id: "l46",
@@ -2889,7 +2889,7 @@ export const news = [
   {
     id: "l48",
     text: "Keep up the quick pace!",
-    get unlocked() { return AchievementTimers.marathon1.time.gt(1200); }
+    get unlocked() { return AchievementTimers.marathon1.time > 1200; }
   },
   {
     id: "l49",
@@ -2904,12 +2904,12 @@ export const news = [
   {
     id: "l51",
     text: "Are you serious?",
-    get unlocked() { return Time.worstChallenge.totalSeconds.lte(1); }
+    get unlocked() { return Time.worstChallenge.totalSeconds <= 1; }
   },
   {
     id: "l52",
     text: "Timing is key.",
-    get unlocked() { return player.records.thisEternity.realTime.lt(10); }
+    get unlocked() { return player.records.thisEternity.realTime < 10; }
   },
   {
     id: "l53",
@@ -3215,7 +3215,7 @@ export const news = [
       return `The Great Scribes of Antia have labored intensively for years. They were given a mammoth task from the
       gods; write out an incomprehensibly long number. These scribes took turns, each writing out a few numbers a
       second, writing day and night, for what seemed like an eternity. At last, after
-      ${TimeSpan.fromSeconds(Currency.antimatter.value.max(1).log10().div(3)).toString()}, they finally accomplished
+      ${TimeSpan.fromSeconds(Currency.antimatter.value.log10() / 3).toString()}, they finally accomplished
       the impossible. That week, when they went to worship their gods, they sent them a simple message: "What was
       the purpose? What made our years of labor significant?" The gods responded duly: "We wanted to know how long
       it would take to write out, for a statistic in our game."`;

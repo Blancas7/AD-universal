@@ -89,8 +89,8 @@ export class RealityAutobuyerState extends AutobuyerState {
     if (isRealityAvailable() && player.options.autoRealityForFilter && shouldCheckFilter) {
       const gainedLevel = gainedGlyphLevel();
       const checkModes = [AUTO_REALITY_MODE.GLYPH, AUTO_REALITY_MODE.EITHER, AUTO_REALITY_MODE.BOTH];
-      const levelToCheck = checkModes.includes(this.mode)
-        ? { actualLevel: Decimal.min(this.glyph, Glyphs.levelCap), rawLevel: DC.D1 }
+      const levelToCheck = (checkModes.includes(this.mode))
+        ? { actualLevel: Math.min(this.glyph, Glyphs.levelCap), rawLevel: 1 }
         : gainedLevel;
       const choices = GlyphSelection.glyphList(GlyphSelection.choiceCount, levelToCheck,
         { isChoosingGlyph: false });
@@ -105,9 +105,9 @@ export class RealityAutobuyerState extends AutobuyerState {
     let proc = false;
     // The game generally displays amplified values, so we want to adjust the thresholds to
     // account for that and make the automation trigger based on the actual displayed values
-    const ampFactor = simulatedRealityCount(false).add(1);
+    const ampFactor = simulatedRealityCount(false) + 1;
     const rmProc = MachineHandler.gainedRealityMachines.times(ampFactor).gte(this.rm);
-    const glyphProc = gainedGlyphLevel().actualLevel.gte(this.glyph);
+    const glyphProc = gainedGlyphLevel().actualLevel >= Math.min(this.glyph, Glyphs.levelCap);
     switch (this.mode) {
       case AUTO_REALITY_MODE.RM:
         proc = rmProc;
@@ -125,7 +125,7 @@ export class RealityAutobuyerState extends AutobuyerState {
         proc = player.records.thisReality.realTime / 1000 > this.time;
         break;
       case AUTO_REALITY_MODE.RELIC_SHARD:
-        proc = Effarig.shardsGained.mul(ampFactor).gt(this.shard);
+        proc = Effarig.shardsGained * ampFactor > this.shard;
         break;
     }
     if (proc) autoReality();

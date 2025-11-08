@@ -1,5 +1,5 @@
 <script>
-import * as ADNotations from "adnot-beport-small";
+import * as ADNotations from "@antimatter-dimensions/notations";
 
 import ModalWrapper from "@/components/modals/ModalWrapper";
 import SliderComponent from "@/components/SliderComponent";

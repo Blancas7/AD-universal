@@ -15,12 +15,10 @@ export default {
       stardustPerSecond: new Decimal(0),
       incomeType: "",
       areAutobuyersUnlocked: false,
-      showLockedDimCostNote: true,
     };
   },
   methods: {
     update() {
-      this.showLockedDimCostNote = false;
       this.stardust.copyFrom(Currency.stardust);
       this.galaxyMultiplier.copyFrom(this.stardust.max(1).log10().max(1).log10().add(1));
       this.incomeType = "Stardust";

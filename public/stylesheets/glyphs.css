@@ -283,8 +283,6 @@
   text-align: center;
   font-size: 1.2rem;
   color: var(--color-reality-dark);
-  /* eslint-disable-next-line non-standard*/
-  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: textfield;
   background-color: var(--color-glyph-sac-text-input);
@@ -298,7 +296,6 @@
 
 .c-auto-sac-effect-tab__input::-webkit-inner-spin-button,
 .c-auto-sac-effect-tab__input::-webkit-outer-spin-button {
-  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: textfield;
   margin: 0;
@@ -310,7 +307,6 @@
   text-align: center;
   font-size: 1.2rem;
   color: var(--color-reality-dark);
-  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: textfield;
   background-color: var(--color-glyph-sac-text-input);
@@ -342,7 +338,6 @@
 
 .c-auto-sac-type-tab__input::-webkit-outer-spin-button,
 .c-auto-sac-type-tab__input::-webkit-inner-spin-button {
-  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: textfield;
   margin: 0;
@@ -675,7 +670,6 @@
   font-family: Typewriter, serif;
   font-size: 1.35rem;
   color: var(--color-reality-dark);
-  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: textfield;
   background-color: var(--color-background);

@@ -5,17 +5,17 @@ export default {
     return {
       type: GALAXY_TYPE.NORMAL,
       galaxies: {
-        normal: new Decimal(),
-        replicanti: new Decimal(),
-        dilation: new Decimal()
+        normal: 0,
+        replicanti: 0,
+        dilation: 0
       },
       requirement: {
         tier: 1,
         amount: 0
       },
       canBeBought: false,
-      distantStart: new Decimal(),
-      remoteStart: new Decimal(),
+      distantStart: 0,
+      remoteStart: 0,
       lockText: null,
       canBulkBuy: false,
       creditsClosed: false,
@@ -41,9 +41,9 @@ export default {
         : `Reset your ${makeEnumeration(reset)} to increase the power of Tickspeed upgrades`;
     },
     sumText() {
-      const parts = [Decimal.max(this.galaxies.normal, 0)];
-      if (this.galaxies.replicanti.gt(0)) parts.push(this.galaxies.replicanti);
-      if (this.galaxies.dilation.gt(0)) parts.push(this.galaxies.dilation);
+      const parts = [Math.max(this.galaxies.normal, 0)];
+      if (this.galaxies.replicanti > 0) parts.push(this.galaxies.replicanti);
+      if (this.galaxies.dilation > 0) parts.push(this.galaxies.dilation);
       const sum = parts.map(this.formatGalaxies).join(" + ");
       if (parts.length >= 2) {
         return `${sum} = ${this.formatGalaxies(parts.sum())}`;
@@ -70,7 +70,7 @@ export default {
             { type: "distant", function: "quadratic", amount: this.distantStart },
             { type: "remote", function: "exponential", amount: this.remoteStart }
           ];
-          return `Increased Galaxy cost scaling: ${scalings.sort((a, b) => a.amount.compare(b.amount))
+          return `Increased Galaxy cost scaling: ${scalings.sort((a, b) => a.amount - b.amount)
             .map(scaling => `${scaling.function} scaling past ${this.formatGalaxies(scaling.amount)} (${scaling.type})`)
             .join(", ").capitalize()}`;
         }
@@ -89,15 +89,15 @@ export default {
   methods: {
     update() {
       this.type = Galaxy.type;
-      this.galaxies.normal.copyFrom(player.galaxies.add(GalaxyGenerator.galaxies));
-      this.galaxies.replicanti.copyFrom(Replicanti.galaxies.total);
-      this.galaxies.dilation.copyFrom(player.dilation.totalTachyonGalaxies);
+      this.galaxies.normal = player.galaxies + GalaxyGenerator.galaxies;
+      this.galaxies.replicanti = Replicanti.galaxies.total;
+      this.galaxies.dilation = player.dilation.totalTachyonGalaxies;
       const requirement = Galaxy.requirement;
       this.requirement.amount = requirement.amount;
       this.requirement.tier = requirement.tier;
       this.canBeBought = requirement.isSatisfied && Galaxy.canBeBought;
-      this.distantStart.copyFrom(EternityChallenge(5).isRunning ? new Decimal() : Galaxy.costScalingStart);
-      this.remoteStart.copyFrom(Galaxy.remoteStart);
+      this.distantStart = EternityChallenge(5).isRunning ? 0 : Galaxy.costScalingStart;
+      this.remoteStart = Galaxy.remoteStart;
       this.lockText = Galaxy.lockText;
       this.canBulkBuy = EternityMilestone.autobuyMaxGalaxies.isReached;
       this.creditsClosed = GameEnd.creditsEverClosed;
@@ -114,7 +114,7 @@ export default {
       manualRequestGalaxyReset(this.canBulkBuy && bulk);
     },
     formatGalaxies(num) {
-      return num.gt(1e8) ? format(num, 2) : formatInt(num.toNumber());
+      return num > 1e8 ? format(num, 2) : formatInt(num);
     },
   }
 };

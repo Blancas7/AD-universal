@@ -14,11 +14,11 @@ export default {
   },
   data() {
     return {
-      resourceAmount: new Decimal(),
+      resourceAmount: 0,
       resourceUnlocked: false,
-      gain: new Decimal(),
-      after: new Decimal(),
-      cap: new Decimal(),
+      gain: 0,
+      after: 0,
+      cap: 0,
       confirmedRefine: false
     };
   },
@@ -36,12 +36,12 @@ export default {
   methods: {
     update() {
       const resource = this.resource;
-      this.resourceAmount.copyFrom(resource.amount);
+      this.resourceAmount = resource.amount;
       this.resourceUnlocked = resource.isUnlocked;
-      this.gain.copyFrom(GlyphSacrificeHandler.glyphRefinementGain(this.glyph));
-      this.cap.copyFrom(GlyphSacrificeHandler.glyphEffectiveCap(this.glyph));
+      this.gain = GlyphSacrificeHandler.glyphRefinementGain(this.glyph);
+      this.cap = GlyphSacrificeHandler.glyphEffectiveCap(this.glyph);
 
-      this.after = this.resourceAmount.add(this.gain);
+      this.after = this.resourceAmount + this.gain;
 
       const newGlyph = Glyphs.findByInventoryIndex(this.idx);
       if (this.glyph !== newGlyph && !this.confirmedRefine) {

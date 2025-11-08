@@ -78,8 +78,8 @@ export const DT = {
   },
   iap: {
     name: "Shop Tab Purchases",
-    multValue: () => new Decimal(1),
-    isActive: () => false,
+    multValue: () => new Decimal(ShopPurchase.dilatedTimePurchases.currentMult ** (Pelle.isDoomed ? 0.5 : 1)),
+    isActive: () => ShopPurchaseData.totalSTD > 0 && getDilationGainPerSecond().neq(0),
     icon: MultiplierTabIcons.IAP,
   },
 

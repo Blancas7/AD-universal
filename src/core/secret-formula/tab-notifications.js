@@ -12,6 +12,10 @@ export const tabNotifications = {
         parent: "challenges",
         tab: "normal"
       },
+      {
+        parent: "statistics",
+        tab: "multipliers"
+      }
     ],
     condition: () => !PlayerProgress.rewindUnlocked() &&
       !PlayerProgress.realityUnlocked() &&

@@ -2,35 +2,35 @@ export const confirmationTypes = [
   {
     name: "Dimension Boost",
     option: "dimensionBoost",
-    isUnlocked: () => PlayerProgress.infinityUnlocked() || player.galaxies.gt(0) || player.dimensionBoosts.gt(0),
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || PlayerProgress.infinityUnlocked() || player.galaxies > 0 || player.dimensionBoosts > 0,
   }, {
     name: "Antimatter Galaxy",
     option: "antimatterGalaxy",
-    isUnlocked: () => PlayerProgress.infinityUnlocked() || player.galaxies.gt(0),
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || PlayerProgress.infinityUnlocked() || player.galaxies > 0,
   }, {
     name: "Sacrifice",
     option: "sacrifice",
-    isUnlocked: () => Sacrifice.isVisible,
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || Sacrifice.isVisible,
   }, {
     name: "Big Crunch",
     option: "bigCrunch",
-    isUnlocked: () => player.break || PlayerProgress.eternityUnlocked(),
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || player.break || PlayerProgress.eternityUnlocked(),
   }, {
     name: "Challenges",
     option: "challenges",
-    isUnlocked: () => PlayerProgress.infinityUnlocked(),
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || PlayerProgress.infinityUnlocked(),
   }, {
     name: "Exit Challenges",
     option: "exitChallenge",
-    isUnlocked: () => PlayerProgress.infinityUnlocked(),
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || PlayerProgress.infinityUnlocked(),
   }, {
     name: "Replicanti Galaxy",
     option: "replicantiGalaxy",
-    isUnlocked: () => PlayerProgress.eternityUnlocked() || player.replicanti.unl,
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || PlayerProgress.eternityUnlocked() || player.replicanti.unl,
   }, {
     name: "Eternity",
     option: "eternity",
-    isUnlocked: () => PlayerProgress.eternityUnlocked(),
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || PlayerProgress.eternityUnlocked(),
   }, {
     name: "Dilation",
     option: "dilation",
@@ -38,47 +38,47 @@ export const confirmationTypes = [
   }, {
     name: "Reset Reality",
     option: "resetReality",
-    isUnlocked: () => PlayerProgress.realityUnlocked() || PlayerProgress.rewindUnlocked(),
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || PlayerProgress.realityUnlocked(),
   }, {
     name: "Glyph Replace",
     option: "glyphReplace",
-    isUnlocked: () => PlayerProgress.realityUnlocked() || PlayerProgress.rewindUnlocked(),
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || PlayerProgress.realityUnlocked(),
   }, {
     name: "Glyph Sacrifice",
     option: "glyphSacrifice",
-    isUnlocked: () => GlyphSacrificeHandler.canSacrifice,
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || GlyphSacrificeHandler.canSacrifice,
   }, {
     name: "Glyph Purge",
     option: "autoClean",
-    isUnlocked: () => GlyphSacrificeHandler.canSacrifice,
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || GlyphSacrificeHandler.canSacrifice,
   }, {
     name: "Sacrifice All Glyphs",
     option: "sacrificeAll",
-    isUnlocked: () => GlyphSacrificeHandler.canSacrifice,
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || GlyphSacrificeHandler.canSacrifice,
   }, {
     name: "Glyph Selection",
     option: "glyphSelection",
-    isUnlocked: () => Autobuyer.reality.isUnlocked,
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || Autobuyer.reality.isUnlocked,
   }, {
     name: "Glyph Undo",
     option: "glyphUndo",
-    isUnlocked: () => TeresaUnlocks.undo.canBeApplied,
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || TeresaUnlocks.undo.canBeApplied,
   }, {
     name: "Switch Automator Editor",
     option: "switchAutomatorMode",
-    isUnlocked: () => Player.automatorUnlocked,
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || Player.automatorUnlocked,
   }, {
     name: "Delete Glyph Preset",
     option: "deleteGlyphSetSave",
-    isUnlocked: () => EffarigUnlock.setSaves.isUnlocked,
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || EffarigUnlock.setSaves.isUnlocked,
   }, {
     name: "Glyph Refine",
     option: "glyphRefine",
-    isUnlocked: () => Ra.unlocks.unlockGlyphAlchemy.canBeApplied,
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || Ra.unlocks.unlockGlyphAlchemy.canBeApplied,
   }, {
     name: "Armageddon",
     option: "armageddon",
-    isUnlocked: () => Pelle.isDoomed,
+    isUnlocked: () => PlayerProgress.rewindUnlocked() || Pelle.isDoomed,
   }, {
     name: "Rewind",
     option: "rewind",
@@ -86,6 +86,6 @@ export const confirmationTypes = [
   }, {
     name: "Respec Shop Purchases",
     option: "respecIAP",
-    isUnlocked: () => true
+    isUnlocked: () => Cloud.isAvailable
   }
 ];

@@ -37,10 +37,13 @@ export default {
       return this.player.options.saveFileName;
     },
     antimatter() {
-      return this.player.antimatter;
+      return this.player.antimatter || this.player.money;
     },
     infinities() {
-      return this.player.infinities;
+      // Infinity count data is stored in either player.infinitied or player.infinities based on if the save is before
+      // or after the reality update, and this explicit check is needed as it runs before any migration code.
+      const infinityData = this.player.infinitied ? this.player.infinitied : this.player.infinities;
+      return new Decimal(infinityData);
     },
     hasInput() {
       return this.input !== "";
@@ -60,8 +63,8 @@ export default {
     lastOpened() {
       const ms = Date.now() - this.player.lastUpdate;
       return this.isFromFuture
-        ? `This save is from ${TimeSpan.fromMilliseconds(new Decimal(-ms)).toString()} in the future.`
-        : `This save was last opened ${TimeSpan.fromMilliseconds(new Decimal(ms)).toString()} ago.`;
+        ? `This save is from ${TimeSpan.fromMilliseconds(-ms).toString()} in the future.`
+        : `This save was last opened ${TimeSpan.fromMilliseconds(ms).toString()} ago.`;
     },
     offlineType() {
       // We update here in the computed method instead of elsewhere because otherwise it initializes the text
@@ -89,7 +92,7 @@ export default {
       const durationInMs = Date.now() - this.player.lastUpdate;
       const ticks = GameStorage.maxOfflineTicks(durationInMs);
       return `After importing, will simulate ${formatInt(ticks)} ticks of duration
-        ${TimeSpan.fromMilliseconds(new Decimal(durationInMs / ticks)).toStringShort()} each.`;
+        ${TimeSpan.fromMilliseconds(durationInMs / ticks).toStringShort()} each.`;
     },
     willLoseCosmetics() {
       const currSets = player.reality.glyphs.cosmetics.unlockedFromNG;

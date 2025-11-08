@@ -1,6 +1,4 @@
 <script>
-import { GlyphInfo } from "../core/secret-formula/reality/core-glyph-info";
-
 import GlyphComponent from "@/components/GlyphComponent";
 import GlyphSetName from "@/components/GlyphSetName";
 
@@ -68,13 +66,14 @@ export default {
   },
   data() {
     return {
-      realityGlyphBoost: new Decimal(),
+      realityGlyphBoost: 0,
     };
   },
   computed: {
     orderedGlyphs() {
       if (!this.sort) return this.glyphs;
-      const standardOrder = GlyphInfo.glyphTypes;
+      const standardOrder = ["reality", "effarig", "power", "infinity", "replication", "time", "dilation",
+        "cursed", "companion"];
       const order = Glyphs.copyForRecords(this.glyphs);
       // Technically doesn't stable sort between glyphs of the same type, probably fine though
       order.sort((a, b) => standardOrder.indexOf(a.type) - standardOrder.indexOf(b.type));
@@ -88,13 +87,11 @@ export default {
   },
   methods: {
     update() {
-      // Handle multiple reality glyphs
-      const realityGlyphs = this.glyphs.filter(g => g?.type === "reality");
-      if (realityGlyphs.length > 0) {
-        this.realityGlyphBoost = realityGlyphs.reduce((a, b) => a.add(GlyphEffects.realityglyphlevel.effect(b.level)));
-      } else {
-        this.realityGlyphBoost = new Decimal();
-      }
+      // There should only be one reality glyph; this picks one pseudo-randomly if multiple are cheated/glitched in
+      const realityGlyph = this.glyphs.filter(g => g.type === "reality")[0];
+      this.realityGlyphBoost = realityGlyph
+        ? GlyphEffects.realityglyphlevel.effect(realityGlyph.level)
+        : 0;
     },
     showModal() {
       if (this.isInModal) return;
@@ -106,8 +103,8 @@ export default {
       });
     },
     // Necessary to force a re-render for the set name if the set itself changes
-    glyphIds() {
-      return this.glyphs.map(x => x.id).reduce(Number.sumReducer);
+    glyphHash() {
+      return Glyphs.hash(this.glyphs);
     }
   }
 };
@@ -126,7 +123,7 @@ export default {
     >
       <GlyphSetName
         v-if="showName"
-        :key="glyphIds()"
+        :key="glyphHash()"
         :glyph-set="glyphs"
         :force-color="forceNameColor"
       />

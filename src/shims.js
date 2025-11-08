@@ -1,5 +1,5 @@
 import CodeMirror from "codemirror/lib/codemirror";
-import Decimal from "break_eternity.js";
+import Decimal from "break_infinity.js";
 import Vue from "vue";
 
 import "codemirror/addon/mode/simple";

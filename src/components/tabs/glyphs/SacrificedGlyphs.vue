@@ -1,10 +1,7 @@
 <script>
-import { GlyphInfo } from "../../../core/secret-formula/index";
-
 import { DC } from "@/core/constants";
 
 import TypeSacrifice from "./TypeSacrifice";
-
 
 export default {
   name: "SacrificedGlyphs",
@@ -23,7 +20,7 @@ export default {
     };
   },
   computed: {
-    types: () => GlyphInfo.sacrificeGlyphTypes,
+    types: () => GLYPH_TYPES.filter(type => type !== "cursed" && type !== "companion"),
     lastMachines() {
       return this.lastMachinesTeresa.lt(DC.E10000)
         ? `${quantify("Reality Machine", this.lastMachinesTeresa, 2)}`
@@ -105,7 +102,7 @@ export default {
       player.options.hideAlterationEffects = !player.options.hideAlterationEffects;
     },
     glyphSymbol(type) {
-      return GlyphInfo[type].regularGlyphSymbol;
+      return this.cosmeticTypes[type].currentSymbol.symbol;
     }
   }
 };
@@ -163,7 +160,7 @@ export default {
       Glyph Sacrifice Boosts:
     </div>
     <div v-if="anySacrifices && !isDoomed">
-      <div v-if="teresaMult.gt(1)">
+      <div v-if="teresaMult > 1">
         Glyph sacrifice values are multiplied by {{ formatX(teresaMult, 2, 2) }};
         Teresa was last done at {{ lastMachines }}.
         <span v-if="hasSeenRealityGlyph">

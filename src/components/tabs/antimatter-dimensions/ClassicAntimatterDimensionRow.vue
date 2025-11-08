@@ -21,8 +21,8 @@ export default {
       isCapped: false,
       multiplier: new Decimal(0),
       amount: new Decimal(0),
-      bought: new Decimal(0),
-      boughtBefore10: new Decimal(0),
+      bought: 0,
+      boughtBefore10: 0,
       rateOfChange: new Decimal(0),
       singleCost: new Decimal(0),
       until10Cost: new Decimal(0),
@@ -96,11 +96,12 @@ export default {
       if (tier > DimBoost.maxDimensionsUnlockable) return;
       const dimension = AntimatterDimension(tier);
       this.isUnlocked = dimension.isAvailableForPurchase;
-      this.isCapped = tier === 8 && Enslaved.isRunning && dimension.bought.gte(1);
+      this.isCapped = tier === 8 && Enslaved.isRunning && dimension.bought >= 1;
       this.multiplier.copyFrom(dimension.multiplier);
       this.amount.copyFrom(dimension.totalAmount);
-      this.bought.copyFrom(dimension.bought);
-      this.boughtBefore10.copyFrom(dimension.boughtBefore10);
+      this.totalAmount = dimension.totalAmount;
+      this.bought = dimension.bought;
+      this.boughtBefore10 = dimension.boughtBefore10;
       this.singleCost.copyFrom(dimension.cost);
       this.until10Cost.copyFrom(dimension.costUntil10);
       if (tier < 8) {
@@ -111,7 +112,7 @@ export default {
       this.isContinuumActive = Laitela.continuumActive;
       if (this.isContinuumActive) this.continuumValue = dimension.continuumValue;
       this.isShown =
-        (DimBoost.totalBoosts.gt(0) && DimBoost.totalBoosts.add(3).gte(tier)) || PlayerProgress.infinityUnlocked();
+        (DimBoost.totalBoosts > 0 && DimBoost.totalBoosts + 3 >= tier) || PlayerProgress.infinityUnlocked();
       this.isCostsAD = NormalChallenge(6).isRunning && tier > 2 && !this.isContinuumActive;
       this.hasTutorial = (tier === 1 && Tutorial.isActive(TUTORIAL_STATE.DIM1)) ||
         (tier === 2 && Tutorial.isActive(TUTORIAL_STATE.DIM2));
@@ -125,7 +126,7 @@ export default {
       buyManyDimension(this.tier);
     },
     showCostTitle(value) {
-      return value.max(1).log10().lte(1e6);
+      return value.exponent < 1000000;
     },
     isLongText(str) {
       return str.length > 20;

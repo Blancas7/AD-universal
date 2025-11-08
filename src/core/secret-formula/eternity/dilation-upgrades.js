@@ -14,7 +14,7 @@ function rebuyable(config) {
     formatEffect: config.formatEffect,
     formatCost: config.formatCost,
     purchaseCap: config.purchaseCap,
-    reachedCap: () => player.dilation.rebuyables[config.id].gte(config.purchaseCap),
+    reachedCap: () => player.dilation.rebuyables[config.id] >= config.purchaseCap,
     pelleOnly: Boolean(config.pelleOnly),
     rebuyable: true
   };
@@ -27,16 +27,16 @@ export const dilationUpgrades = {
     increment: 10,
     description: () =>
       ((SingularityMilestone.dilatedTimeFromSingularities.canBeApplied || Achievement(187).canBeApplied)
-        ? `${formatX(Effects.product(
+        ? `${formatX(2 * Effects.product(
           SingularityMilestone.dilatedTimeFromSingularities,
           Achievement(187)
-        ).mul(2), 2, 2)} Dilated Time gain`
+        ), 2, 2)} Dilated Time gain`
         : "Double Dilated Time gain"),
     effect: bought => {
-      const base = Effects.product(
+      const base = 2 * Effects.product(
         SingularityMilestone.dilatedTimeFromSingularities,
         Achievement(187)
-      ).mul(2);
+      );
       return Decimal.pow(base, bought);
     },
     formatEffect: value => {
@@ -45,7 +45,7 @@ export const dilationUpgrades = {
       return formatX(value, 2, nonInteger ? 2 : 0);
     },
     formatCost: value => format(value, 2),
-    purchaseCap: DC.BEMAX
+    purchaseCap: Number.MAX_VALUE
   }),
   galaxyThreshold: rebuyable({
     id: 2,
@@ -56,15 +56,15 @@ export const dilationUpgrades = {
         ? "Reset Tachyon Galaxies, but lower their threshold"
         : "Reset Dilated Time and Tachyon Galaxies, but lower their threshold"),
     // The 38th purchase is at 1e80, and is the last purchase.
-    effect: bought => (bought.lt(38) ? Decimal.pow(0.8, bought) : new Decimal()),
+    effect: bought => (bought < 38 ? Math.pow(0.8, bought) : 0),
     formatEffect: effect => {
       if (effect === 0) return `${formatX(getTachyonGalaxyMult(effect), 4, 4)}`;
-      const nextEffect = effect === Decimal.pow(0.8, 37) ? new Decimal() : effect.mul(0.8);
+      const nextEffect = effect === Math.pow(0.8, 37) ? 0 : 0.8 * effect;
       return `${formatX(getTachyonGalaxyMult(effect), 4, 4)} ➜
         Next: ${formatX(getTachyonGalaxyMult(nextEffect), 4, 4)}`;
     },
     formatCost: value => format(value, 2),
-    purchaseCap: new Decimal(38)
+    purchaseCap: 38
   }),
   tachyonGain: rebuyable({
     id: 3,
@@ -82,7 +82,7 @@ export const dilationUpgrades = {
     },
     formatEffect: value => formatX(value, 2),
     formatCost: value => format(value, 2),
-    purchaseCap: DC.BEMAX
+    purchaseCap: Number.MAX_VALUE
   }),
   doubleGalaxies: {
     id: 4,
@@ -96,9 +96,9 @@ export const dilationUpgrades = {
     description: () => {
       const rep10 = replicantiMult().pLog10();
       let multiplier = "0.1";
-      if (rep10.gt(9000)) {
-        const ratio = DilationUpgrade.tdMultReplicanti.effectValue.pLog10().div(rep10);
-        if (ratio.lt(0.095)) {
+      if (rep10 > 9000) {
+        const ratio = DilationUpgrade.tdMultReplicanti.effectValue.pLog10() / rep10;
+        if (ratio < 0.095) {
           multiplier = ratio.toFixed(2);
         }
       }
@@ -106,8 +106,8 @@ export const dilationUpgrades = {
         effect above ${formatX(DC.E9000)}`;
     },
     effect: () => {
-      let rep10 = replicantiMult().pLog10().div(10);
-      rep10 = rep10.gt(9000) ? new Decimal(9000).add((rep10.sub(9e3)).div(2)) : rep10;
+      let rep10 = replicantiMult().pLog10() * 0.1;
+      rep10 = rep10 > 9000 ? 9000 + 0.5 * (rep10 - 9000) : rep10;
       return Decimal.pow10(rep10);
     },
     formatEffect: value => formatX(value, 2, 1)
@@ -154,7 +154,7 @@ export const dilationUpgrades = {
     effect: bought => Decimal.pow(5, bought),
     formatEffect: value => formatX(value, 2),
     formatCost: value => format(value, 2),
-    purchaseCap: DC.BEMAX
+    purchaseCap: Number.MAX_VALUE
   }),
   galaxyMultiplier: rebuyable({
     id: 12,
@@ -162,10 +162,10 @@ export const dilationUpgrades = {
     increment: 1000,
     pelleOnly: true,
     description: "Multiply Tachyon Galaxies gained, applies after TG doubling upgrade",
-    effect: bought => bought.add(1),
-    formatEffect: value => `${formatX(value, 2)} ➜ ${formatX(value.add(1), 2)}`,
+    effect: bought => bought + 1,
+    formatEffect: value => `${formatX(value, 2)} ➜ ${formatX(value + 1, 2)}`,
     formatCost: value => format(value, 2),
-    purchaseCap: DC.BEMAX
+    purchaseCap: Number.MAX_VALUE
   }),
   tickspeedPower: rebuyable({
     id: 13,
@@ -173,10 +173,10 @@ export const dilationUpgrades = {
     increment: 1e4,
     pelleOnly: true,
     description: "Gain a power to Tickspeed",
-    effect: bought => bought.mul(0.03).add(1),
-    formatEffect: value => `${formatPow(value, 2, 2)} ➜ ${formatPow(value.add(0.03), 2, 2)}`,
+    effect: bought => 1 + bought * 0.03,
+    formatEffect: value => `${formatPow(value, 2, 2)} ➜ ${formatPow(value + 0.03, 2, 2)}`,
     formatCost: value => format(value, 2),
-    purchaseCap: DC.BEMAX
+    purchaseCap: Number.MAX_VALUE
   }),
   galaxyThresholdPelle: {
     id: 14,
@@ -190,7 +190,7 @@ export const dilationUpgrades = {
     cost: 1e55,
     pelleOnly: true,
     description: () => `Gain more Dilated Time based on current EP`,
-    effect: () => DC.E9.pow((Decimal.max(player.eternityPoints.max(1).log10().sub(1500), 0).div(2500)).pow(1.2).clampMax(1)),
+    effect: () => 1e9 ** Math.min((Math.max(player.eternityPoints.log10() - 1500, 0) / 2500) ** 1.2, 1),
     formatEffect: value => formatX(value, 2, 2)
   },
 };

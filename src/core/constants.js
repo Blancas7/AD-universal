@@ -1,5 +1,3 @@
-import { cloneDeep } from "lodash";
-
 window.PRESTIGE_EVENT = {
   DIMENSION_BOOST: 0,
   ANTIMATTER_GALAXY: 1,
@@ -23,7 +21,6 @@ export const DC = deepFreeze({
   // _: decimal (.) part of the mantissa
   // E[0-9]: Decimal exponent variable
   // C: Calculation. D - .div, P - .pow
-  // There are special values
 
   /* eslint-disable key-spacing */
   DM1:                  new Decimal("-1"),
@@ -32,7 +29,6 @@ export const DC = deepFreeze({
   D0_01:                new Decimal("0.01"),
   D0_1:                 new Decimal("0.1"),
   D0_4:                 new Decimal("0.4"),
-  D0_5:                 new Decimal("0.5"),
   D0_55:                new Decimal("0.55"),
   D0_8446303389034288:  new Decimal("0.8446303389034288"),
   D0_95:                new Decimal("0.95"),
@@ -52,25 +48,9 @@ export const DC = deepFreeze({
   D3:                   new Decimal("3"),
   D4:                   new Decimal("4"),
   D5:                   new Decimal("5"),
-  D6:                   new Decimal("6"),
   D6_66:                new Decimal("6.66"),
-  D7:                   new Decimal("7"),
-  D8:                   new Decimal("8"),
-  D9:                   new Decimal("9"),
-  D10:                  new Decimal("10"),
-  D11:                  new Decimal("11"),
-  D12:                  new Decimal("12"),
-  D13:                  new Decimal("13"),
-  D14:                  new Decimal("14"),
   D15:                  new Decimal("15"),
   D16:                  new Decimal("16"),
-  D17:                  new Decimal("17"),
-  D18:                  new Decimal("18"),
-  D19:                  new Decimal("19"),
-  D20:                  new Decimal("20"),
-  D60:                  new Decimal("60"),
-  D80:                  new Decimal("80"),
-  D99:                  new Decimal("99"),
   D11111:               new Decimal("11111"),
   D3E4:                 new Decimal("30000"),
   D2E5:                 new Decimal("2e5"),
@@ -88,27 +68,20 @@ export const DC = deepFreeze({
   C2P30:                    Decimal.pow(2, 30),
   C2P1024:                  Decimal.pow(2, 1024),
   C10P16000D3:              Decimal.pow(10, 16000 / 3),
-  C1D1_11888888:        new Decimal(1 / 1.11888888),
-  C1D1_11267177:        new Decimal(1 / 1.11267177),
 
   // 1e1 is 10
   E1:                   new Decimal("1e1"),
   E2:                   new Decimal("1e2"),
   E3:                   new Decimal("1e3"),
-  E4:                   new Decimal("1e4"),
   E5:                   new Decimal("1e5"),
   E6:                   new Decimal("1e6"),
-  E7:                   new Decimal("1e7"),
   E8:                   new Decimal("1e8"),
   E9:                   new Decimal("1e9"),
   E10:                  new Decimal("1e10"),
   E11:                  new Decimal("1e11"),
   E12:                  new Decimal("1e12"),
-  E13:                  new Decimal("1e13"),
   E15:                  new Decimal("1e15"),
-  E18:                  new Decimal("1e18"),
   E20:                  new Decimal("1e20"),
-  E24:                  new Decimal("1e24"),
   E25:                  new Decimal("1e25"),
   E29:                  new Decimal("1e29"),
   E30:                  new Decimal("1e30"),
@@ -220,12 +193,6 @@ export const DC = deepFreeze({
   E1E8:                 new Decimal("1e100000000"),
   E1_5E12:              new Decimal("1e1500000000000"),
   E1E15:                new Decimal("1e1000000000000000"),
-
-  // Special case values
-  NUMSAFE:              new Decimal(Number.MAX_SAFE_INTEGER),
-  NUMMAX:               new Decimal(Number.MAX_VALUE),
-  BIMAX:                new Decimal("e9e15"),
-  BEMAX:                new Decimal("10^^9000000000000000")
 });
 
 window.AUTOBUYER_MODE = {
@@ -262,13 +229,131 @@ window.RECENT_PRESTIGE_RESOURCE = {
   PRESTIGE_COUNT: 3,
 };
 
+// Free tickspeed multiplier with TS171. Shared here because formatting glyph effects depends on it
+window.TS171_MULTIPLIER = 1.25;
+
 // Used as drag and drop data type
 window.GLYPH_MIME_TYPE = "text/x-ivark-glyph";
+
+// These need to be in descending order for searching over them to work trivially, and all need to be hex codes
+// in order for reality glyph color parsing to work properly in the cosmetic handler
+window.GlyphRarities = [
+  {
+    minStrength: 3.5,
+    name: "Celestial",
+    darkColor: "#3d3dec",
+    lightColor: "#9696ff",
+    darkHighContrast: "#ffff00",
+    lightHighContrast: "#c0c000"
+  }, {
+    minStrength: 3.25,
+    name: "Transcendent",
+    darkColor: "#03ffec",
+    lightColor: "#00c3c3",
+    darkHighContrast: "#00ffff",
+    lightHighContrast: "#00c0c0"
+  }, {
+    minStrength: 3,
+    name: "Mythical",
+    darkColor: "#d50000",
+    lightColor: "#d50000",
+    darkHighContrast: "#c00000",
+    lightHighContrast: "#ff0000"
+  }, {
+    minStrength: 2.75,
+    name: "Legendary",
+    darkColor: "#ff9800",
+    lightColor: "#d68100",
+    darkHighContrast: "#ff8000",
+    lightHighContrast: "#ff8000"
+  }, {
+    minStrength: 2.5,
+    name: "Epic",
+    darkColor: "#9c27b0",
+    lightColor: "#9c27b0",
+    darkHighContrast: "#ff00ff",
+    lightHighContrast: "#ff00ff"
+  }, {
+    minStrength: 2,
+    name: "Rare",
+    darkColor: "#5096f3",
+    lightColor: "#0d40ff",
+    darkHighContrast: "#6060ff",
+    lightHighContrast: "#0000ff"
+  }, {
+    minStrength: 1.5,
+    name: "Uncommon",
+    darkColor: "#43a047",
+    lightColor: "#1e8622",
+    darkHighContrast: "#00ff00",
+    lightHighContrast: "#00b000"
+  }, {
+    minStrength: 1,
+    name: "Common",
+    darkColor: "#ffffff",
+    lightColor: "#000000",
+    darkHighContrast: "#ffffff",
+    lightHighContrast: "#000000"
+  },
+];
 
 window.GLYPH_BG_SETTING = {
   AUTO: 0,
   LIGHT: 1,
   DARK: 2,
+};
+
+window.GLYPH_TYPES = [
+  "power",
+  "infinity",
+  "replication",
+  "time",
+  "dilation",
+  "effarig",
+  "reality",
+  "cursed",
+  "companion"
+];
+
+window.BASIC_GLYPH_TYPES = [
+  "power",
+  "infinity",
+  "replication",
+  "time",
+  "dilation"
+];
+
+window.ALCHEMY_BASIC_GLYPH_TYPES = [
+  "power",
+  "infinity",
+  "replication",
+  "time",
+  "dilation",
+  "effarig"
+];
+
+window.GLYPH_SYMBOLS = {
+  power: "Ω",
+  infinity: "∞",
+  replication: "Ξ",
+  time: "Δ",
+  dilation: "Ψ",
+  effarig: "Ϙ",
+  reality: "Ϟ",
+  cursed: "⸸",
+  companion: "♥"
+};
+
+window.CANCER_GLYPH_SYMBOLS = {
+  power: "⚡",
+  infinity: "8",
+  replication: "⚤",
+  time: "🕟",
+  dilation: "☎",
+  effarig: "🦒",
+  reality: "⛧",
+  cursed: "☠",
+  companion: "³"
 };
 
 window.ALTERATION_TYPE = {
@@ -288,6 +373,14 @@ window.GLYPH_SIDEBAR_MODE = {
   FILTER_SETTINGS: 1,
   SAVED_SETS: 2,
   SACRIFICE_TYPE: 3,
+};
+
+window.AUTO_SORT_MODE = {
+  NONE: 0,
+  LEVEL: 1,
+  POWER: 2,
+  EFFECT: 3,
+  SCORE: 4
 };
 
 window.AUTO_GLYPH_SCORE = {
@@ -406,27 +499,11 @@ window.PROGRESS_STAGE = {
   PELLE: 17,
 };
 
+window.STD_BACKEND_URL = "https://antimatterdimensionspayments.ew.r.appspot.com";
+
 window.SPEEDRUN_SEED_STATE = {
   UNKNOWN: 0,
   FIXED: 1,
   RANDOM: 2,
   PLAYER: 3,
 };
-
-// We're just going to use cloneDeep from lodash, since its better
-window.cloneDeep = value => cloneDeep(value);
-
-//
-// window.cloneDeep = function cloneDeep(obj) {
-// if (Array.isArray(obj)) {
-//     return obj.map(i => cloneDeep(i));
-// }
-// if (obj instanceof Decimal) {
-//     return new Decimal(obj);
-// }
-// if (typeof obj === "object" && obj !== null) {
-//     return Object.fromEntries(Object.entries(obj).map(([i, j]) => [i, cloneDeep(j)]));
-// }
-// return obj;
-// };
-//

@@ -36,7 +36,7 @@ export default {
   computed: {
     sacrificeTooltip() {
       if (this.isFullyAutomated) {
-        return "Sacrifice Autobuyer is enabled and Achievement 118 is unlocked and active";
+        return "Sacrifice autobuyer is enabled and Achievement 118 is unlocked, so Sacrifice is now fully automated";
       }
       return `Boosts 8th Antimatter Dimension by ${formatX(this.sacrificeBoost, 2, 2)}`;
     },
@@ -73,7 +73,7 @@ export default {
       return this.buyUntil10 ? "Until 10" : "Buy 1";
     },
     update() {
-      this.hasDimensionBoosts = player.dimensionBoosts.gt(0);
+      this.hasDimensionBoosts = player.dimensionBoosts > 0;
       this.buyUntil10 = player.buyUntil10;
       this.hasContinuum = Laitela.continuumUnlocked;
       this.isContinuumActive = Laitela.continuumActive;
@@ -86,9 +86,8 @@ export default {
 
       this.multiplierText = `Buy 10 Dimension purchase multiplier: ${formatX(this.buy10Mult, 2, 2)}`;
       if (!isSacrificeUnlocked) return;
-      this.isSacrificeAffordable = Sacrifice.canSacrifice;
-      this.isFullyAutomated = Autobuyer.sacrifice.isActive && Achievement(118).isEffectActive &&
-        (this.isSacrificeAffordable || Sacrifice.nextBoost.lte(1));
+      this.isFullyAutomated = Autobuyer.sacrifice.isActive && Achievement(118).isUnlocked;
+      this.isSacrificeAffordable = Sacrifice.canSacrifice && !this.isFullyAutomated;
       this.currentSacrifice.copyFrom(Sacrifice.totalBoost);
       this.sacrificeBoost.copyFrom(Sacrifice.nextBoost);
       this.disabledCondition = Sacrifice.disabledCondition;
@@ -113,12 +112,12 @@ export default {
       <PrimaryButton
         v-show="isSacrificeUnlocked"
         v-tooltip="sacrificeTooltip"
-        :enabled="isSacrificeAffordable && !isFullyAutomated"
+        :enabled="isSacrificeAffordable"
         class="o-primary-btn--sacrifice"
         @click="sacrifice"
       >
         <span v-if="isSacrificeAffordable">Dimensional Sacrifice ({{ formatX(sacrificeBoost, 2, 2) }})</span>
-        <span v-else-if="isFullyAutomated">
+        <span v-else-if="isFullyAutomated && disabledCondition !== ''">
           Dimensional Sacrifice is Automated (Achievement 118)
         </span>
         <span v-else>Dimensional Sacrifice Disabled ({{ disabledCondition }})</span>

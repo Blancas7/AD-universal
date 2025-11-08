@@ -1589,12 +1589,15 @@ br {
 
 .infotooltip:hover .infotooltiptext {
   left: calc(100% + 0.7rem);
-  visibility: visible;
-  opacity: 1;
 }
 
 .s-base--dark .infotooltip .infotooltiptext {
   border-color: #dddddd;
+}
+
+.infotooltip:hover .infotooltiptext {
+  visibility: visible;
+  opacity: 1;
 }
 
 .infotooltip .infotooltiptext::after {
@@ -1748,14 +1751,25 @@ br {
   margin: 0 0.5rem;
 }
 
-.o-primary-btn--buy-td,
+.o-primary-btn--buy-td {
+  width: 30rem;
+  height: 3.5rem;
+  margin: 0 0.5rem;
+}
+
+.o-primary-btn--buy-td-auto {
+  width: 9rem;
+  height: 3.5rem;
+  font-size: 1rem;
+  margin: 0 0.5rem;
+}
+
 .o-primary-btn--buy-sd {
   width: 30rem;
   height: 3.5rem;
   margin: 0 0.5rem;
 }
 
-.o-primary-btn--buy-td-auto,
 .o-primary-btn--buy-sd-auto {
   width: 9rem;
   height: 3.5rem;
@@ -6661,7 +6675,10 @@ kbd {
 }
 
 .c-enslaved-run-button__icon__sigil {
-  font-size: 12rem;
+  position: absolute;
+  top: -3.7rem;
+  right: -0.2rem;
+  font-size: 14.8rem;
   transform: rotate(45deg);
 }
 

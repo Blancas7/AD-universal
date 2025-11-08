@@ -1,10 +1,10 @@
 import { DC } from "../../constants";
 
 const rebuyable = props => {
-  props.cost = () => Decimal.pow(props.costMult, player.reality.imaginaryRebuyables[props.id]).times(props.initialCost);
+  props.cost = () => props.initialCost * Math.pow(props.costMult, player.reality.imaginaryRebuyables[props.id]);
   const { effect } = props;
   if (props.isDecimal) props.effect = () => Decimal.pow(effect, player.reality.imaginaryRebuyables[props.id]);
-  else props.effect = () => player.reality.imaginaryRebuyables[props.id].times(effect);
+  else props.effect = () => effect * player.reality.imaginaryRebuyables[props.id];
   if (!props.formatEffect) props.formatEffect = value => `+${format(value, 2, 2)}`;
   props.formatCost = value => format(value, 2, 0);
   return props;
@@ -96,7 +96,7 @@ export const imaginaryUpgrades = [
     costMult: 2000,
     description: () => `Increase Singularity gain`,
     effect: 1,
-    formatEffect: value => `${formatX(value.add(1), 2)}`
+    formatEffect: value => `${formatX(1 + value, 2)}`
   }),
   {
     name: "Suspicion of Interference",
@@ -105,10 +105,10 @@ export const imaginaryUpgrades = [
     requirement: () => `${format(1e90)} total Relic Shards
       (You have ${format(player.celestials.effarig.relicShards, 2)})`,
     hasFailed: () => false,
-    checkRequirement: () => player.celestials.effarig.relicShards.gte(1e90),
+    checkRequirement: () => player.celestials.effarig.relicShards >= 1e90,
     checkEvent: GAME_EVENT.REALITY_RESET_AFTER,
     description: "Time Dimension power based on total antimatter",
-    effect: () => player.records.totalAntimatter.max(1).log10().max(1).log10().div(100).add(1),
+    effect: () => 1 + Math.log10(player.records.totalAntimatter.log10()) / 100,
     formatEffect: value => `${formatPow(value, 0, 4)}`,
     isDisabledInDoomed: true
   },
@@ -120,10 +120,10 @@ export const imaginaryUpgrades = [
     ${formatInt(100)}`,
     hasFailed: () => false,
     checkRequirement: () => Object.values(player.celestials.effarig.glyphWeights).some(w => w === 100) &&
-      gainedGlyphLevel().actualLevel.gte(9000),
+      gainedGlyphLevel().actualLevel >= 9000,
     checkEvent: GAME_EVENT.REALITY_RESET_BEFORE,
     description: "Gain free Dimboosts based on Imaginary rebuyable count",
-    effect: () => ImaginaryUpgrades.totalRebuyables.mul(2e4),
+    effect: () => 2e4 * ImaginaryUpgrades.totalRebuyables,
     formatEffect: value => `${format(value, 1)}`,
     isDisabledInDoomed: true
   },
@@ -136,10 +136,10 @@ export const imaginaryUpgrades = [
     hasFailed: () => !Enslaved.isRunning,
     // This is for consistency with the UI, which displays an amplified "projected RM" value on the reality button
     checkRequirement: () => Enslaved.isRunning &&
-      MachineHandler.uncappedRM.times(simulatedRealityCount(false).add(1)).gte(Number.MAX_VALUE),
+      MachineHandler.uncappedRM.times(simulatedRealityCount(false) + 1).gte(Number.MAX_VALUE),
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     description: "Increase Imaginary Machine Cap based on Imaginary Upgrades purchased",
-    effect: () => ImaginaryUpgrades.totalRebuyables.div(20).add(1).add(ImaginaryUpgrades.totalSinglePurchase / 2),
+    effect: () => 1 + ImaginaryUpgrades.totalRebuyables / 20 + ImaginaryUpgrades.totalSinglePurchase / 2,
     formatEffect: value => `${formatX(value, 2, 1)}`,
     isDisabledInDoomed: true
   },
@@ -150,7 +150,7 @@ export const imaginaryUpgrades = [
     formatCost: x => format(x, 1),
     requirement: () => `Reach a tickspeed of ${format("1e75000000000")} / sec within Eternity Challenge 5`,
     hasFailed: () => false,
-    checkRequirement: () => EternityChallenge(5).isRunning && Tickspeed.perSecond.add(1).log(10).gte(7.5e10),
+    checkRequirement: () => EternityChallenge(5).isRunning && Tickspeed.perSecond.exponent >= 7.5e10,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     description: () => `Raise all Dimension per-purchase multipliers to ${formatPow(1.5, 0, 1)}`,
     effect: 1.5,
@@ -163,7 +163,7 @@ export const imaginaryUpgrades = [
     requirement: () => `Reach ${format("1e1500000000000")} antimatter without
       ever having any 1st Infinity Dimensions`,
     hasFailed: () => player.requirementChecks.reality.maxID1.gt(0),
-    checkRequirement: () => player.requirementChecks.reality.maxID1.eq(0) && player.antimatter.add(1).log10().gte(1.5e12),
+    checkRequirement: () => player.requirementChecks.reality.maxID1.eq(0) && player.antimatter.exponent >= 1.5e12,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     canLock: true,
     // This upgrade lock acts in multiple different conditions, but isn't 100% foolproof and also blocks a few edge
@@ -192,8 +192,8 @@ export const imaginaryUpgrades = [
     cost: 6e9,
     requirement: () => `Automatically condense at least ${formatInt(20)} Singularities at once`,
     hasFailed: () => false,
-    checkRequirement: () => Singularity.singularitiesGained.gte(20) &&
-      Currency.darkEnergy.gte(Singularity.cap.mul(SingularityMilestone.autoCondense.effectOrDefault(Infinity))),
+    checkRequirement: () => Singularity.singularitiesGained >= 20 &&
+      Currency.darkEnergy.gte(Singularity.cap * SingularityMilestone.autoCondense.effectOrDefault(Infinity)),
     checkEvent: GAME_EVENT.SINGULARITY_RESET_BEFORE,
     description: "Unlock the 3rd Dark Matter Dimension",
   },
@@ -202,10 +202,10 @@ export const imaginaryUpgrades = [
     id: 18,
     cost: 1.5e10,
     formatCost: x => format(x, 1),
-    requirement: () => `Have ${format(80000)} total Galaxies`,
+    requirement: () => `Have ${formatInt(80000)} total Galaxies`,
     hasFailed: () => false,
-    checkRequirement: () => player.dilation.totalTachyonGalaxies.add(Replicanti.galaxies.total)
-      .add(player.galaxies).gte(80000),
+    checkRequirement: () => Replicanti.galaxies.total + player.galaxies +
+      player.dilation.totalTachyonGalaxies >= 80000,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     description: "Unlock the 4th Dark Matter Dimension",
   },
@@ -218,7 +218,7 @@ export const imaginaryUpgrades = [
       ${formatInt(8)} Time Studies in this Reality`,
     hasFailed: () => player.requirementChecks.reality.maxStudies > 8,
     checkRequirement: () => player.requirementChecks.reality.maxStudies <= 8 &&
-      Tickspeed.continuumValue.gte(3.85e6),
+      Tickspeed.continuumValue >= 3.85e6,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     canLock: true,
     lockEvent: () => `purchase more than ${formatInt(8)} Time Studies`,
@@ -230,7 +230,7 @@ export const imaginaryUpgrades = [
     cost: 3e12,
     requirement: () => `Have a Continuum increase of at least ${formatPercents(1)}`,
     hasFailed: () => false,
-    checkRequirement: () => Laitela.matterExtraPurchaseFactor.gte(2),
+    checkRequirement: () => Laitela.matterExtraPurchaseFactor >= 2,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     description: () => `Unlock Autobuyers for repeatable Imaginary Upgrades and generate Imaginary Machines
       ${formatInt(10)} times faster`,
@@ -244,12 +244,12 @@ export const imaginaryUpgrades = [
     requirement: () => `Reach ${format("1e7400000000000")} antimatter with Continuum disabled for the entire Reality`,
     hasFailed: () => !player.requirementChecks.reality.noContinuum,
     checkRequirement: () => player.requirementChecks.reality.noContinuum &&
-      Currency.antimatter.value.max(1).log10().gte(7.4e12),
+      Currency.antimatter.value.log10() >= 7.4e12,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     canLock: true,
     lockEvent: "enable Continuum",
     description: "Annihilation multiplier gain is improved based on Imaginary Machines",
-    effect: () => Decimal.clampMin(Decimal.pow(Decimal.log10(Currency.imaginaryMachines.value).sub(10), 3), 1),
+    effect: () => Math.clampMin(Math.pow(Math.log10(Currency.imaginaryMachines.value) - 10, 3), 1),
     formatEffect: value => `${formatX(value, 2, 1)}`,
     isDisabledInDoomed: true
   },
@@ -263,10 +263,10 @@ export const imaginaryUpgrades = [
     // Note: 4 cursed glyphs is -12 glyph count, but equipping a positive glyph in the last slot is allowed
     hasFailed: () => !Effarig.isRunning || player.requirementChecks.reality.maxGlyphs > -10,
     checkRequirement: () => Effarig.isRunning && player.requirementChecks.reality.maxGlyphs < -10 &&
-      Currency.antimatter.value.add(1).log10().gte(1.5e11),
+      Currency.antimatter.value.exponent >= 1.5e11,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     description: () => `All Glyph Sacrifice totals are increased to ${format(1e100)}`,
-    effect: DC.E100,
+    effect: 1e100,
     isDisabledInDoomed: true
   },
   {
@@ -277,10 +277,10 @@ export const imaginaryUpgrades = [
       at most ${formatInt(0)} Glyphs equipped`,
     hasFailed: () => !Ra.isRunning || player.requirementChecks.reality.maxGlyphs > 0,
     checkRequirement: () => Ra.isRunning && player.requirementChecks.reality.maxGlyphs <= 0 &&
-      gainedGlyphLevel().actualLevel.gte(20000),
+      gainedGlyphLevel().actualLevel >= 20000,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     description: "Increase free Dimboost count based on Tesseract count",
-    effect: () => Tesseracts.effectiveCount.pow(2).div(4).floor(),
+    effect: () => Math.floor(0.25 * Math.pow(Tesseracts.effectiveCount, 2)),
     formatEffect: value => `${formatX(value)}`,
     isDisabledInDoomed: true
   },
@@ -293,9 +293,9 @@ export const imaginaryUpgrades = [
     // the same conditions as hard V's Post-destination
     requirement: () => `Have ${formatInt(13000)} Antimatter Galaxies in Ra's Reality
       with a fully inverted Black Hole`,
-    hasFailed: () => !Ra.isRunning || player.requirementChecks.reality.slowestBH.gt(1e-300),
-    checkRequirement: () => Ra.isRunning && player.requirementChecks.reality.slowestBH.lte(1e-300) &&
-      player.galaxies.gte(13000),
+    hasFailed: () => !Ra.isRunning || player.requirementChecks.reality.slowestBH > 1e-300,
+    checkRequirement: () => Ra.isRunning && player.requirementChecks.reality.slowestBH <= 1e-300 &&
+      player.galaxies >= 13000,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     canLock: true,
     // Three locking events: uninvert, discharge, and entering (but not auto-completing) EC12

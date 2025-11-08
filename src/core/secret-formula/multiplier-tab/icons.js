@@ -118,7 +118,7 @@ export const MultiplierTabIcons = {
   },
   DIMBOOST: {
     symbol: `<i class="fas fa-angles-up" />`,
-    color: reality.GlyphInfo.power.color,
+    color: reality.glyphTypes.power.color,
   },
   TICKSPEED: {
     symbol: `<i class="fas fa-clock" />`,
@@ -162,8 +162,8 @@ export const MultiplierTabIcons = {
   },
   SPECIFIC_GLYPH(type) {
     return {
-      symbol: `<b>${reality.GlyphInfo[type].regularGlyphSymbol}</b>`,
-      color: reality.GlyphInfo[type].color,
+      symbol: `<b>${reality.glyphTypes[type].symbol}</b>`,
+      color: reality.glyphTypes[type].color,
     };
   },
   BLACK_HOLE: {

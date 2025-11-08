@@ -7,7 +7,7 @@ export const alchemyResources = {
     name: "Power",
     symbol: "Ω",
     isBaseResource: true,
-    effect: amount => amount.div(200000).add(1),
+    effect: amount => 1 + amount / 200000,
     tier: 1,
     uiOrder: 1,
     unlockedAt: 2,
@@ -19,7 +19,7 @@ export const alchemyResources = {
     name: "Infinity",
     symbol: "∞",
     isBaseResource: true,
-    effect: amount => amount.div(200000).add(1),
+    effect: amount => 1 + amount / 200000,
     tier: 1,
     uiOrder: 2,
     unlockedAt: 3,
@@ -31,7 +31,7 @@ export const alchemyResources = {
     name: "Time",
     symbol: "Δ",
     isBaseResource: true,
-    effect: amount => amount.div(200000).add(1),
+    effect: amount => 1 + amount / 200000,
     tier: 1,
     uiOrder: 3,
     unlockedAt: 4,
@@ -43,7 +43,7 @@ export const alchemyResources = {
     name: "Replication",
     symbol: "Ξ",
     isBaseResource: true,
-    effect: amount => Decimal.pow10(amount.div(1000)),
+    effect: amount => Decimal.pow10(amount / 1000),
     tier: 1,
     uiOrder: 4,
     unlockedAt: 5,
@@ -55,7 +55,7 @@ export const alchemyResources = {
     name: "Dilation",
     symbol: "Ψ",
     isBaseResource: true,
-    effect: amount => Decimal.pow10(amount.div(2000)),
+    effect: amount => Decimal.pow10(amount / 2000),
     tier: 1,
     uiOrder: 5,
     unlockedAt: 6,
@@ -69,7 +69,7 @@ export const alchemyResources = {
     name: "Cardinality",
     symbol: "α",
     isBaseResource: false,
-    effect: amount => Decimal.div(0.2, amount.div(20000).add(1)).add(1),
+    effect: amount => 1 + 0.2 / (1 + amount / 20000),
     tier: 2,
     uiOrder: 3,
     unlockedAt: 8,
@@ -79,11 +79,11 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.TIME,
-        amount: DC.D8
+        amount: 8
       },
       {
         resource: ALCHEMY_RESOURCE.REPLICATION,
-        amount: DC.D7
+        amount: 7
       }
     ]
   },
@@ -92,7 +92,7 @@ export const alchemyResources = {
     name: "Eternity",
     symbol: "τ",
     isBaseResource: false,
-    effect: amount => amount.div(15000).add(1),
+    effect: amount => 1 + amount / 15000,
     tier: 2,
     uiOrder: 2,
     unlockedAt: 9,
@@ -101,11 +101,11 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.TIME,
-        amount: DC.D11
+        amount: 11
       },
       {
         resource: ALCHEMY_RESOURCE.INFINITY,
-        amount: DC.D4
+        amount: 4
       }
     ]
   },
@@ -114,7 +114,7 @@ export const alchemyResources = {
     name: "Dimensionality",
     symbol: "ρ",
     isBaseResource: false,
-    effect: amount => Decimal.pow10(amount.times(5)),
+    effect: amount => Decimal.pow10(5 * amount),
     tier: 2,
     uiOrder: 1,
     unlockedAt: 10,
@@ -123,11 +123,11 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.POWER,
-        amount: DC.D10
+        amount: 10
       },
       {
         resource: ALCHEMY_RESOURCE.INFINITY,
-        amount: DC.D5
+        amount: 5
       }
     ]
   },
@@ -136,7 +136,7 @@ export const alchemyResources = {
     name: "Inflation",
     symbol: "λ",
     isBaseResource: false,
-    effect: amount => Decimal.pow10(new Decimal(6e9).sub(amount.mul(3e5)).clampMin(0)),
+    effect: amount => Decimal.pow10(6e9 - 3e5 * amount),
     tier: 2,
     uiOrder: 5,
     unlockedAt: 11,
@@ -146,11 +146,11 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.POWER,
-        amount: DC.D9
+        amount: 9
       },
       {
         resource: ALCHEMY_RESOURCE.DILATION,
-        amount: DC.D6
+        amount: 6
       }
     ]
   },
@@ -159,7 +159,7 @@ export const alchemyResources = {
     name: "Alternation",
     symbol: "ω",
     isBaseResource: false,
-    effect: amount => amount.div(200000),
+    effect: amount => amount / 200000,
     tier: 2,
     uiOrder: 4,
     unlockedAt: 12,
@@ -169,11 +169,11 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.REPLICATION,
-        amount: DC.D5
+        amount: 5
       },
       {
         resource: ALCHEMY_RESOURCE.DILATION,
-        amount: DC.D10
+        amount: 10
       }
     ]
   },
@@ -184,7 +184,7 @@ export const alchemyResources = {
     name: "Effarig",
     symbol: "Ϙ",
     isBaseResource: true,
-    effect: amount => Decimal.pow(10, amount.div(2500)),
+    effect: amount => Math.pow(10, amount / 2500),
     tier: 1,
     uiOrder: 1.5,
     unlockedAt: 7,
@@ -197,8 +197,8 @@ export const alchemyResources = {
     symbol: "π",
     isBaseResource: false,
     effect: amount => {
-      const rawValue = Decimal.sqrt(amount.div(25000)).mul(1.3).add(0.3);
-      return Achievement(175).isUnlocked ? rawValue : Decimal.min(rawValue, 1);
+      const rawValue = 0.3 + 1.3 * Math.sqrt(amount / 25000);
+      return Achievement(175).isUnlocked ? rawValue : Math.min(rawValue, 1);
     },
     tier: 3,
     uiOrder: 2,
@@ -206,20 +206,20 @@ export const alchemyResources = {
     description: "increases the yield of Alchemy Reactions",
     formatEffect(value) {
       return `Alchemy Reaction efficiency ${formatPercents(0.3)} ➜ ${formatPercents(value, 2, 2)}
-        ${(!Achievement(175).isUnlocked && value.gte(1)) ? " (Capped)" : ""}`;
+        ${(!Achievement(175).isUnlocked && value >= 1) ? " (Capped)" : ""}`;
     },
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.EFFARIG,
-        amount: DC.D3
+        amount: 3
       },
       {
         resource: ALCHEMY_RESOURCE.REPLICATION,
-        amount: DC.D16
+        amount: 16
       },
       {
         resource: ALCHEMY_RESOURCE.INFINITY,
-        amount: DC.D14
+        amount: 14
       }
     ]
   },
@@ -228,7 +228,7 @@ export const alchemyResources = {
     name: "Momentum",
     symbol: "μ",
     isBaseResource: false,
-    effect: amount => amount.div(125000).add(1),
+    effect: amount => 1 + amount / 125000,
     tier: 3,
     uiOrder: 3,
     unlockedAt: 15,
@@ -239,15 +239,15 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.EFFARIG,
-        amount: DC.D11
+        amount: 11
       },
       {
         resource: ALCHEMY_RESOURCE.POWER,
-        amount: DC.D4
+        amount: 4
       },
       {
         resource: ALCHEMY_RESOURCE.TIME,
-        amount: DC.D20
+        amount: 20
       }
     ]
   },
@@ -256,7 +256,7 @@ export const alchemyResources = {
     name: "Decoherence",
     symbol: "ξ",
     isBaseResource: false,
-    effect: amount => Decimal.sqrt(amount.div(25000)).mul(0.15),
+    effect: amount => 0.15 * Math.sqrt(amount / 25000),
     tier: 3,
     uiOrder: 4,
     unlockedAt: 14,
@@ -266,11 +266,11 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.EFFARIG,
-        amount: DC.D13
+        amount: 13
       },
       {
         resource: ALCHEMY_RESOURCE.ALTERNATION,
-        amount: DC.D8
+        amount: 8
       }
     ]
   },
@@ -281,7 +281,7 @@ export const alchemyResources = {
     name: "Exponential",
     symbol: "Γ",
     isBaseResource: false,
-    effect: amount => Decimal.pow(amount.div(10000), 2).mul(10),
+    effect: amount => 10 * Math.pow(amount / 10000, 2),
     tier: 4,
     uiOrder: 2,
     unlockedAt: 18,
@@ -290,11 +290,11 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.INFLATION,
-        amount: DC.D18
+        amount: 18
       },
       {
         resource: ALCHEMY_RESOURCE.SYNERGISM,
-        amount: DC.D3
+        amount: 3
       }
     ]
   },
@@ -303,7 +303,7 @@ export const alchemyResources = {
     name: "Force",
     symbol: "Φ",
     isBaseResource: false,
-    effect: amount => amount.mul(5),
+    effect: amount => 5 * amount,
     tier: 4,
     uiOrder: 2,
     unlockedAt: 17,
@@ -312,11 +312,11 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.DIMENSIONALITY,
-        amount: DC.D7
+        amount: 7
       },
       {
         resource: ALCHEMY_RESOURCE.MOMENTUM,
-        amount: DC.D8
+        amount: 8
       }
     ]
   },
@@ -325,7 +325,7 @@ export const alchemyResources = {
     name: "Uncountability",
     symbol: "Θ",
     isBaseResource: false,
-    effect: amount => Decimal.sqrt(amount.div(25000)).mul(160),
+    effect: amount => 160 * Math.sqrt(amount / 25000),
     tier: 4,
     uiOrder: 3,
     unlockedAt: 19,
@@ -334,15 +334,15 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.INFINITY,
-        amount: DC.D20
+        amount: 20
       },
       {
         resource: ALCHEMY_RESOURCE.EFFARIG,
-        amount: DC.D6
+        amount: 6
       },
       {
         resource: ALCHEMY_RESOURCE.CARDINALITY,
-        amount: DC.D16
+        amount: 16
       }
     ]
   },
@@ -351,7 +351,7 @@ export const alchemyResources = {
     name: "Boundless",
     symbol: "Π",
     isBaseResource: false,
-    effect: amount => amount.div(80000),
+    effect: amount => amount / 80000,
     tier: 4,
     uiOrder: 1,
     unlockedAt: 20,
@@ -360,11 +360,11 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.ETERNITY,
-        amount: DC.D13
+        amount: 13
       },
       {
         resource: ALCHEMY_RESOURCE.INFLATION,
-        amount: DC.D18
+        amount: 18
       }
     ]
   },
@@ -373,7 +373,7 @@ export const alchemyResources = {
     name: "Multiversal",
     symbol: "Σ",
     isBaseResource: false,
-    effect: amount => Decimal.pow(amount.div(25000), 2).mul(32),
+    effect: amount => 32 * Math.pow(amount / 25000, 2),
     tier: 4,
     uiOrder: 5,
     unlockedAt: 16,
@@ -383,11 +383,11 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.ALTERNATION,
-        amount: DC.D16
+        amount: 16
       },
       {
         resource: ALCHEMY_RESOURCE.DECOHERENCE,
-        amount: DC.D3
+        amount: 3
       }
     ]
   },
@@ -397,7 +397,7 @@ export const alchemyResources = {
     symbol: "Λ",
     isBaseResource: false,
     // Somewhat ugly number to make this show 70.00% at cap
-    effect: amount => amount.div(amount.add(10714.28)),
+    effect: amount => amount / (10714.28 + amount),
     tier: 4,
     uiOrder: 4,
     unlockedAt: 21,
@@ -407,15 +407,15 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.EFFARIG,
-        amount: DC.D15
+        amount: 15
       },
       {
         resource: ALCHEMY_RESOURCE.DECOHERENCE,
-        amount: DC.D3
+        amount: 3
       },
       {
         resource: ALCHEMY_RESOURCE.SYNERGISM,
-        amount: DC.D10
+        amount: 10
       }
     ]
   },
@@ -426,7 +426,7 @@ export const alchemyResources = {
     name: "Reality",
     symbol: "Ϟ",
     isBaseResource: false,
-    effect: amount => Decimal.floor(amount),
+    effect: amount => Math.floor(amount),
     tier: 5,
     unlockedAt: 25,
     description: "can be consumed to create Reality Glyphs",
@@ -434,27 +434,27 @@ export const alchemyResources = {
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.EXPONENTIAL,
-        amount: DC.D1
+        amount: 1
       },
       {
         resource: ALCHEMY_RESOURCE.FORCE,
-        amount: DC.D1
+        amount: 1
       },
       {
         resource: ALCHEMY_RESOURCE.UNCOUNTABILITY,
-        amount: DC.D1
+        amount: 1
       },
       {
         resource: ALCHEMY_RESOURCE.BOUNDLESS,
-        amount: DC.D1
+        amount: 1
       },
       {
         resource: ALCHEMY_RESOURCE.MULTIVERSAL,
-        amount: DC.D1
+        amount: 1
       },
       {
         resource: ALCHEMY_RESOURCE.UNPREDICTABILITY,
-        amount: DC.D1
+        amount: 1
       }
     ]
   },

@@ -1,7 +1,5 @@
-import { isDecimal } from "../utility/type-check";
-
 function isEND() {
-  const threshold = GameEnd.endState >= END_STATE_MARKERS.END_NUMBERS
+  const threshold = GameEnd.endState > END_STATE_MARKERS.END_NUMBERS
     ? 1
     : (GameEnd.endState - END_STATE_MARKERS.FADE_AWAY) / 2;
   // Using the Pelle.isDoomed getter here causes this to not update properly after a game restart
@@ -10,10 +8,7 @@ function isEND() {
 
 window.format = function format(value, places = 0, placesUnder1000 = 0) {
   if (isEND()) return "END";
-  // eslint-disable-next-line no-param-reassign
-  if (!isDecimal(value)) value = new Decimal(value);
-  if (value.lt("e9e15")) return Notations.current.format(value, places, placesUnder1000, 3);
-  return LNotations.current.formatLDecimal(value, places);
+  return Notations.current.format(value, places, placesUnder1000, 3);
 };
 
 window.formatInt = function formatInt(value) {
@@ -23,11 +18,7 @@ window.formatInt = function formatInt(value) {
   if (Notations.current.isPainful && Notations.current.name !== "Standard") {
     return format(value, 2);
   }
-  if (typeof value === "number") {
-    return value > 1e9 ? format(value, 2, 2) : formatWithCommas(value.toFixed(0));
-  }
-  return (!(value instanceof Decimal) || value.lt(1e9))
-    ? formatWithCommas(value instanceof Decimal ? value.toNumber().toFixed(0) : 1) : format(value, 2, 2);
+  return formatWithCommas(typeof value === "number" ? value.toFixed(0) : value.toNumber().toFixed(0));
 };
 
 window.formatFloat = function formatFloat(value, digits) {
@@ -41,7 +32,6 @@ window.formatFloat = function formatFloat(value, digits) {
 window.formatPostBreak = function formatPostBreak(value, places, placesUnder1000) {
   if (isEND()) return "END";
   const notation = Notations.current;
-  const lNotation = LNotations.current;
   // This is basically just a copy of the format method from notations library,
   // with the pre-break case removed.
   if (typeof value === "number" && !Number.isFinite(value)) {
@@ -50,26 +40,20 @@ window.formatPostBreak = function formatPostBreak(value, places, placesUnder1000
 
   const decimal = Decimal.fromValue_noAlloc(value);
 
-  if (decimal.eq(0)) return notation.formatUnder1000(0, placesUnder1000);
-
-  if (decimal.abs().log10().lt(-300)) {
-    return decimal.sign < 0
+  if (decimal.exponent < -300) {
+    return decimal.sign() < 0
       ? notation.formatVerySmallNegativeDecimal(decimal.abs(), placesUnder1000)
       : notation.formatVerySmallDecimal(decimal, placesUnder1000);
   }
 
-  if (decimal.abs().log10().lt(3)) {
+  if (decimal.exponent < 3) {
     const number = decimal.toNumber();
     return number < 0
       ? notation.formatNegativeUnder1000(Math.abs(number), placesUnder1000)
       : notation.formatUnder1000(number, placesUnder1000);
   }
 
-  if (decimal.layer >= 2) {
-    return lNotation.formatLDecimal(decimal, places);
-  }
-
-  return decimal.sign < 0
+  return decimal.sign() < 0
     ? notation.formatNegativeDecimal(decimal.abs(), places)
     : notation.formatDecimal(decimal, places);
 };
@@ -83,13 +67,13 @@ window.formatPow = function formatPow(value, places, placesUnder1000) {
 };
 
 window.formatPercents = function formatPercents(value, places) {
-  return `${format(Decimal.mul(value, 100), 2, places)}%`;
+  return `${format(value * 100, 2, places)}%`;
 };
 
 window.formatRarity = function formatRarity(value) {
   // We can, annoyingly, have rounding error here, so even though only rarities
   // are passed in, we can't trust our input to always be some integer divided by 10.
-  const places = value.mod(1).eq(0) ? 0 : 1;
+  const places = value.toFixed(1).endsWith(".0") ? 0 : 1;
   return `${format(value, 2, places)}%`;
 };
 
@@ -104,58 +88,6 @@ window.formatMachines = function formatMachines(realPart, imagPart) {
   if (Decimal.eq(realPart, 0) && Decimal.eq(imagPart, 0)) return format(0);
   return parts.join(" + ");
 };
-
-window.formatTet = function formatTet(value, places, placesUnder1000) {
-  return `^^${format(value, places, placesUnder1000)}`;
-};
-
-window.formatEffectPos = function formatEffectPos(effect, effectedValue, tet = true) {
-  if (effect.lt(1000)) {
-    // eslint-disable-next-line prefer-template
-    return formatInt(effect, 2, 4) + "%";
-  }
-  if (effect.lt("1e100000") || effectedValue.lt(2)) {
-    return formatX(effect, 2, 2);
-  }
-  if ((effect.lt("10^^100") && tet || effect.lt("10^^4")) || effectedValue.lt(10)) {
-    return formatPow(effect.log10(), 2, 2);
-  }
-  if (tet) {
-    // Not perfect, but idc
-    return formatTet(value.slog(10), 2, 2);
-  }
-  val = new Decimal(effect);
-  val.layer = 1;
-  // eslint-disable-next-line prefer-template
-  return formatInt(Math.floor(effect.slog() - 1)) + "th Expo " + formatPow(val, 2, 2);
-};
-
-// Does not take negative numbers fyi, just ints between 0-1 (excluding)
-window.formatEffectNeg = function formatEffectNeg(effect, effectedValue) {
-  if (effect.gt(0.001)) {
-    // eslint-disable-next-line prefer-template
-    return formatInt(effect, 2, 4) + "%";
-  }
-  if (effect.lt("1e100000") || effectedValue.lt(2)) {
-    // eslint-disable-next-line prefer-template
-    return "/" + format(effect.recip(), 2, 2);
-  }
-  if (effect.recip().lt("10^^4") || effectedValue.lt(10)) {
-    return formatPow(effect.log10(), 2, 2);
-  }
-  val = new Decimal(effect);
-  val.layer = 1;
-  // eslint-disable-next-line prefer-template
-  return formatInt(Math.floor(effect.recip().slog().toNumber() - 1)) + "th Expo " + formatPow(val, 2, 2);
-};
-
-window.formatEffectAuto = function formatEffectAuto(value, effectedValue) {
-  if (value.gt(1)) {
-    return formatEffectPos(value, effectedValue);
-  }
-  return formatEffectNeg(value, effectedValue, false);
-};
-
 
 window.timeDisplay = function timeDisplay(ms) {
   return TimeSpan.fromMilliseconds(ms).toString();
@@ -174,6 +106,17 @@ window.formatWithCommas = function formatWithCommas(value) {
   const decimalPointSplit = value.toString().split(".");
   decimalPointSplit[0] = decimalPointSplit[0].replace(commaRegexp, ",");
   return decimalPointSplit.join(".");
+};
+
+/**
+ * Check if a number or Decimal is equal to 1.
+ * @param  {number|Decimal} amount
+ * @return {Boolean} - if the {amount} was equal to 1.
+ */
+window.isSingular = function isSingular(amount) {
+  if (typeof amount === "number") return amount === 1;
+  if (amount instanceof Decimal) return amount.eq(1);
+  throw `Amount must be either a number or Decimal. Instead, amount was ${amount}`;
 };
 
 // Some letters in the english language pluralize in a different manner than simply adding an 's' to the end.
@@ -205,7 +148,7 @@ const pluralDatabase = new Map([
 window.pluralize = function pluralize(word, amount, plural) {
   if (word === undefined || amount === undefined) throw "Arguments must be defined";
 
-  if (Decimal.eq(amount, 1)) return word;
+  if (isSingular(amount)) return word;
   const existingPlural = plural ?? pluralDatabase.get(word);
   if (existingPlural !== undefined) return existingPlural;
 

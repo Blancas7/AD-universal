@@ -1,41 +1,14 @@
 import { DC } from "@/core/constants";
 
-function roundAndStr(decimal, amnt = 4) {
-  return decimal.toString().substring(0, amnt + Math.ceil(decimal.log10().toNumber()));
-}
 export const MatterScale = {
   proton: new Decimal("2.82e-45"),
 
   estimate(matter) {
     if (!matter) return ["There is no antimatter yet."];
-    if (matter.gt(DC.BIMAX)) {
-      return [
-        `You have alot of antimatter`
-      ];
-    }
-    if (matter.gt(DC.E1_5E12)) {
-      return [
-        `It would take ${roundAndStr(matter.log10().div(2437102080 * 3))}%`,
-        "of the current age of the Universe to write out your antimatter count"
-      ];
-    }
-    if (matter.gt(new Decimal("1e7200000000"))) {
+    if (matter.gt(DC.E100000)) {
       return [
         `If you wrote ${formatInt(3)} numbers a second, it would take you`,
-        // eslint-disable-next-line max-len
-        `${roundAndStr(matter.log10().div(2437102080 * 3))} average American lifespans to write down your antimatter amount.`
-      ];
-    }
-    if (matter.gt(DC.E1E7)) {
-      return [
-        `It would take ${roundAndStr(matter.log10().div(2437102080 * 3))}%`,
-        " of the average American lifespan to write out your antimatter count"
-      ];
-    }
-    if (matter.gt(DC.E10000)) {
-      return [
-        `If you wrote ${formatInt(3)} numbers a second, it would take you`,
-        TimeSpan.fromSeconds(matter.log10().div(3)).toString(),
+        TimeSpan.fromSeconds(matter.log10() / 3).toString(),
         "to write down your antimatter amount."
       ];
     }
@@ -117,5 +90,6 @@ export const MatterScale = {
     { amount: new Decimal("3.4e80"), name: "observable universes", verb: "make" },
     { amount: new Decimal("1e113"), name: "Dimensions", verb: "make" },
     { amount: DC.C2P1024, name: "Infinity Dimensions", verb: "make" },
+    { amount: new Decimal("1e65000"), name: "Time Dimensions", verb: "make" }
   ]
 };

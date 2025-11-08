@@ -13,7 +13,7 @@ export default {
   },
   data() {
     return {
-      amount: new Decimal(),
+      amount: 0,
       effectValue: 0,
       isColored: true,
       willSacrifice: false,
@@ -21,10 +21,10 @@ export default {
   },
   computed: {
     typeConfig() {
-      return GlyphInfo[this.type];
+      return GlyphTypes[this.type];
     },
     sacConfig() {
-      return GlyphInfo[this.type].sacrificeInfo;
+      return GlyphSacrifice[this.type].config;
     },
     style() {
       if (!this.isColored) return { };
@@ -66,7 +66,7 @@ export default {
       return format(this.currentSacrifice.sacrificeValue, 2, 2);
     },
     formatTotalAmount() {
-      return format(this.amount.add(this.currentSacrifice.sacrificeValue), 2, 2);
+      return format(this.amount + this.currentSacrifice.sacrificeValue, 2, 2);
     },
   },
   created() {
@@ -76,8 +76,8 @@ export default {
   },
   methods: {
     update() {
-      this.amount.copyFrom(player.reality.glyphs.sac[this.type]);
-      this.effectValue = GlyphInfo[this.type].sacrificeInfo.effect();
+      this.amount = player.reality.glyphs.sac[this.type];
+      this.effectValue = GlyphSacrifice[this.type].effectValue;
       this.isColored = player.options.glyphTextColors;
       this.willSacrifice = AutoGlyphProcessor.sacMode === AUTO_GLYPH_REJECT.SACRIFICE ||
         (AutoGlyphProcessor.sacMode === AUTO_GLYPH_REJECT.REFINE_TO_CAP &&
@@ -89,7 +89,7 @@ export default {
 
 <template>
   <div
-    v-if="amount.gt(0)"
+    v-if="amount > 0"
     :style="style"
   >
     <div>

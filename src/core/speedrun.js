@@ -13,7 +13,7 @@ export const Speedrun = {
   },
   // Used to block the seed-changing modal from opening (other functions assume this is checked beforehand)
   canModifySeed() {
-    return player.realities.lt(1);
+    return player.realities < 1;
   },
   modifySeed(key, seed) {
     player.speedrun.seedSelection = key;
@@ -95,6 +95,14 @@ export const Speedrun = {
     player.speedrun.hasStarted = true;
     player.speedrun.startDate = Date.now();
     player.lastUpdate = Date.now();
+
+    // This needs to be calculated "live" because using spentSTD includes any offline progress purchases too
+    let currentSpent = 0;
+    for (const purchase of ShopPurchase.all) {
+      if (purchase.config.instantPurchase) continue;
+      currentSpent += purchase.purchases * purchase.cost;
+    }
+    this.setSTDUse(ShopPurchaseData.isIAPEnabled && currentSpent > 0);
   },
   isPausedAtStart() {
     return player.speedrun.isActive && !player.speedrun.hasStarted;
@@ -105,6 +113,10 @@ export const Speedrun = {
   setSegmented(state) {
     if (this.isPausedAtStart()) return;
     player.speedrun.isSegmented = state;
+  },
+  setSTDUse(state) {
+    if (this.isPausedAtStart() || ShopPurchaseData.spentSTD === 0) return;
+    player.speedrun.usedSTD = state;
   },
   mostRecentMilestone() {
     const newestTime = player.speedrun.records.max();
@@ -135,7 +147,7 @@ class SpeedrunMilestone extends GameMechanicState {
   complete() {
     if (this.isReached || !player.speedrun.isActive) return;
     // Rounding slightly reduces filesize by removing weird float rounding
-    player.speedrun.records[this.config.id] = Math.round(player.records.trueTimePlayed);
+    player.speedrun.records[this.config.id] = Math.round(player.records.realTimePlayed);
     GameUI.notify.success(`Speedrun Milestone Reached: ${this.name}`);
   }
 }

@@ -79,7 +79,7 @@ export const Pelle = {
         ${formatInt(5)} additional Glyphs in order to Doom your Reality.`, 1);
       return;
     }
-    for (const type of GlyphInfo.basicGlyphTypes) Glyphs.addToInventory(GlyphGenerator.doomedGlyph(type));
+    for (const type of BASIC_GLYPH_TYPES) Glyphs.addToInventory(GlyphGenerator.doomedGlyph(type));
     Glyphs.refreshActive();
     player.options.confirmations.glyphReplace = true;
     player.reality.automator.state.repeat = false;
@@ -89,7 +89,7 @@ export const Pelle = {
     Pelle.armageddon(false);
     respecTimeStudies(true);
     Currency.infinityPoints.reset();
-    player.IPMultPurchases = DC.D0;
+    player.IPMultPurchases = 0;
     Autobuyer.bigCrunch.mode = AUTO_CRUNCH_MODE.AMOUNT;
     disChargeAll();
     clearCelestialRuns();
@@ -149,14 +149,14 @@ export const Pelle = {
   },
 
   get canArmageddon() {
-    return this.remnantsGain.gte(1);
+    return this.remnantsGain >= 1;
   },
 
   armageddon(gainStuff) {
     if (!this.canArmageddon && gainStuff) return;
     EventHub.dispatch(GAME_EVENT.ARMAGEDDON_BEFORE, gainStuff);
     if (gainStuff) {
-      this.cel.remnants = this.cel.remnants.add(this.remnantsGain);
+      this.cel.remnants += this.remnantsGain;
     }
     finishProcessReality({ reset: true, armageddon: true });
     disChargeAll();
@@ -264,7 +264,7 @@ export const Pelle = {
   },
 
   get canDilateInPelle() {
-    return this.cel.remnants.gte(this.remnantRequirementForDilation);
+    return this.cel.remnants >= this.remnantRequirementForDilation;
   },
 
   resetResourcesForDilation() {
@@ -285,18 +285,20 @@ export const Pelle = {
     let ep = this.cel.records.totalEternityPoints.plus(1).log10();
 
     if (PelleStrikes.dilation.hasStrike) {
-      am = am.times(500);
-      ip = ip.times(10);
-      ep = ep.times(5);
+      am *= 500;
+      ip *= 10;
+      ep *= 5;
     }
 
-    const gain = am.add(2).log10().add(ip.add(2).log10()).add(ep.add(2).log10()).div(1.64).pow(7.5);
+    const gain = (
+      (Math.log10(am + 2) + Math.log10(ip + 2) + Math.log10(ep + 2)) / 1.64
+    ) ** 7.5;
 
-    return gain.lt(1) ? gain : Decimal.floor(gain.minus(this.cel.remnants));
+    return gain < 1 ? gain : Math.floor(gain - this.cel.remnants);
   },
 
   realityShardGain(remnants) {
-    return Decimal.pow(10, Decimal.pow(remnants, (1 / 7.5)).times(4)).minus(1).div(1e3).times(player.celestialMultiplier);
+    return Decimal.pow(10, remnants ** (1 / 7.5) * 4).minus(1).div(1e3).times(player.celestialMultiplier);
   },
 
   get realityShardGainPerSecond() {
@@ -304,7 +306,7 @@ export const Pelle = {
   },
 
   get nextRealityShardGain() {
-    return this.realityShardGain(this.remnantsGain.add(this.cel.remnants));
+    return this.realityShardGain(this.remnantsGain + this.cel.remnants);
   },
 
   // Calculations assume this is in units of proportion per second (eg. 0.03 is 3% drain per second)
@@ -317,11 +319,11 @@ export const Pelle = {
   },
 
   get glyphStrength() {
-    return DC.D1;
+    return 1;
   },
 
   antimatterDimensionMult(x) {
-    return Decimal.pow(10, Decimal.log10(x.add(1)).add(x.pow(5.1).div(1e3)).add(DC.D4.pow(x).div(1e19)));
+    return Decimal.pow(10, Math.log10(x + 1) + x ** 5.1 / 1e3 + 4 ** x / 1e19);
   },
 
   get activeGlyphType() {
@@ -360,7 +362,7 @@ export const Pelle = {
     player.celestials.pelle = {
       doomed: false,
       upgrades: new Set(),
-      remnants: DC.D0,
+      remnants: 0,
       realityShards: DC.D0,
       records: {
         totalAntimatter: DC.D0,
@@ -368,16 +370,16 @@ export const Pelle = {
         totalEternityPoints: DC.D0,
       },
       rebuyables: {
-        antimatterDimensionMult: DC.D0,
-        timeSpeedMult: DC.D0,
-        glyphLevels: DC.D0,
-        infConversion: DC.D0,
-        galaxyPower: DC.D0,
-        galaxyGeneratorAdditive: DC.D0,
-        galaxyGeneratorMultiplicative: DC.D0,
-        galaxyGeneratorAntimatterMult: DC.D0,
-        galaxyGeneratorIPMult: DC.D0,
-        galaxyGeneratorEPMult: DC.D0,
+        antimatterDimensionMult: 0,
+        timeSpeedMult: 0,
+        glyphLevels: 0,
+        infConversion: 0,
+        galaxyPower: 0,
+        galaxyGeneratorAdditive: 0,
+        galaxyGeneratorMultiplicative: 0,
+        galaxyGeneratorAntimatterMult: 0,
+        galaxyGeneratorIPMult: 0,
+        galaxyGeneratorEPMult: 0,
       },
       rifts: {
         vacuum: {
@@ -410,8 +412,8 @@ export const Pelle = {
       progressBits: 0,
       galaxyGenerator: {
         unlocked: false,
-        spentGalaxies: DC.D0,
-        generatedGalaxies: DC.D0,
+        spentGalaxies: 0,
+        generatedGalaxies: 0,
         phase: 0,
         sacrificeActive: false
       },
@@ -465,7 +467,7 @@ export class RebuyablePelleUpgradeState extends RebuyableMechanicState {
   }
 
   get isCapped() {
-    return this.boughtAmount.gte(this.config.cap);
+    return this.boughtAmount >= this.config.cap;
   }
 
   get isCustomEffect() { return true; }
@@ -512,4 +514,5 @@ export const PelleUpgrade = mapGameDataToObject(
 );
 
 PelleUpgrade.rebuyables = PelleUpgrade.all.filter(u => u.isRebuyable);
+// An upgrade was added post-release; it's simpler to just sort them by cost rather than to migrate the internal data
 PelleUpgrade.singles = PelleUpgrade.all.filter(u => !u.isRebuyable).sort((a, b) => a.cost - b.cost);
