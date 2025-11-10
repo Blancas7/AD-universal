@@ -179,7 +179,7 @@ export const tabNotifications = {
         tab: "autobuyers"
       },
     ],
-    // Always externally triggered, but needs to be ignored in cel7 because they're unlocked differently
+    // needs to be ignored in cel7 because they're unlocked differently
     condition: () => !PlayerProgress.rewindUnlocked() && !Pelle.isDoomed,
   },
   imaginaryMachineUnlock: {
@@ -201,7 +201,6 @@ export const tabNotifications = {
         tab: "laitela"
       },
     ],
-    // Always externally triggered
     condition: () => !PlayerProgress.rewindUnlocked(),
   },
   pelleUnlock: {
@@ -212,7 +211,6 @@ export const tabNotifications = {
         tab: "pelle"
       },
     ],
-    // Always externally triggered
     condition: () => !PlayerProgress.rewindUnlocked(),
   },
   newGlyphCosmetic: {
@@ -230,11 +228,16 @@ export const tabNotifications = {
     id: 17,
     tabsToHighLight: [
       {
+        parent: "dimensions",
+        tab: "stellar"
+      },
+      {
         parent: "rewind",
         tab: "rewind-upgrades"
       },
     ],
     // Always externally triggered
-    condition: () => !PlayerProgress.rewindUnlocked(),
+    condition: () => true,
+    events: [GAME_EVENT.REWIND_RESET_BEFORE]
   },
 };

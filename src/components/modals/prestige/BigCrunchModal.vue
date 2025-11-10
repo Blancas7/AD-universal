@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     isFirstInfinity() {
-      return !PlayerProgress.infinityUnlocked();
+      return !PlayerProgress.infinityUnlocked() && !PlayerProgress.rewindUnlocked();
     },
     message() {
       const info = this.isFirstInfinity ? this.firstInfinityInfo : ``;

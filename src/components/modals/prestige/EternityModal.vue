@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     message() {
-      return PlayerProgress.eternityUnlocked()
+      return PlayerProgress.eternityUnlocked() || PlayerProgress.realityUnlocked() || PlayerProgress.rewindUnlocked()
         ? `Eternity will reset everything except Achievements, Challenge records, and anything under the General header
           on the Statistics tab.`
         : `Eternity will reset everything except Achievements, Challenge records, and anything under the General header
