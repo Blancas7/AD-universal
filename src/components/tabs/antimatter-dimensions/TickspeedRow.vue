@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     update() {
-      this.hasRealityButton = PlayerProgress.realityUnlocked() || TimeStudy.reality.isBought;
+      this.hasRealityButton = PlayerProgress.rewindUnlocked() || PlayerProgress.realityUnlocked() || TimeStudy.reality.isBought;
       this.purchasedTickspeed = player.totalTickBought;
       this.freeTickspeed = FreeTickspeed.amount;
       this.isEC9 = EternityChallenge(9).isRunning;
