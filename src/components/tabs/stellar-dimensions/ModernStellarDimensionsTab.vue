@@ -21,6 +21,7 @@ export default {
     update() {
       this.stardust.copyFrom(Currency.stardust);
       this.galaxyMultiplier = Math.log10(Math.max(this.stardust.max(1).log10(), 1)) / 20;
+      this.stardustPerSecond.copyFrom(StellarDimension(1).productionPerSecond);
       this.incomeType = "Stardust";
       this.areAutobuyersUnlocked = Autobuyer.stellarDimension(1).isUnlocked;
     },
