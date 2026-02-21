@@ -275,7 +275,11 @@ export const tabs = [
     UIClass: "o-tab-btn--infinity",
     before: "InfinityPointsHeader",
     id: 6,
-    condition: () => PlayerProgress.infinityUnlocked(),
+    condition: () => 
+      PlayerProgress.rewindUnlocked() ||
+      PlayerProgress.realityUnlocked() ||
+      PlayerProgress.eternityUnlocked() ||
+      PlayerProgress.infinityUnlocked(),
     hidable: true,
     subtabs: [
       {
@@ -522,7 +526,7 @@ export const tabs = [
       }
     ]
   },
-  {
+  /*{
     key: "rewind",
     name: "Universe",
     hideAt: 2.5,
@@ -556,7 +560,7 @@ export const tabs = [
       //   hidable: true,
       // },
     ]
-  },
+  },*/
   {
     key: "shop",
     name: "Shop",

@@ -654,8 +654,10 @@ export function gameLoop(passDiff, options = {}) {
 
   // If it's the first time playing, we show the modal to directly skip to 1 Rewind
   if (!player.startWithRewindModal) {
-    player.startWithRewindModal = true;
-    Modal.rewind.show();
+    if(player.records.thisReality.realTime > 1000) {
+      player.startWithRewindModal = true;
+      Modal.rewind.show();
+    }
   }
 
   // Stopping these checks after CREDITS_START reduces lag and allows for the glyph customization modal to appear

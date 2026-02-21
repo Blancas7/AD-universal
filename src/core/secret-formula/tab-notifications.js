@@ -231,10 +231,10 @@ export const tabNotifications = {
         parent: "dimensions",
         tab: "stellar"
       },
-      {
+      /*{
         parent: "rewind",
         tab: "rewind-upgrades"
-      },
+      },*/
     ],
     // Always externally triggered
     condition: () => true,
