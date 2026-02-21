@@ -968,7 +968,7 @@ body.t-s12 {
 
   .game-container {
     width: 100%;
-    margin-left: 0;
+    margin-left: 0; margin-bottom: 50px;
   }
 
 
