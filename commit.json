@@ -1,1 +1,1 @@
-{"sha":"5e63dc058f27da7efeb3f4aa1699fdfa8372ca8f","message":"Fixes\n\nFixed stardust production per second displayed\nChanged first break infinity upgrade to the antimatter produced in this rewind","author":"Blancas"}
+{"sha":"eca6b59e4418600f2ecefb0c43f778eef35212bb","message":"Version 0.1\n\nAdded mobile support (basics)\nFIxed rewind modal not appearing\nMisc fixes","author":"Blancas"}
