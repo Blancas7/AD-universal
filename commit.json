@@ -1,1 +1,1 @@
-{"sha":"62789efc519471686275486d34faeff13f9e9673","message":"Version 0.1.6\n\nAdded more bottom buttons in mobile\nBetter handling of the time theorem box position in mobile","author":"Blancas"}
+{"sha":"2305d76edc9350b61bee0b13d8ed606923ef83a6","message":"Version 0.1.7\n\nFixed a bug where the player could have multiple held buttons at the same time on mobile","author":"Blancas"}
