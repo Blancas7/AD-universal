@@ -981,6 +981,10 @@ body.t-s12 {
     flex: 1;
   }
 
+  .c-modern-sidebar > .o-tab-btn .subtabs > .o-tab-btn--subtab .o-subtab__tooltip {
+    display: none;
+  }
+
   .c-modern-sidebar .c-modern-bottom-buttons {
     display: flex;
     flex-direction: row-reverse;
