@@ -936,10 +936,13 @@ body.t-s12 {
 @media screen and (max-width: 1100px) {
   .c-modern-sidebar {
     flex-direction: row;
+    position: fixed;
     bottom: 0;
     right: 0;
     width: 100%;
     justify-content: stretch;
+    align-items:flex-end;
+    height: 120px;
   }
 
   .c-modern-sidebar .c-sidebar-resource {
@@ -956,19 +959,26 @@ body.t-s12 {
   }
 
   .c-modern-sidebar > .o-tab-btn .subtabs {
+    position: fixed;
     top: unset;
-    bottom: 100%;
-    left: 50%;
-    right: unset;
-    transform: translateX(-50%);
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: center;
+    bottom: 60px;
+    left: 0;
+    right: 0;
+    padding: 5px;
+    justify-content: stretch;
+    display: none;
+    pointer-events: none;
+  }
+
+  .c-modern-sidebar > .o-tab-btn--active .subtabs {
+    opacity: 1;
+    display: flex;
+    pointer-events: all;
   }
 
   .c-modern-sidebar > .o-tab-btn .subtabs > .o-tab-btn--subtab {
-    width: 33%;
-    width: 4.7rem;
+    width: auto;
+    flex: 1;
   }
 
   .c-modern-sidebar .c-modern-bottom-buttons {
@@ -976,7 +986,7 @@ body.t-s12 {
     flex-direction: row-reverse;
     justify-content: flex-start;
     column-gap: 10px;
-    width: 100%;
+    max-width: 100%;
     position: absolute;
     bottom: 110%;
     right: 0;

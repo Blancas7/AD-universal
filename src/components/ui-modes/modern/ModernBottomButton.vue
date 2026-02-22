@@ -38,7 +38,7 @@ export default {
       this.buttonName = this.bottomButton.name;
       this.key = this.bottomButton.key;
 
-      if(this.isSticky) {
+      if(this.isSticky || this.isHeld) {
         this.action();
       }
     },
@@ -48,7 +48,6 @@ export default {
       e.stopPropagation();
 
       let that = this;
-      that.action();
       that.isHeld = true;
       that.holdTimeout = setTimeout(function() {
         that.holdTimeout = null;

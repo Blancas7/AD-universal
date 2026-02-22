@@ -2,6 +2,7 @@ class BottomButtonState {
   constructor(config) {
     this.config = config;
     this.sticky = false;
+    this.held = false;
   }
 
   get name() {
@@ -13,7 +14,7 @@ class BottomButtonState {
   }
 
   get isHidden() {
-    return false;
+    return !(typeof this.config.condition == 'undefined' || this.config.condition());
   }
 
   get isUnlocked() {

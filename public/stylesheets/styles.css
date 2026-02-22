@@ -9432,11 +9432,12 @@ input.o-automator-block-input {
 
 @media screen and (max-width: 1100px) {
   .c-game-ui {
-    height: calc(100dvh - 50px);
-    margin-bottom: 50px;
+    height: calc(100dvh - 120px);
+    margin-bottom: 120px;
   }
 
   .time-theorem-buttons {
-    bottom: 50px;
+    bottom: 120px;
+    left: 5px;
   }
 }
