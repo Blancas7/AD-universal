@@ -73,6 +73,7 @@ export default {
     :class="[classObject, bottomButton.config.UIClass]"
     @pointerdown="startHold"
     @pointerup="endHold"
+    @pointercancel="endHold"
   >
     <div
       class="l-btm-btn-inner"

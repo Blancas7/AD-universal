@@ -9441,7 +9441,7 @@ input.o-automator-block-input {
     left: 5px;
   }
 
-  .o-btm-btn:not(.o-btm-btn--hidden):nth-child(2) {
+  .o-btm-btn:not(.o-btm-btn--hidden) ~ .o-btm-btn:not(.o-btm-btn--hidden) {
     body:has(&) {
       .l-time-study-tree {
         margin-bottom: calc(12.5rem + 120px);
