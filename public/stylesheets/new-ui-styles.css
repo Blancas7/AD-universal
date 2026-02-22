@@ -129,6 +129,10 @@ body.t-s12 {
   border-left-width: 0;
 }
 
+.c-modern-sidebar .c-modern-bottom-buttons {
+  display: none;
+}
+
 .l-tab-btn-inner {
   display: flex;
   flex-direction: column;
@@ -944,6 +948,7 @@ body.t-s12 {
 
   .c-modern-sidebar > .o-tab-btn {
     flex: 1;
+    min-height: 60px;
   }
 
   .c-modern-sidebar > .o-tab-btn::after {
@@ -963,7 +968,49 @@ body.t-s12 {
 
   .c-modern-sidebar > .o-tab-btn .subtabs > .o-tab-btn--subtab {
     width: 33%;
+    width: 4.7rem;
   }
+
+  .c-modern-sidebar .c-modern-bottom-buttons {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    column-gap: 10px;
+    width: 100%;
+    position: absolute;
+    bottom: 110%;
+    right: 0;
+  }
+
+
+  .c-modern-sidebar .o-btm-btn {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    width: 12dvw;
+    height: 12dvw;
+    font-size: 1.8rem;
+    border-radius: 50%;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: background-color 0.2s linear;
+  }
+
+  .c-modern-sidebar .o-btm-btn--held {
+    background-color: #333 !important;
+  }
+
+  .c-modern-sidebar .o-btm-btn--sticky {
+    background-color: #222;
+  }
+
 
   .game-container {
     width: 100%;

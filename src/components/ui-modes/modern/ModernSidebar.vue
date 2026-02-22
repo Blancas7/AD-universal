@@ -1,12 +1,14 @@
 <script>
 import ModernSidebarCurrency from "./ModernSidebarCurrency";
 import ModernTabButton from "./ModernTabButton";
+import ModernBottomButton from "./ModernBottomButton";
 
 export default {
   name: "ModernSidebar",
   components: {
     ModernSidebarCurrency,
-    ModernTabButton
+    ModernTabButton,
+    ModernBottomButton,
   },
   data() {
     return {
@@ -15,7 +17,8 @@ export default {
     };
   },
   computed: {
-    tabs: () => Tabs.newUI
+    tabs: () => Tabs.newUI,
+    bottomButtons: () => BottomButtons.all
   },
   methods: {
     update() {
@@ -42,6 +45,18 @@ export default {
         :tab-position="tabPosition"
       />
     </template>
+
+    <div
+      class="c-modern-bottom-buttons"
+    >
+      <template
+        v-for="bottomButton in bottomButtons"
+      >
+        <ModernBottomButton
+          :bottomButton="bottomButton"
+        />
+      </template>
+    </div>
   </div>
 </template>
 

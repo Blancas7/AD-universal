@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     update() {
-      this.showContainer = player.break || PlayerProgress.infinityUnlocked();
+      this.showContainer = player.break || PlayerProgress.infinityUnlocked() || PlayerProgress.eternityUnlocked() || PlayerProgress.realityUnlocked() || PlayerProgress.rewindUnlocked();
       this.infinityPoints.copyFrom(Currency.infinityPoints.value.floor());
       this.isTesseractUnlocked = Enslaved.isCompleted;
       this.tesseractCost = Tesseracts.nextCost;
