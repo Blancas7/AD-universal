@@ -9440,4 +9440,17 @@ input.o-automator-block-input {
     bottom: 120px;
     left: 5px;
   }
+
+  .o-btm-btn:not(.o-btm-btn--hidden):nth-child(2) {
+    body:has(&) {
+      .l-time-study-tree {
+        margin-bottom: calc(12.5rem + 120px);
+      }
+
+      .time-theorem-buttons {
+        bottom: 260px;
+        left: unset;
+      }
+    }
+  }
 }
