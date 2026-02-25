@@ -13,6 +13,7 @@ export default {
   data() {
     return {
       firstReality: false,
+      firstRealityOfRewind: false,
       hasSpace: true,
       hasChoice: false,
       hasFilter: false,
@@ -42,7 +43,7 @@ export default {
       return RealityUpgrade(19).isEffectActive;
     },
     warnText() {
-      if (!this.hasChoice) {
+      if (!this.hasChoice && !this.firstRealityOfRewind) {
         return `You currently only have a single option for new Glyphs every
           Reality. You can unlock the ability to choose from multiple Glyphs by canceling out of this modal and
           purchasing the START Perk.`;
@@ -86,6 +87,7 @@ export default {
   methods: {
     update() {
       this.firstReality = player.realities === 0 && player.rewinds === 0;
+      this.firstRealityOfRewind = player.realities === 0;
       this.hasChoice = Perk.firstPerk.isEffectActive;
       this.effarigUnlocked = TeresaUnlocks.effarig.canBeApplied;
       this.hasFilter = EffarigUnlock.glyphFilter.isUnlocked;
@@ -166,6 +168,7 @@ export default {
         :ignore-modified-level="true"
         :show-sacrifice="canSacrifice"
         @click.native="select(index)"
+        @pointerdown.native="select(index)"
       />
     </div>
     <div v-if="!firstReality">
