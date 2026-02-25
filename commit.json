@@ -1,1 +1,1 @@
-{"sha":"2305d76edc9350b61bee0b13d8ed606923ef83a6","message":"Version 0.1.7\n\nFixed a bug where the player could have multiple held buttons at the same time on mobile","author":"Blancas"}
+{"sha":"321fbccd55a15baa873cd1623be0a684778dc145","message":"Version 0.1.8\n\nEmergency fix for selecting a glyph on reality on mobile\nFixed reality modal asking to buy the START perk on the first reality of a new rewind","author":"Blancas"}
