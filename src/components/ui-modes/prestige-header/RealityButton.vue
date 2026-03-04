@@ -27,7 +27,7 @@ export default {
       return "No Machines gained";
     },
     formatMachineStats() {
-      if (!PlayerProgress.realityUnlocked() && this.nextMachineEP.gt("1e8000")) {
+      if (!PlayerProgress.rewindUnlocked() && !PlayerProgress.realityUnlocked() && this.nextMachineEP.gt("1e8000")) {
         return `(Capped this Reality!)`;
       }
       if (this.machinesGained.gt(0) && this.machinesGained.lt(100)) {
@@ -98,11 +98,11 @@ export default {
       this.glyphLevel = gainedGlyphLevel().actualLevel;
       this.nextGlyphPercent = this.percentToNextGlyphLevelText();
       this.nextMachineEP = EPforRM(this.machinesGained.plus(1));
-      this.ppGained = multiplier;
-      this.shardsGained = Effarig.shardsGained * multiplier;
+      this.ppGained = multiplier * player.celestialMultiplier;
+      this.shardsGained = Effarig.shardsGained * multiplier * player.celestialMultiplier;
       this.currentShardsRate = (this.shardsGained / Time.thisRealityRealTime.totalMinutes);
-      this.bestShardRate = player.records.thisReality.bestRSmin * multiplier;
-      this.bestShardRateVal = player.records.thisReality.bestRSminVal * multiplier;
+      this.bestShardRate = player.records.thisReality.bestRSmin * multiplier * player.celestialMultiplier;
+      this.bestShardRateVal = player.records.thisReality.bestRSminVal * multiplier * player.celestialMultiplier;
 
       const teresaReward = this.formatScalingMultiplierText(
         "Glyph Sacrifice",

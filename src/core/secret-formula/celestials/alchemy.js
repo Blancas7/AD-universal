@@ -234,7 +234,7 @@ export const alchemyResources = {
     unlockedAt: 15,
     description: "provides a power to all Dimensions that permanently grows over time",
     formatEffect: value => `All Dimensions ${formatPow(Ra.momentumValue, 4, 4)}, increasing by
-      ${format(0.005 * Achievement(175).effectOrDefault(1), 3, 3)}
+      ${format(0.005 * Achievement(175).effectOrDefault(1) * player.celestialMultiplier, 3, 3)}
       per real-time hour after the resource is unlocked, up to a maximum of ${formatPow(value, 4, 4)}`,
     reagents: [
       {
@@ -330,7 +330,7 @@ export const alchemyResources = {
     uiOrder: 3,
     unlockedAt: 19,
     description: "passively generates Realities and Perk Points",
-    formatEffect: value => `Generate ${format(value, 2, 2)} Realities and Perk Points per second`,
+    formatEffect: value => `Generate ${format(value * player.celestialMultiplier, 2, 2)} Realities and Perk Points per second`,
     reagents: [
       {
         resource: ALCHEMY_RESOURCE.INFINITY,

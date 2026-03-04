@@ -134,6 +134,8 @@ export function totalReplicantiSpeedMult(overCap) {
   totalMult = totalMult.times(PelleRifts.decay.effectValue);
   totalMult = totalMult.times(Pelle.specialGlyphEffect.replication);
   totalMult = totalMult.times(ShopPurchase.replicantiPurchases.currentMult);
+
+  totalMult = totalMult.times(player.celestialMultiplier);
   if (Pelle.isDisabled("replicantiIntervalMult")) return totalMult;
 
   const preCelestialEffects = Effects.product(
@@ -157,8 +159,6 @@ export function totalReplicantiSpeedMult(overCap) {
       Math.clampMin(Decimal.log10(Replicanti.amount) * getSecondaryGlyphEffect("replicationdtgain"), 1));
   }
   totalMult = totalMult.timesEffectsOf(AlchemyResource.replication, Ra.unlocks.continuousTTBoost.effects.replicanti);
-
-  totalMult = totalMult.times(player.celestialMultiplier);
 
   return totalMult;
 }
