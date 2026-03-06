@@ -1,1 +1,1 @@
-{"sha":"9b1c23936b8749982a62fd04aed2b0af42912378","message":"Version 0.1.10\n\nVarious fixes (replicanti speed in Pelle, achievement 188 not displaying properly, etc)","author":"Blancas"}
+{"sha":"6bae035ef7762a1158c38673675fadb4f955c66e","message":"Version 0.1.11\n\nFixed dilation multiplier from Rewind not applying in Pelle\nFixed a softlock when reaching the END with the Rewind confirmation on\nFixed vanilla bug on sacrifice button label in Pelle","author":"Blancas"}
