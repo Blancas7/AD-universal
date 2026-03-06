@@ -5,7 +5,7 @@ import { ImaginaryUpgrade, ImaginaryUpgrades } from "./imaginary-upgrades";
 import { RealityUpgrade, RealityUpgrades } from "./reality-upgrades";
 
 export function isRewindAvailable() {
-  return player.records.thisRewind.maxAM.gte(DC.E1E15)/* && Pelle.isDoomed*/;
+  return player.records.thisRewind.maxAM.gte(DC.E9E15)/* && Pelle.isDoomed*/;
 }
 
 /**
@@ -13,8 +13,7 @@ export function isRewindAvailable() {
  */
 export function requestManualRewind() {
   if (!isRewindAvailable()) return;
-  if (GameEnd.creditsEverClosed) return;
-  if (player.options.confirmations.rewind) {
+  if (player.options.confirmations.rewind && GameEnd.endState <= END_STATE_MARKERS.SHOW_NEW_GAME) {
     Modal.rewind.show();
     return;
   }
@@ -169,19 +168,6 @@ export function finishProcessRewind(rewindProps) {
   player.reality.imaginaryUpgradeBits = 0;
   player.reality.imaginaryUpgReqs = 0;
 
-  Glyphs.clearUndo();
-  player.reality.glyphs.active = [];
-  for (let index = 0; index < player.reality.glyphs.inventory.length; index++) {
-    let glyph = player.reality.glyphs.inventory[index];
-    if (glyph.type !== "companion") {
-      Glyphs.removeFromInventory(glyph);
-    }
-  }
-  // We remove the sacrifice after getting rid of all the glyphs, just in case
-  for (const typeSac in player.reality.glyphs.sac) {
-    player.reality.glyphs.sac[typeSac] = 0;
-  }
-
   for (const blackHoleKey in player.blackHole) {
     player.blackHole[blackHoleKey] = {
       id: blackHoleKey,
@@ -206,6 +192,20 @@ export function finishProcessRewind(rewindProps) {
   Ra.reset();
   Laitela.reset();
   Pelle.reset();
+
+  Glyphs.clearUndo();
+  player.reality.glyphs.active = [];
+  while (player.reality.glyphs.inventory[0]) {
+    let glyph = player.reality.glyphs.inventory[0];
+    if (glyph.type !== "companion") {
+      Glyphs.removeFromInventory(glyph);
+    }
+  }
+  Glyphs.refreshActive();
+  // We remove the sacrifice after getting rid of all the glyphs, just in case
+  for (const typeSac in player.reality.glyphs.sac) {
+    player.reality.glyphs.sac[typeSac] = 0;
+  }
 
   player.sacrificed = DC.D0;
 
