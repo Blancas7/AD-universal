@@ -1,1 +1,1 @@
-{"sha":"6bae035ef7762a1158c38673675fadb4f955c66e","message":"Version 0.1.11\n\nFixed dilation multiplier from Rewind not applying in Pelle\nFixed a softlock when reaching the END with the Rewind confirmation on\nFixed vanilla bug on sacrifice button label in Pelle","author":"Blancas"}
+{"sha":"d119e64a43a427596615b58beef6cce377007460","message":"Version 0.1.12\n\nBetter structuring of rewind data\nMultiple fixes after rewind reset\nBetter handling of the ending","author":"Blancas"}
