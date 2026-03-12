@@ -86,16 +86,19 @@ function updateRewindRecords(rewindProps) {
 function giveRewindRewards(rewindProps) {
   const gainedUP = rewindProps.gainedUP;
   Currency.unityPoints.add(gainedUP);
-  updateRewindRecords(rewindProps);
-  addRewindTime(
-    player.records.thisRewind.time,
-    player.records.thisRewind.realTime,
-    gainedUP,
-    1);
+
+  if(PlayerProgress.rewindUnlocked() || player.isGameEnd) {
+    updateRewindRecords(rewindProps);
+    addRewindTime(
+      player.records.thisRewind.time,
+      player.records.thisRewind.realTime,
+      gainedUP,
+      1);
+  }
   Currency.rewinds.add(1);
   Currency.celestialRemains.add(1);
-  if (player.celestialMultiplier < 35) {
-    player.celestialMultiplier += 1;
+  if (player.rewind.celestialMultiplier < 35) {
+    player.rewind.celestialMultiplier += 1;
   }
 }
 
@@ -125,6 +128,8 @@ export function finishProcessRewind(rewindProps) {
     // not be a valid script to run; this at best stops it from running and at worst causes a crash
     AutomatorBackend.start(AutomatorBackend.state.topLevelScript);
   }
+
+  player.auto.eternity.mode = 0; // set EP autobuyer to X EPs
 
   Currency.stardust.reset();
   resetStellarDimensions();
@@ -181,6 +186,7 @@ export function finishProcessRewind(rewindProps) {
     }
   }
 
+  player.records.timePlayedAtBHUnlock = Number.MAX_VALUE;
   player.blackHolePauseTime = 0;
   player.blackHoleNegative = 1;
 
@@ -202,12 +208,16 @@ export function finishProcessRewind(rewindProps) {
     }
   }
   Glyphs.refreshActive();
+
   // We remove the sacrifice after getting rid of all the glyphs, just in case
   for (const typeSac in player.reality.glyphs.sac) {
     player.reality.glyphs.sac[typeSac] = 0;
   }
 
   player.sacrificed = DC.D0;
+
+  // Type of glyph options tab
+  player.reality.showSidebarPanel = 0;
 
   player.records.thisRewind.time = 0;
   player.records.thisRewind.realTime = 0;

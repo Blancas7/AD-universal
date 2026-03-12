@@ -508,7 +508,7 @@ export const normalAchievements = [
     get description() { return `Play for ${formatInt(8)} days.`; },
     checkRequirement: () => Time.totalTimePlayed.totalDays >= 8,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
-    reward: "Extremely small multiplier to Antimatter Dimensions based on time played in this Rewind.",
+    reward: "Extremely small multiplier to Antimatter Dimensions based on time played in this Universe.",
     effect: () => Math.max(Math.pow(Time.thisRewind.totalDays / 2, 0.05), 1),
     formatEffect: value => `${formatX(value, 2, 2)}`
   },
@@ -1142,7 +1142,7 @@ export const normalAchievements = [
   {
     id: 155,
     name: "Achievement #15983",
-    get description() { return `Play for ${formatFloat(13.7, 1)} billion years in this Rewind.`; },
+    get description() { return `Play for ${formatFloat(13.7, 1)} billion years in this Universe.`; },
     checkRequirement: () => Time.thisRewind.totalYears > 13.7e9,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     get reward() { return `Black Hole durations are ${formatPercents(0.1)} longer.`; },
@@ -1380,7 +1380,7 @@ export const normalAchievements = [
     id: 188,
     name: "The End",
     get description() { return `Reach ${formatPostBreak(DC.E9E15)} Antimatter.`; },
-    checkRequirement: () => GameEnd.endState > END_STATE_MARKERS.GAME_END && !GameEnd.removeAdditionalEnd,
+    checkRequirement: () => Currency.antimatter.gte(DC.E9E15),
     checkEvent: GAME_EVENT.GAME_TICK_AFTER
   },
 

@@ -134,7 +134,7 @@ function totalEPMult() {
         GlyphEffect.epMult
       );
 
-  epMult = epMult.times(player.celestialMultiplier);
+  epMult = epMult.times(player.rewind.celestialMultiplier);
 
   return epMult;
 }
@@ -415,7 +415,7 @@ export function realTimeMechanics(realDiff) {
   // This is in order to prevent players from using time inside of Ra's reality for amplification as well
   Ra.memoryTick(realDiff, !Enslaved.isStoringRealTime);
   if (AlchemyResource.momentum.isUnlocked) {
-    player.celestials.ra.momentumTime += realDiff * Achievement(175).effectOrDefault(1) * player.celestialMultiplier;
+    player.celestials.ra.momentumTime += realDiff * Achievement(175).effectOrDefault(1) * player.rewind.celestialMultiplier;
   }
 
   DarkMatterDimensions.tick(realDiff);
@@ -578,7 +578,7 @@ export function gameLoop(passDiff, options = {}) {
   applyAutoprestige(realDiff);
   updateImaginaryMachines(realDiff);
 
-  const uncountabilityGain = AlchemyResource.uncountability.effectValue * Time.unscaledDeltaTime.totalSeconds * player.celestialMultiplier;
+  const uncountabilityGain = AlchemyResource.uncountability.effectValue * Time.unscaledDeltaTime.totalSeconds * player.rewind.celestialMultiplier;
   Currency.realities.add(uncountabilityGain);
   Currency.perkPoints.add(uncountabilityGain);
 
@@ -907,7 +907,7 @@ export function getTTPerSecond() {
     : DC.D0;
 
   // Lai'tela TT power
-  let finalTT = dilationTT.add(glyphTT).times(player.celestialMultiplier);
+  let finalTT = dilationTT.add(glyphTT).times(player.rewind.celestialMultiplier);
   if (finalTT.gt(1)) {
     finalTT = finalTT.pow(SingularityMilestone.theoremPowerFromSingularities.effectOrDefault(1));
   }

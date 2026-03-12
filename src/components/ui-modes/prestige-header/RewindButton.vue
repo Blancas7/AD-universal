@@ -10,7 +10,7 @@ export default {
   },
   computed: {
     formatUPGained() {
-      if (this.unityPointsGained.gt(0)) return `Unity Points gained: ${format(this.unityPointsGained, 2)}`;
+      if (this.unityPointsGained.gt(0)) return `Rewind the Universe for ${quantify("Unity Point", this.unityPointsGained, 2)}`;
       return "No Unity Points gained";
     },
     classObject() {
@@ -53,7 +53,7 @@ export default {
       <div class="l-rewind-button__contents">
         <template v-if="canRewind">
           <div class="c-rewind-button__header">
-            Rewind the Universe for {{ formatUPGained }}
+            {{ formatUPGained }}
           </div>
         </template>
         <template v-else>

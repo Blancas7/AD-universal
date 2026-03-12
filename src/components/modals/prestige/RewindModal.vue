@@ -31,7 +31,7 @@ export default {
         find in the Universe tab. You will also gain one Celestial Remain.`;
     },
     upGainInfo() {
-      return `You will gain ${quantify("CelestialRemain", this.gainedCelestialRemains, 2, 0)}
+      return `You will gain ${quantify("Celestial Remain", this.gainedCelestialRemains, 2, 0)}
         and ${quantify("Unity Point", this.gainedUnityPoints, 2, 0)}.`;
     },
   },

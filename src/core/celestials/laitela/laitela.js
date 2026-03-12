@@ -125,6 +125,7 @@ export const Laitela = {
     this.celestial.fastestCompletion = 3600;
     this.celestial.difficultyTier = 0;
     this.celestial.singularityCapIncreases = 0;
+    this.celestial.lastCheckedMilestones = 0;
   },
   quotes: Quotes.laitela,
   symbol: "ᛝ"

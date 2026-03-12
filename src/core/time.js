@@ -80,7 +80,7 @@ export const Time = {
    */
   get timeSinceBlackHole() {
     return this.fromMilliseconds(() => {
-      const diff = player.records.totalTimePlayed - player.records.timePlayedAtBHUnlock;
+      const diff = player.records.thisRewind.time - player.records.timePlayedAtBHUnlock;
       return Math.max(0, diff);
     });
   },

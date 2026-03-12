@@ -362,7 +362,7 @@ export default {
       <div>Your fastest real-time Rewind was {{ rewind.bestReal.toStringShort() }}.</div>
       <div>
         You have spent {{ rewind.this.toStringShort() }}
-        in this Rewind.
+        in this Universe.
         ({{ rewind.thisReal.toStringShort() }} real time)
       </div>
       <div>

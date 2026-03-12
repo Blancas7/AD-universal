@@ -98,11 +98,11 @@ export default {
       this.glyphLevel = gainedGlyphLevel().actualLevel;
       this.nextGlyphPercent = this.percentToNextGlyphLevelText();
       this.nextMachineEP = EPforRM(this.machinesGained.plus(1));
-      this.ppGained = multiplier * player.celestialMultiplier;
-      this.shardsGained = Effarig.shardsGained * multiplier * player.celestialMultiplier;
+      this.ppGained = multiplier * player.rewind.celestialMultiplier;
+      this.shardsGained = Effarig.shardsGained * multiplier * player.rewind.celestialMultiplier;
       this.currentShardsRate = (this.shardsGained / Time.thisRealityRealTime.totalMinutes);
-      this.bestShardRate = player.records.thisReality.bestRSmin * multiplier * player.celestialMultiplier;
-      this.bestShardRateVal = player.records.thisReality.bestRSminVal * multiplier * player.celestialMultiplier;
+      this.bestShardRate = player.records.thisReality.bestRSmin * multiplier * player.rewind.celestialMultiplier;
+      this.bestShardRateVal = player.records.thisReality.bestRSminVal * multiplier * player.rewind.celestialMultiplier;
 
       const teresaReward = this.formatScalingMultiplierText(
         "Glyph Sacrifice",

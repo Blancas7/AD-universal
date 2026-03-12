@@ -116,7 +116,7 @@ export default {
       if (boostList.length === 2) return `${boostList[0]}<br> and ${boostList[1]}.`;
       return `${boostList.slice(0, -1).join(",<br>")},<br> and ${boostList[boostList.length - 1]}.`;
     },
-    hasMaxText: () => PlayerProgress.realityUnlocked() && !Pelle.isDoomed,
+    hasMaxText: () => PlayerProgress.rewindUnlocked() || (PlayerProgress.realityUnlocked() && !Pelle.isDoomed),
     toMaxTooltip() {
       if (this.amount.lte(this.replicantiCap)) return null;
       return this.estimateToMax.lt(0.01)

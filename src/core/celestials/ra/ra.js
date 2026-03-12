@@ -247,6 +247,8 @@ export const Ra = {
     data.charged = new Set();
     data.disCharge = false;
     data.peakGamespeed = 1;
+    
+    player.celestials.ra.petWithRemembrance = "";
     for (const pet of Ra.pets.all) pet.reset();
     for (const alchemyKey in player.celestials.ra.alchemy) {
       player.celestials.ra.alchemy[alchemyKey].amount = 0;
@@ -261,7 +263,7 @@ export const Ra = {
   },
   get productionPerMemoryChunk() {
     let res = Effects.product(Ra.unlocks.continuousTTBoost.effects.memories, Achievement(168));
-    res *= player.celestialMultiplier;
+    res *= player.rewind.celestialMultiplier;
     for (const pet of Ra.pets.all) {
       if (pet.isUnlocked) res *= pet.memoryProductionMultiplier;
     }
@@ -274,7 +276,7 @@ export const Ra = {
     }
     if (Achievement(168).isUnlocked) boostList.push("Achievement 168");
     if (Ra.unlocks.continuousTTBoost.canBeApplied) boostList.push("current TT");
-    if (player.celestialMultiplier > 1) boostList.push('the celestial multiplier');
+    if (player.rewind.celestialMultiplier > 1) boostList.push('the celestial multiplier');
 
     if (boostList.length === 1) return `${boostList[0]}`;
     if (boostList.length === 2) return `${boostList[0]} and ${boostList[1]}`;

@@ -42,10 +42,15 @@ export const GameEnd = {
         this.removeAdditionalEnd = false;
       }
     }
-    if (!this.removeAdditionalEnd && this.endState >= END_STATE_MARKERS.GAME_END &&
-        ui.$viewModel.modal.progressBar === undefined) {
-      player.isGameEnd = true;
+
+    if(!this.removeAdditionalEnd && this.endState >= END_STATE_MARKERS.GAME_END && ui.$viewModel.modal.progressBar === undefined) {
       this.additionalEnd += Math.min(diff / 1000 / 20, 0.1);
+
+      if(player.rewinds > 0) {
+        this.additionalEnd = Math.clampMax(this.additionalEnd, 0.3);
+      } else {
+        player.isGameEnd = true;
+      }
     }
   }
 };

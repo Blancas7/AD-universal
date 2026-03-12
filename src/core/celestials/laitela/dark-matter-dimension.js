@@ -80,7 +80,7 @@ export class DarkMatterDimensionState extends DimensionState {
       .times(Laitela.darkMatterMult)
       .times(this.commonDarkMult)
       .times(Math.pow(this.powerDMPerAscension, this.ascensions))
-      .times(player.celestialMultiplier)
+      .times(player.rewind.celestialMultiplier)
       .timesEffectsOf(SingularityMilestone.darkMatterMult, SingularityMilestone.multFromInfinitied)
       .dividedBy(Math.pow(1e4, Math.pow(this.tier - 1, 0.5)));
   }
@@ -93,7 +93,7 @@ export class DarkMatterDimensionState extends DimensionState {
       Math.pow(1.005, this.data.powerDEUpgrades)) * tierFactor / 1000)
       .times(this.commonDarkMult)
       .times(Math.pow(POWER_DE_PER_ASCENSION, this.ascensions))
-      .times(player.celestialMultiplier)
+      .times(player.rewind.celestialMultiplier)
       .timesEffectsOf(
         SingularityMilestone.darkEnergyMult,
         SingularityMilestone.realityDEMultiplier,
