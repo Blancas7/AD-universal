@@ -423,6 +423,12 @@ export const migrations = {
 
     100: player => {
       player.startWithRewindModal = false;
+    },
+    101: player => {
+      if(player.celestialMultiplier) {
+        player.rewind.celestialMultiplier = player.celestialMultiplier;
+        delete player.celestialMultiplier;
+      }
     }
   },
 
