@@ -1,1 +1,1 @@
-{"sha":"d119e64a43a427596615b58beef6cce377007460","message":"Version 0.1.12\n\nBetter structuring of rewind data\nMultiple fixes after rewind reset\nBetter handling of the ending","author":"Blancas"}
+{"sha":"ade4fb94d653c604751867ff5f29a374658c7557","message":"Version 0.1.13\n\nFixed celestialMultiplier value not being kept after relocation","author":"Blancas"}
