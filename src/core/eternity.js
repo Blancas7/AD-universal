@@ -233,11 +233,14 @@ function askEternityConfirmation() {
 }
 
 export function gainedEternities() {
-  return Pelle.isDisabled("eternityMults")
-    ? new Decimal(1)
-    : new Decimal(getAdjustedGlyphEffect("timeetermult"))
-      .timesEffectsOf(RealityUpgrade(3), Achievement(113))
-      .pow(AlchemyResource.eternity.effectValue);
+  if(Pelle.isDisabled("eternityMults")) {
+    return new Decimal(1).times(player.rewind.celestialMultiplier);
+  } else {
+    return new Decimal(getAdjustedGlyphEffect("timeetermult"))
+        .times(player.rewind.celestialMultiplier)
+        .timesEffectsOf(RealityUpgrade(3), Achievement(113))
+        .pow(AlchemyResource.eternity.effectValue);
+  }
 }
 
 export class EternityMilestoneState {

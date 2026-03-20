@@ -304,6 +304,7 @@ export function gainedInfinities() {
     Ra.unlocks.continuousTTBoost.effects.infinity
   );
   infGain = infGain.times(getAdjustedGlyphEffect("infinityinfmult"));
+  infGain = infGain.times(player.rewind.celestialMultiplier);
   infGain = infGain.powEffectOf(SingularityMilestone.infinitiedPow);
   return infGain;
 }
@@ -713,6 +714,7 @@ function passivePrestigeGen() {
       RealityUpgrade(14)
     );
     eternitiedGain = Decimal.times(eternitiedGain, getAdjustedGlyphEffect("timeetermult"));
+    eternitiedGain = Decimal.times(eternitiedGain, player.rewind.celestialMultiplier);
     eternitiedGain = new Decimal(Time.deltaTime).times(
       Decimal.pow(eternitiedGain, AlchemyResource.eternity.effectValue));
     player.reality.partEternitied = player.reality.partEternitied.plus(eternitiedGain);
@@ -731,6 +733,7 @@ function passivePrestigeGen() {
         Ra.unlocks.continuousTTBoost.effects.infinity
       );
       infGen = infGen.times(getAdjustedGlyphEffect("infinityinfmult"));
+      infGen = infGen.times(player.rewind.celestialMultiplier);
     }
     if (RealityUpgrade(11).isBought) {
       infGen = infGen.plus(RealityUpgrade(11).effectValue.times(Time.deltaTime));
