@@ -1,1 +1,1 @@
-{"sha":"ade4fb94d653c604751867ff5f29a374658c7557","message":"Version 0.1.13\n\nFixed celestialMultiplier value not being kept after relocation","author":"Blancas"}
+{"sha":"5e2c461b4e217961ce13175d5c67aaaac4520e1d","message":"Version 0.1.14\n\nThe Celestial Multiplier now applies to infinity and eternity gain","author":"Blancas"}
