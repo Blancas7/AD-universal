@@ -90,5 +90,6 @@ export * from "./shop";
 export * from "./tabs";
 export * from "./tab-notifications";
 export * from "./speedrun";
+export * from "./celestial-milestones";
 
 export * from "./automator/script-templates";

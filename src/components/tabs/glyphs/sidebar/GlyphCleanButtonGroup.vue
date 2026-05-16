@@ -40,8 +40,8 @@ export default {
       this.hasPerkShop = TeresaUnlocks.shop.canBeApplied;
       this.hasFilter = EffarigUnlock.glyphFilter.isUnlocked;
       this.inventory = Glyphs.inventory.map(GlyphGenerator.copy);
-      this.isRefining = AutoGlyphProcessor.sacMode === AUTO_GLYPH_REJECT.REFINE ||
-        AutoGlyphProcessor.sacMode === AUTO_GLYPH_REJECT.REFINE_TO_CAP;
+      this.isRefining = Ra.unlocks.unlockGlyphAlchemy.canBeApplied && (AutoGlyphProcessor.sacMode === AUTO_GLYPH_REJECT.REFINE ||
+        AutoGlyphProcessor.sacMode === AUTO_GLYPH_REJECT.REFINE_TO_CAP);
       this.removeCount = this.inventory
         .filter(g => g !== null && g.idx >= Glyphs.protectedSlots && !AutoGlyphProcessor.wouldKeep(g))
         .length;

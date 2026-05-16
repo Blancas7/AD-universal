@@ -19,8 +19,8 @@ export default {
   },
   methods: {
     update() {
-      this.showContainer = player.break || PlayerProgress.eternityUnlocked();
-      this.showEP = PlayerProgress.eternityUnlocked();
+      this.showContainer = player.break || PlayerProgress.eternityUnlocked() || PlayerProgress.realityUnlocked() || PlayerProgress.rewindUnlocked();
+      this.showEP = PlayerProgress.rewindUnlocked() || PlayerProgress.eternityUnlocked();
       this.eternityPoints.copyFrom(Currency.eternityPoints.value.floor());
       this.showNextEP = Player.canEternity && player.records.thisReality.maxEP.lt(100) &&
         gainedEternityPoints().lt(100);
