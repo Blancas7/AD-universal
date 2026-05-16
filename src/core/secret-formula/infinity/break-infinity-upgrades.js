@@ -30,8 +30,8 @@ export const breakInfinityUpgrades = {
   totalAMMult: {
     id: "totalMult",
     cost: 1e4,
-    description: "Antimatter Dimensions gain a multiplier based on total antimatter produced",
-    effect: () => Math.pow(player.records.totalAntimatter.exponent + 1, 0.5),
+    description: "Antimatter Dimensions gain a multiplier based on total antimatter produced in this Universe",
+    effect: () => Math.pow(player.records.thisRewind.maxAM.exponent + 1, 0.5),
     formatEffect: value => formatX(value, 2, 2)
   },
   currentAMMult: {

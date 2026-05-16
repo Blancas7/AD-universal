@@ -121,7 +121,7 @@ export function timeDimensionCommonMultiplier() {
       PelleRifts.chaos
     );
 
-  mult = mult.times(player.celestialMultiplier);
+  mult = mult.times(player.rewind.celestialMultiplier);
 
   if (EternityChallenge(9).isRunning) {
     mult = mult.times(

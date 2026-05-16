@@ -75,7 +75,7 @@ export function maxAllStellarDimensions() {
 export function stellarDimensionCommonMultiplier() {
   let mult = new Decimal(1);
 
-  mult = mult.times(player.celestialMultiplier);
+  mult = mult.times(player.rewind.celestialMultiplier);
 
   return mult;
 }

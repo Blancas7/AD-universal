@@ -115,7 +115,7 @@ export default {
       this.isUnlocked = this.achievement.isUnlocked && !this.isDisabled;
       this.isCancer = Theme.current().name === "S4" || player.secretUnlocks.cancerAchievements;
       this.showUnlockState = player.options.showHintText.achievementUnlockStates;
-      this.realityUnlocked = PlayerProgress.realityUnlocked() && player.realities.gt(0);;
+      this.realityUnlocked = PlayerProgress.realityUnlocked() && player.realities > 0;
 
       this.processedName = this.processText(this.config.name, this.garbledNameTemplate);
       this.processedId = this.processText(this.displayId, this.garbledIDTemplate);

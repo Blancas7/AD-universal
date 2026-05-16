@@ -25,7 +25,7 @@ export function infinityDimensionCommonMultiplier() {
     mult = mult.times(replicantiMult());
   }
 
-  mult = mult.times(player.celestialMultiplier);
+  mult = mult.times(player.rewind.celestialMultiplier);
 
   return mult;
 }

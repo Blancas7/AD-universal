@@ -134,7 +134,7 @@ function totalEPMult() {
         GlyphEffect.epMult
       );
 
-  epMult = epMult.times(player.celestialMultiplier);
+  epMult = epMult.times(player.rewind.celestialMultiplier);
 
   return epMult;
 }
@@ -304,6 +304,7 @@ export function gainedInfinities() {
     Ra.unlocks.continuousTTBoost.effects.infinity
   );
   infGain = infGain.times(getAdjustedGlyphEffect("infinityinfmult"));
+  infGain = infGain.times(player.rewind.celestialMultiplier);
   infGain = infGain.powEffectOf(SingularityMilestone.infinitiedPow);
   return infGain;
 }
@@ -415,7 +416,7 @@ export function realTimeMechanics(realDiff) {
   // This is in order to prevent players from using time inside of Ra's reality for amplification as well
   Ra.memoryTick(realDiff, !Enslaved.isStoringRealTime);
   if (AlchemyResource.momentum.isUnlocked) {
-    player.celestials.ra.momentumTime += realDiff * Achievement(175).effectOrDefault(1) * player.celestialMultiplier;
+    player.celestials.ra.momentumTime += realDiff * Achievement(175).effectOrDefault(1) * player.rewind.celestialMultiplier;
   }
 
   DarkMatterDimensions.tick(realDiff);
@@ -578,7 +579,7 @@ export function gameLoop(passDiff, options = {}) {
   applyAutoprestige(realDiff);
   updateImaginaryMachines(realDiff);
 
-  const uncountabilityGain = AlchemyResource.uncountability.effectValue * Time.unscaledDeltaTime.totalSeconds * player.celestialMultiplier;
+  const uncountabilityGain = AlchemyResource.uncountability.effectValue * Time.unscaledDeltaTime.totalSeconds * player.rewind.celestialMultiplier;
   Currency.realities.add(uncountabilityGain);
   Currency.perkPoints.add(uncountabilityGain);
 
@@ -654,8 +655,10 @@ export function gameLoop(passDiff, options = {}) {
 
   // If it's the first time playing, we show the modal to directly skip to 1 Rewind
   if (!player.startWithRewindModal) {
-    player.startWithRewindModal = true;
-    Modal.rewind.show();
+    if(player.records.thisReality.realTime > 1000) {
+      player.startWithRewindModal = true;
+      Modal.rewind.show();
+    }
   }
 
   // Stopping these checks after CREDITS_START reduces lag and allows for the glyph customization modal to appear
@@ -711,6 +714,7 @@ function passivePrestigeGen() {
       RealityUpgrade(14)
     );
     eternitiedGain = Decimal.times(eternitiedGain, getAdjustedGlyphEffect("timeetermult"));
+    eternitiedGain = Decimal.times(eternitiedGain, player.rewind.celestialMultiplier);
     eternitiedGain = new Decimal(Time.deltaTime).times(
       Decimal.pow(eternitiedGain, AlchemyResource.eternity.effectValue));
     player.reality.partEternitied = player.reality.partEternitied.plus(eternitiedGain);
@@ -729,6 +733,7 @@ function passivePrestigeGen() {
         Ra.unlocks.continuousTTBoost.effects.infinity
       );
       infGen = infGen.times(getAdjustedGlyphEffect("infinityinfmult"));
+      infGen = infGen.times(player.rewind.celestialMultiplier);
     }
     if (RealityUpgrade(11).isBought) {
       infGen = infGen.plus(RealityUpgrade(11).effectValue.times(Time.deltaTime));
@@ -905,7 +910,7 @@ export function getTTPerSecond() {
     : DC.D0;
 
   // Lai'tela TT power
-  let finalTT = dilationTT.add(glyphTT).times(player.celestialMultiplier);
+  let finalTT = dilationTT.add(glyphTT).times(player.rewind.celestialMultiplier);
   if (finalTT.gt(1)) {
     finalTT = finalTT.pow(SingularityMilestone.theoremPowerFromSingularities.effectOrDefault(1));
   }

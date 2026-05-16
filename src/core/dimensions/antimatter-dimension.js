@@ -49,7 +49,7 @@ export function antimatterDimensionCommonMultiplier() {
 
   if (Pelle.isDoomed) multiplier = multiplier.dividedBy(10);
 
-  multiplier = multiplier.times(player.celestialMultiplier);
+  multiplier = multiplier.times(player.rewind.celestialMultiplier);
 
   return multiplier;
 }

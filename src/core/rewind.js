@@ -5,7 +5,7 @@ import { ImaginaryUpgrade, ImaginaryUpgrades } from "./imaginary-upgrades";
 import { RealityUpgrade, RealityUpgrades } from "./reality-upgrades";
 
 export function isRewindAvailable() {
-  return player.records.thisRewind.maxAM.gte(DC.E1E15)/* && Pelle.isDoomed*/;
+  return player.records.thisRewind.maxAM.gte(DC.E9E15)/* && Pelle.isDoomed*/;
 }
 
 /**
@@ -13,8 +13,7 @@ export function isRewindAvailable() {
  */
 export function requestManualRewind() {
   if (!isRewindAvailable()) return;
-  if (GameEnd.creditsEverClosed) return;
-  if (player.options.confirmations.rewind) {
+  if (player.options.confirmations.rewind && GameEnd.endState <= END_STATE_MARKERS.SHOW_NEW_GAME) {
     Modal.rewind.show();
     return;
   }
@@ -87,16 +86,19 @@ function updateRewindRecords(rewindProps) {
 function giveRewindRewards(rewindProps) {
   const gainedUP = rewindProps.gainedUP;
   Currency.unityPoints.add(gainedUP);
-  updateRewindRecords(rewindProps);
-  addRewindTime(
-    player.records.thisRewind.time,
-    player.records.thisRewind.realTime,
-    gainedUP,
-    1);
+
+  if(PlayerProgress.rewindUnlocked() || player.isGameEnd) {
+    updateRewindRecords(rewindProps);
+    addRewindTime(
+      player.records.thisRewind.time,
+      player.records.thisRewind.realTime,
+      gainedUP,
+      1);
+  }
   Currency.rewinds.add(1);
   Currency.celestialRemains.add(1);
-  if (player.celestialMultiplier < 35) {
-    player.celestialMultiplier += 1;
+  if (player.rewind.celestialMultiplier < 35) {
+    player.rewind.celestialMultiplier += 1;
   }
 }
 
@@ -126,6 +128,8 @@ export function finishProcessRewind(rewindProps) {
     // not be a valid script to run; this at best stops it from running and at worst causes a crash
     AutomatorBackend.start(AutomatorBackend.state.topLevelScript);
   }
+
+  player.auto.eternity.mode = 0; // set EP autobuyer to X EPs
 
   Currency.stardust.reset();
   resetStellarDimensions();
@@ -169,19 +173,6 @@ export function finishProcessRewind(rewindProps) {
   player.reality.imaginaryUpgradeBits = 0;
   player.reality.imaginaryUpgReqs = 0;
 
-  Glyphs.clearUndo();
-  player.reality.glyphs.active = [];
-  for (let index = 0; index < player.reality.glyphs.inventory.length; index++) {
-    let glyph = player.reality.glyphs.inventory[index];
-    if (glyph.type !== "companion") {
-      Glyphs.removeFromInventory(glyph);
-    }
-  }
-  // We remove the sacrifice after getting rid of all the glyphs, just in case
-  for (const typeSac in player.reality.glyphs.sac) {
-    player.reality.glyphs.sac[typeSac] = 0;
-  }
-
   for (const blackHoleKey in player.blackHole) {
     player.blackHole[blackHoleKey] = {
       id: blackHoleKey,
@@ -195,6 +186,7 @@ export function finishProcessRewind(rewindProps) {
     }
   }
 
+  player.records.timePlayedAtBHUnlock = Number.MAX_VALUE;
   player.blackHolePauseTime = 0;
   player.blackHoleNegative = 1;
 
@@ -207,7 +199,25 @@ export function finishProcessRewind(rewindProps) {
   Laitela.reset();
   Pelle.reset();
 
+  Glyphs.clearUndo();
+  player.reality.glyphs.active = [];
+  while (player.reality.glyphs.inventory[0]) {
+    let glyph = player.reality.glyphs.inventory[0];
+    if (glyph.type !== "companion") {
+      Glyphs.removeFromInventory(glyph);
+    }
+  }
+  Glyphs.refreshActive();
+
+  // We remove the sacrifice after getting rid of all the glyphs, just in case
+  for (const typeSac in player.reality.glyphs.sac) {
+    player.reality.glyphs.sac[typeSac] = 0;
+  }
+
   player.sacrificed = DC.D0;
+
+  // Type of glyph options tab
+  player.reality.showSidebarPanel = 0;
 
   player.records.thisRewind.time = 0;
   player.records.thisRewind.realTime = 0;

@@ -494,18 +494,18 @@ Currency.rewinds = new class extends NumberCurrency {
 
 
 Currency.unityPoints = new class extends DecimalCurrency {
-  get value() { return player.unityPoints; }
-  set value(value) { player.unityPoints = value; }
+  get value() { return player.rewind.unityPoints; }
+  set value(value) { player.rewind.unityPoints = value; }
 }();
 
 
 Currency.celestialRemains = new class extends NumberCurrency {
-  get value() { return player.celestialRemains; }
-  set value(value) { player.celestialRemains = value; }
+  get value() { return player.rewind.celestialRemains; }
+  set value(value) { player.rewind.celestialRemains = value; }
 }();
 
 
 Currency.stardust = new class extends DecimalCurrency {
-  get value() { return player.stardust; }
-  set value(value) { player.stardust = value; }
+  get value() { return player.rewind.stardust; }
+  set value(value) { player.rewind.stardust = value; }
 }();

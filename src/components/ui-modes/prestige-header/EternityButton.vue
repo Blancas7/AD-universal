@@ -119,7 +119,7 @@ export default {
         return;
       }
 
-      if (!PlayerProgress.eternityUnlocked()) {
+      if (!PlayerProgress.rewindUnlocked() && !PlayerProgress.realityUnlocked() && !PlayerProgress.eternityUnlocked()) {
         this.type = EP_BUTTON_DISPLAY_TYPE.FIRST_TIME;
         return;
       }
