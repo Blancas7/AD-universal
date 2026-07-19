@@ -109,6 +109,8 @@ html {
 
   --color-rewind: #00aeff;
   --color-rewind-dark: #004281;
+  --color-universe: #00aeff;
+  --color-universe-dark: #004281;
 }
 
 :root .t-metro,
@@ -759,6 +761,16 @@ button:focus {
   background: var(--color-celestials);
 }
 
+.o-tab-btn--universe {
+  color: var(--color-universe);
+  background-color: var(--color-prestige--accent);
+  border-color: var(--color-universe);
+}
+
+.o-tab-btn--universe:hover {
+  background: var(--color-universe);
+}
+
 /* #endregion tab buttons */
 
 #loading {
@@ -1010,8 +1022,8 @@ button:focus {
 }
 
 .c-rewind-button--unlocked {
-  color: var(--color-rewind-dark);
-  border-color: var(--color-rewind-dark);
+  color: var(--color-rewind);
+  border-color: var(--color-rewind);
   cursor: pointer;
 }
 
