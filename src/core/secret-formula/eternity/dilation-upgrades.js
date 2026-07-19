@@ -96,8 +96,8 @@ export const dilationUpgrades = {
     description: () => {
       const rep10 = replicantiMult().pLog10();
       let multiplier = "0.1";
-      if (rep10 > 9000) {
-        const ratio = DilationUpgrade.tdMultReplicanti.effectValue.pLog10() / rep10;
+      if (rep10.gt(9000)) {
+        const ratio = DilationUpgrade.tdMultReplicanti.effectValue.pLog10().div(rep10).toNumber();
         if (ratio < 0.095) {
           multiplier = ratio.toFixed(2);
         }
@@ -106,7 +106,7 @@ export const dilationUpgrades = {
         effect above ${formatX(DC.E9000)}`;
     },
     effect: () => {
-      let rep10 = replicantiMult().pLog10() * 0.1;
+      let rep10 = replicantiMult().pLog10().times(0.1).toNumber();
       rep10 = rep10 > 9000 ? 9000 + 0.5 * (rep10 - 9000) : rep10;
       return Decimal.pow10(rep10);
     },
@@ -190,7 +190,7 @@ export const dilationUpgrades = {
     cost: 1e55,
     pelleOnly: true,
     description: () => `Gain more Dilated Time based on current EP`,
-    effect: () => 1e9 ** Math.min((Math.max(player.eternityPoints.log10() - 1500, 0) / 2500) ** 1.2, 1),
+    effect: () => 1e9 ** Math.min((Math.max(player.eternityPoints.log10().minus(1500).toNumber(), 0) / 2500) ** 1.2, 1),
     formatEffect: value => formatX(value, 2, 2)
   },
 };

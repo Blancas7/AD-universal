@@ -483,7 +483,7 @@ export const normalTimeStudies = [
     requirement: [191],
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     description: "All Galaxies are stronger based on your Time Shards",
-    effect: () => Math.pow(Currency.timeShards.value.clampMin(2).log2(), 0.005),
+    effect: () => Math.pow(Currency.timeShards.value.clampMin(2).log2().toNumber(), 0.005),
     cap: 1.1,
     formatEffect: value => `+${formatPercents(value - 1, 3)}`
   },
@@ -585,7 +585,7 @@ export const normalTimeStudies = [
     reqType: TS_REQUIREMENT_TYPE.AT_LEAST_ONE,
     requiresST: [228],
     description: "Dimensional Sacrifice affects 4th Time Dimension with reduced effect",
-    effect: () => Math.max(Math.pow(Sacrifice.totalBoost.pLog10(), 10), 1),
+    effect: () => Math.max(Math.pow(Sacrifice.totalBoost.pLog10().toNumber(), 10), 1),
     formatEffect: value => formatX(value, 2, 2)
   },
   {

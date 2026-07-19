@@ -1,5 +1,6 @@
 <script>
 import wordShift from "@/core/word-shift";
+import { DC } from "@/core/constants";
 
 import ReplicantiUpgradeButton, { ReplicantiUpgradeButtonSetup } from "./ReplicantiUpgradeButton";
 import PrimaryButton from "@/components/PrimaryButton";
@@ -40,7 +41,7 @@ export default {
       unlockCost: new Decimal(),
       scrambledText: "",
       maxReplicanti: new Decimal(),
-      estimateToMax: 0,
+      estimateToMax: new Decimal(),
     };
   },
   computed: {
@@ -142,9 +143,8 @@ export default {
       this.hasTDMult = DilationUpgrade.tdMultReplicanti.isBought;
       this.multTD.copyFrom(DilationUpgrade.tdMultReplicanti.effectValue);
       this.hasDTMult = getAdjustedGlyphEffect("replicationdtgain") !== 0 && !Pelle.isDoomed;
-      this.multDT = Math.clampMin(
-        Decimal.log10(Replicanti.amount) *
-          getAdjustedGlyphEffect("replicationdtgain"),
+      this.multDT = Decimal.clampMin(
+        Decimal.log10(Replicanti.amount).times(getAdjustedGlyphEffect("replicationdtgain")),
         1
       );
       this.hasIPMult = AlchemyResource.exponential.amount > 0 && !this.isDoomed;
@@ -153,7 +153,7 @@ export default {
       this.hasRaisedCap = EffarigUnlock.infinity.isUnlocked && !this.isUncapped;
       this.replicantiCap.copyFrom(replicantiCap());
       if (this.hasRaisedCap) {
-        const mult = this.replicantiCap.div(Decimal.NUMBER_MAX_VALUE);
+        const mult = this.replicantiCap.div(DC.D_MAX_NUMBER);
         this.capMultText = TimeStudy(31).canBeApplied
           ? `Base: ${formatX(mult.pow(1 / TimeStudy(31).effectValue), 2)}; after TS31: ${formatX(mult, 2)}`
           : formatX(mult, 2);
@@ -161,7 +161,7 @@ export default {
       this.distantRG = ReplicantiUpgrade.galaxies.distantRGStart;
       this.remoteRG = ReplicantiUpgrade.galaxies.remoteRGStart;
       this.effarigInfinityBonusRG = Effarig.bonusRG;
-      this.nextEffarigRGThreshold = Decimal.NUMBER_MAX_VALUE.pow(
+      this.nextEffarigRGThreshold = DC.D_MAX_NUMBER.pow(
         Effarig.bonusRG + 2
       );
       this.canSeeGalaxyButton =

@@ -20,7 +20,7 @@ export default {
   methods: {
     update() {
       this.stardust.copyFrom(Currency.stardust);
-      this.galaxyMultiplier = Math.log10(Math.max(this.stardust.max(1).log10(), 1)) / 20;
+      this.galaxyMultiplier = Decimal.log10(Decimal.max(this.stardust.max(1).log10(), 1)).div(20);
       this.incomeType = "Stardust";
       this.areAutobuyersUnlocked = Autobuyer.stellarDimension(1).isUnlocked;
     },
