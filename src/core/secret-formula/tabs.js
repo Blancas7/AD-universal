@@ -526,7 +526,7 @@ export const tabs = [
       }
     ]
   },
-  /*{
+  {
     key: "rewind",
     name: "Universe",
     hideAt: 2.5,
@@ -560,7 +560,7 @@ export const tabs = [
       //   hidable: true,
       // },
     ]
-  },*/
+  },
   {
     key: "shop",
     name: "Shop",
