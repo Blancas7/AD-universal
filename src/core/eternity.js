@@ -338,7 +338,7 @@ class EPMultiplierState extends GameMechanicState {
   }
 
   get costIncreaseThresholds() {
-    return [DC.E100, Decimal.NUMBER_MAX_VALUE, DC.E1300, DC.E4000];
+    return [DC.E100, DC.D_MAX_NUMBER, DC.E1300, DC.E4000];
   }
 
   costAfterCount(count) {

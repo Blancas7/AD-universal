@@ -422,7 +422,7 @@ export const devMigrations = {
           eternityAutobuyer.amount = condition;
           break;
         case "time":
-          eternityAutobuyer.time = condition.lt(Decimal.NUMBER_MAX_VALUE)
+          eternityAutobuyer.time = condition.lt(DC.D_MAX_NUMBER)
             ? condition.toNumber()
             : eternityAutobuyer.time;
           break;

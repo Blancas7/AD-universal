@@ -16,7 +16,7 @@ export default {
       this.smallCrunch = Time.bestInfinityRealTime.totalMinutes <= 1;
     },
     handleClick() {
-      if (PlayerProgress.infinityUnlocked()) bigCrunchResetRequest();
+      if (PlayerProgress.rewindUnlocked() || PlayerProgress.infinityUnlocked()) bigCrunchResetRequest();
       else Modal.bigCrunch.show();
     }
   }

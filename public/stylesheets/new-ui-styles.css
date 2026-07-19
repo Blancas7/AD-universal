@@ -185,6 +185,10 @@ body.t-s12 {
   border-left-color: var(--color-celestials);
 }
 
+.o-tab-btn--universe::after {
+  border-left-color: var(--color-universe);
+}
+
 .tab-button.shop {
   background-color: #d9bb26;
 }
@@ -337,6 +341,16 @@ body.t-s12 {
 
 .o-tab-btn--celestial .o-subtab__tooltip::after {
   border-top-color: var(--color-celestials);
+}
+
+.o-tab-btn--universe .o-subtab__tooltip {
+  color: var(--color-universe);
+  background: var(--color-prestige--accent);
+  border-color: var(--color-universe);
+}
+
+.o-tab-btn--universe .o-subtab__tooltip::after {
+  border-top-color: var(--color-universe);
 }
 
 .active {

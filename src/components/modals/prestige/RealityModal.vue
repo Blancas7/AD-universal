@@ -97,7 +97,7 @@ export default {
       const simRMGained = MachineHandler.gainedRealityMachines.times(this.simRealities);
       this.realityMachines.copyFrom(simRMGained.clampMax(MachineHandler.distanceToRMCap));
       this.shardsGained = Effarig.shardsGained * (simulatedRealityCount(false) + 1);
-      this.willAutoPurge = player.reality.autoAutoClean;
+      this.willAutoPurge = VUnlocks.autoAutoClean.canBeApplied && player.reality.autoAutoClean;
       if (this.firstReality) return;
       for (let i = 0; i < this.glyphs.length; ++i) {
         const currentGlyph = this.glyphs[i];

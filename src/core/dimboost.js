@@ -176,7 +176,7 @@ export class DimBoost {
 
 // eslint-disable-next-line max-params
 export function softReset(tempBulk, forcedADReset = false, forcedAMReset = false, enteringAntimatterChallenge = false) {
-  if (Currency.antimatter.gt(Player.infinityLimit)) return;
+  if (typeof Player.infinityLimit !== 'undefined' && Currency.antimatter.gt(Player.infinityLimit)) return;
   const bulk = Math.min(tempBulk, DimBoost.maxBoosts - player.dimensionBoosts);
   EventHub.dispatch(GAME_EVENT.DIMBOOST_BEFORE, bulk);
   player.dimensionBoosts = Math.max(0, player.dimensionBoosts + bulk);
@@ -223,7 +223,7 @@ export function manualRequestDimensionBoost(bulk) {
 }
 
 export function requestDimensionBoost(bulk) {
-  if (Currency.antimatter.gt(Player.infinityLimit) || !DimBoost.requirement.isSatisfied) return;
+  if ((typeof Player.infinityLimit !== 'undefined' && Currency.antimatter.gt(Player.infinityLimit)) || !DimBoost.requirement.isSatisfied) return;
   if (!DimBoost.canBeBought) return;
   Tutorial.turnOffEffect(TUTORIAL_STATE.DIMBOOST);
   if (BreakInfinityUpgrade.autobuyMaxDimboosts.isBought && bulk) maxBuyDimBoosts();

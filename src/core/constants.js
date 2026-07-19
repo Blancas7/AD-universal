@@ -61,6 +61,7 @@ export const DC = deepFreeze({
   D2E22222:             new Decimal("2e22222"),
   D9_99999E999:         new Decimal("9.99999e999"),
   D9_9999E9999:         new Decimal("9.9999e9999"),
+  D_MAX_NUMBER:         new Decimal("2^1024"),
 
   // Calculations for precise numbers.
   C1D1_1245:                Decimal.div(1, 1.1245),

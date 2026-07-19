@@ -5,10 +5,14 @@ export const MatterScale = {
 
   estimate(matter) {
     if (!matter) return ["There is no antimatter yet."];
-    if (matter.gt(DC.E100000)) {
+    if (matter.gt(DC.E9E15)) {
+      return [
+        "Your antimatter amount is unfathomably large (for now)."
+      ];
+    } else if (matter.gt(DC.E100000)) {
       return [
         `If you wrote ${formatInt(3)} numbers a second, it would take you`,
-        TimeSpan.fromSeconds(matter.log10() / 3).toString(),
+        TimeSpan.fromSeconds(matter.log10().toNumber() / 3).toString(),
         "to write down your antimatter amount."
       ];
     }

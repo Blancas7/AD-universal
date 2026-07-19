@@ -19,12 +19,12 @@ export const MachineHandler = {
   get uncappedRM() {
     let log10FinalEP = player.records.thisReality.maxEP.plus(gainedEternityPoints()).log10();
     if (!PlayerProgress.realityUnlocked() && !PlayerProgress.rewindUnlocked()) {
-      if (log10FinalEP > 8000) log10FinalEP = 8000;
-      if (log10FinalEP > 6000) log10FinalEP -= (log10FinalEP - 6000) * 0.75;
+      if (log10FinalEP.gt(8000)) log10FinalEP = new Decimal(8000);
+      if (log10FinalEP.gt(6000)) log10FinalEP.minus(log10FinalEP.minus(6000).times(0.75));
     }
-    let rmGain = DC.E3.pow(log10FinalEP / 4000 - 1);
+    let rmGain = DC.E3.pow(log10FinalEP.div(4000).minus(1));
     // Increase base RM gain if <10 RM
-    if (rmGain.gte(1) && rmGain.lt(10)) rmGain = new Decimal(27 / 4000 * log10FinalEP - 26);
+    if (rmGain.gte(1) && rmGain.lt(10)) rmGain = new Decimal(27 / 4000).times(log10FinalEP).minus(26);
     rmGain = rmGain.times(this.realityMachineMultiplier);
     return rmGain.floor();
   },
@@ -38,8 +38,8 @@ export const MachineHandler = {
   },
 
   get baseIMCap() {
-    return (Math.pow(Math.clampMin(this.uncappedRM.log10() - 1000, 0), 2)) *
-      (Math.pow(Math.clampMin(this.uncappedRM.log10() - 100000, 1), 0.2));
+    return (Math.pow(Math.clampMin(this.uncappedRM.log10().toNumber() - 1000, 0), 2)) *
+      (Math.pow(Math.clampMin(this.uncappedRM.log10().toNumber() - 100000, 1), 0.2));
   },
 
   get currentIMCap() {

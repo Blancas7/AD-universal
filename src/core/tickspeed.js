@@ -15,7 +15,7 @@ export function effectiveBaseGalaxies() {
   // this value should not be contributed to total replicanti galaxies
   replicantiGalaxies += nonActivePathReplicantiGalaxies * Effects.sum(EternityChallenge(8).reward);
   let freeGalaxies = player.dilation.totalTachyonGalaxies;
-  freeGalaxies *= 1 + Math.max(0, Replicanti.amount.log10() / 1e6) * AlchemyResource.alternation.effectValue;
+  freeGalaxies *= 1 + Math.max(0, Replicanti.amount.max(1).log10().toNumber() / 1e6) * AlchemyResource.alternation.effectValue;
   return Math.max(player.galaxies + GalaxyGenerator.galaxies + replicantiGalaxies + freeGalaxies, 0);
 }
 
@@ -50,7 +50,7 @@ export function getTickSpeedMultiplier() {
     if (Pelle.isDoomed) galaxies *= 0.5;
 
     galaxies *= Pelle.specialGlyphEffect.power;
-    galaxies *= (Math.log10(Math.max(Currency.stardust.value.max(1).log10(), 1)) / 20) + 1;
+    galaxies *= (Math.log10(Math.max(Currency.stardust.value.max(1).log10().toNumber(), 1)) / 20) + 1;
     return DC.D0_01.clampMin(baseMultiplier - (galaxies * perGalaxy));
   }
   let baseMultiplier = 0.8;
@@ -63,7 +63,7 @@ export function getTickSpeedMultiplier() {
   if (Pelle.isDoomed) galaxies *= 0.5;
 
   galaxies *= Pelle.specialGlyphEffect.power;
-  galaxies *= (Math.log10(Math.max(Currency.stardust.value.max(1).log10(), 1)) / 20) + 1;
+  galaxies *= (Math.log10(Math.max(Currency.stardust.value.max(1).log10().toNumber(), 1)) / 20) + 1;
   const perGalaxy = DC.D0_965;
   return perGalaxy.pow(galaxies - 2).times(baseMultiplier);
 }
@@ -131,7 +131,7 @@ export const Tickspeed = {
     return this.isUnlocked &&
       !EternityChallenge(9).isRunning &&
       !Laitela.continuumActive &&
-      (player.break || this.cost.lt(Decimal.NUMBER_MAX_VALUE));
+      (player.break || this.cost.lt(DC.D_MAX_NUMBER));
   },
 
   get isAffordable() {
@@ -218,7 +218,7 @@ export const FreeTickspeed = {
     const tickmult = (1 + (Effects.min(1.33, TimeStudy(171)) - 1) *
       Math.max(getAdjustedGlyphEffect("cursedtickspeed"), 1));
     const logTickmult = Math.log(tickmult);
-    const logShards = shards.ln();
+    const logShards = shards.max(1).ln().toNumber();
     const uncapped = Math.max(0, logShards / logTickmult);
     if (uncapped <= FreeTickspeed.softcap) {
       this.multToNext = tickmult;

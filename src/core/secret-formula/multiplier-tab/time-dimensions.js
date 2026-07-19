@@ -177,7 +177,7 @@ export const TD = {
       ).times(EternityChallenge(7).isRunning ? Tickspeed.perSecond : DC.D1);
       if (EternityChallenge(9).isRunning) {
         allMult = allMult.times(
-          Decimal.pow(Math.clampMin(Currency.infinityPower.value.pow(InfinityDimensions.powerConversionRate / 7)
+          Decimal.pow(Decimal.clampMin(Currency.infinityPower.value.pow(InfinityDimensions.powerConversionRate / 7)
             .log2(), 1), 4).clampMin(1));
       }
       return Decimal.pow(allMult, dim ? 1 : MultiplierTabHelper.activeDimCount("TD"));
